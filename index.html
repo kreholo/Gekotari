@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamePortal - Armor Games Tarzı</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #f39c12; /* Armor Games turuncusu */
+            --bg-dark: #2c3e50;
+            --bg-darker: #1a252f;
+            --text-light: #ecf0f1;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        [span_0](start_span)/* Semantic Header[span_0](end_span) */
+        header {
+            background-color: var(--bg-darker);
+            padding: 15px 0;
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--primary-color) !important;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        /* Arama Çubuğu */
+        .search-container {
+            position: relative;
+        }
+        .search-input {
+            background-color: #34495e;
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            width: 100%;
+        }
+        .search-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #bdc3c7;
+            background: none;
+            border: none;
+        }
+
+        [span_1](start_span)/* Navigation ve Dropdown[span_1](end_span) */
+        .nav-link {
+            color: #bdc3c7 !important;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .nav-link:hover {
+            color: var(--primary-color) !important;
+        }
+        
+        [span_2](start_span)/* Dropdown hover ile açılma özelliği[span_2](end_span) */
+        .dropdown:hover .dropdown-menu {
+            display: block;
+            margin-top: 0;
+        }
+
+        /* Oyun Kartları */
+        .game-card {
+            background-color: #34495e;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .game-thumb {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+        }
+        .game-info {
+            padding: 10px;
+        }
+        .game-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .game-category {
+            font-size: 0.75rem;
+            color: #95a5a6;
+        }
+
+        [span_3](start_span)[span_4](start_span)/* Login Modal Stilleri - Lab-7 Gereksinimleri[span_3](end_span)[span_4](end_span) */
+        .modal-content {
+            background-color: #ecf0f1;
+            color: #333;
+        }
+        
+        /* Input Focus Stilleri (Lab-7'den alındı) */
+        .custom-input:focus {
+            background-color: #c8c8c8 !important; [span_5](start_span)/*[span_5](end_span) */
+            border-color: rgb(12,97,33) !important; [span_6](start_span)/*[span_6](end_span) */
+            box-shadow: none;
+        }
+
+        .login-btn {
+            background-color: var(--bg-dark);
+            color: white;
+            width: 100%;
+        }
+        
+        [span_7](start_span)/* Hover efekti[span_7](end_span) */
+        .login-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .forgot-pass:hover {
+            color: var(--primary-color); [span_8](start_span)/*[span_8](end_span) */
+            cursor: pointer;
+        }
+
+        footer {
+            background-color: var(--bg-darker);
+            padding: 20px 0;
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-3">
+                    <a class="navbar-brand" href="#"><i class="fas fa-gamepad"></i> GamePortal</a>
+                </div>
+
+                <div class="col-md-6 my-2 my-md-0">
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Oyun ara...">
+                        <button class="search-btn"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+
+                <div class="col-md-3 text-end">
+                    <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        <i class="fas fa-user"></i> Giriş Yap / Kayıt Ol
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#">Ana Sayfa</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Aksiyon</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Strateji</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Macera</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Spor</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Bulmaca</a></li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            Daha Fazla
+                        </a>
+                        <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item text-light" href="#">MMORPG</a></li>
+                            <li><a class="dropdown-item text-light" href="#">Simülasyon</a></li>
+                            <li><hr class="dropdown-divider bg-secondary"></li>
+                            <li><a class="dropdown-item text-light" href="#">En Yeniler</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container my-4">
+        
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="p-5 bg-dark rounded-3" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://via.placeholder.com/1200x400/555/fff?text=Haftanın+Oyunu'); background-size: cover;">
+                    <h1 class="display-5 fw-bold text-white">Kingdom Rush: Frontiers</h1>
+                    <p class="col-md-8 fs-4 text-white">Strateji dünyasının efsanesi geri döndü. Kulelerini kur ve krallığı savun!</p>
+                    <button class="btn btn-warning btn-lg" type="button">Hemen Oyna</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="text-warning"><i class="fas fa-fire"></i> Popüler Oyunlar</h3>
+            <a href="#" class="text-secondary text-decoration-none">Tümünü Gör ></a>
+        </div>
+
+        <div class="row">
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/200x140/e74c3c/fff?text=War+Tank" class="game-thumb" alt="Game 1">
+                    <div class="game-info">
+                        <p class="game-title">War Tank 3D</p>
+                        <span class="game-category">Aksiyon</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/200x140/3498db/fff?text=City+Builder" class="game-thumb" alt="Game 2">
+                    <div class="game-info">
+                        <p class="game-title">City Builder</p>
+                        <span class="game-category">Simülasyon</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/200x140/9b59b6/fff?text=Mage+Hero" class="game-thumb" alt="Game 3">
+                    <div class="game-info">
+                        <p class="game-title">Mage Hero</p>
+                        <span class="game-category">RPG</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/200x140/2ecc71/fff?text=Zombie+Def" class="game-thumb" alt="Game 4">
+                    <div class="game-info">
+                        <p class="game-title">Zombie Defense</p>
+                        <span class="game-category">Strateji</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/200x140/f1c40f/333?text=Puzzle+X" class="game-thumb" alt="Game 5">
+                    <div class="game-info">
+                        <p class="game-title">Puzzle Master</p>
+                        <span class="game-category">Bulmaca</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/200x140/e67e22/fff?text=Car+Race" class="game-thumb" alt="Game 6">
+                    <div class="game-info">
+                        <p class="game-title">Nitro Racer</p>
+                        <span class="game-category">Yarış</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="text-warning mt-4 mb-3"><i class="fas fa-clock"></i> Yeni Eklenenler</h3>
+        <div class="row">
+             <div class="col-6 col-md-3 col-lg-2">
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/200x140/7f8c8d/fff?text=Boş+Slot" class="game-thumb">
+                    <div class="game-info"><p class="game-title">Yakında...</p></div>
+                </div>
+            </div>
+             <div class="col-6 col-md-3 col-lg-2">
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/200x140/7f8c8d/fff?text=Boş+Slot" class="game-thumb">
+                    <div class="game-info"><p class="game-title">Yakında...</p></div>
+                </div>
+            </div>
+             <div class="col-6 col-md-3 col-lg-2">
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/200x140/7f8c8d/fff?text=Boş+Slot" class="game-thumb">
+                    <div class="game-info"><p class="game-title">Yakında...</p></div>
+                </div>
+            </div>
+             <div class="col-6 col-md-3 col-lg-2">
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/200x140/7f8c8d/fff?text=Boş+Slot" class="game-thumb">
+                    <div class="game-info"><p class="game-title">Yakında...</p></div>
+                </div>
+            </div>
+             <div class="col-6 col-md-3 col-lg-2">
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/200x140/7f8c8d/fff?text=Boş+Slot" class="game-thumb">
+                    <div class="game-info"><p class="game-title">Yakında...</p></div>
+                </div>
+            </div>
+             <div class="col-6 col-md-3 col-lg-2">
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/200x140/7f8c8d/fff?text=Boş+Slot" class="game-thumb">
+                    <div class="game-info"><p class="game-title">Yakında...</p></div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 GamePortal. Tüm Hakları Saklıdır.</p>
+            <p>
+                <a href="#" class="text-secondary mx-2">Hakkımızda</a>
+                <a href="#" class="text-secondary mx-2">Gizlilik</a>
+                <a href="#" class="text-secondary mx-2">İletişim</a>
+            </p>
+        </div>
+    </footer>
+
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Üye Girişi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="text-center mb-3">
+                         <i class="fas fa-user-circle fa-3x text-secondary"></i>
+                    </div>
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">E-posta Adresi</label>
+                            <input type="email" class="form-control custom-input" placeholder="ornek@email.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Şifre</label>
+                            <input type="password" class="form-control custom-input" placeholder="" required>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="rememberMe">
+                                <label class="form-check-label forgot-pass" for="rememberMe">Beni Hatırla</label>
+                            </div>
+                            <span class="forgot-pass">Şifreni mi unuttun?</span>
+                        </div>
+                        <button type="submit" class="btn login-btn">Giriş Yap</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Basit Javascript işlemleri (İsteğe bağlı ekstra interaktivite)
+        $(document).ready(function(){
+            // Hover menü desteği için (Bootstrap 5'te default gelmez, elle tetiklemek gerekebilir)
+            // Ancak CSS ile hallettik.
+            console.log("Sayfa hazır!");
+        });
+    </script>
+</body>
+</html>
