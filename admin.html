@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Yönetici Paneli - Gekkotari</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background-color: #1a1d20; color: #ddd; }
+        .sidebar { background-color: #212529; min-height: 100vh; border-right: 1px solid #495057; position: fixed; width: 250px; }
+        .content { margin-left: 250px; padding: 20px; }
+        .nav-link { color: #adb5bd; margin-bottom: 5px; cursor: pointer; border-radius: 5px; }
+        .nav-link:hover { background-color: #343a40; color: white; }
+        .nav-link.active { background-color: #50F589; color: #000; font-weight: bold; }
+        .stat-card { background-color: #2c3034; border: 1px solid #495057; border-radius: 10px; padding: 20px; }
+        .section-box { display: none; } /* Hepsi gizli başlar */
+        .section-box.active { display: block; } /* Sadece aktif olan görünür */
+    </style>
+</head>
+<body>
+
+<div class="sidebar p-3">
+    <h3 class="text-success mb-4 px-2"><i class="fas fa-gamepad"></i> Panel</h3>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link active" onclick="menuSec('dashboard', this)">
+                <i class="fas fa-chart-pie me-2"></i> Özet (Dashboard)
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" onclick="menuSec('games', this)">
+                <i class="fas fa-list me-2"></i> Oyun Yönetimi
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" onclick="menuSec('users', this)">
+                <i class="fas fa-users me-2"></i> Kullanıcılar
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" onclick="menuSec('settings', this)">
+                <i class="fas fa-cog me-2"></i> Site Ayarları
+            </a>
+        </li>
+        <li class="nav-item mt-5">
+            <a class="nav-link text-danger" onclick="cikisYap()">
+                <i class="fas fa-sign-out-alt me-2"></i> Güvenli Çıkış
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-muted small" href="index.html">
+                <i class="fas fa-external-link-alt me-2"></i> Siteyi Görüntüle
+            </a>
+        </li>
+    </ul>
+</div>
+
+<div class="content">
+    
+    <div id="dashboard" class="section-box active">
+        <h2 class="mb-4">Hoşgeldin Yönetici 👋</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h5 class="text-muted">Toplam Oyun</h5>
+                    <h2 class="text-success" id="totalGames">0</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h5 class="text-muted">Kayıtlı Kullanıcı</h5>
+                    <h2 class="text-warning" id="totalUsers">0</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h5 class="text-muted">Site Durumu</h5>
+                    <h2 class="text-info">Aktif</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="games" class="section-box">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Oyun Listesi</h2>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#oyunEkleModal">
+                <i class="fas fa-plus"></i> Yeni Oyun Ekle
+            </button>
+        </div>
+        <div class="card bg-dark border-secondary">
+            <div class="card-body p-0">
+                <table class="table table-dark table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Görsel</th>
+                            <th>Oyun Adı</th>
+                            <th>Kategori</th>
+                            <th class="text-end">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminOyunListesi"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="users" class="section-box">
+        <h2 class="mb-4">Kayıtlı Kullanıcılar</h2>
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Buradan siteye kayıt olan gerçek kullanıcıları görebilir ve silebilirsiniz.
+        </div>
+        <div class="card bg-dark border-secondary">
+            <div class="card-body p-0">
+                <table class="table table-dark table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th>Kullanıcı Adı</th>
+                            <th>E-posta</th>
+                            <th class="text-end">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminKullaniciListesi"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="settings" class="section-box">
+        <h2 class="mb-4">Genel Ayarlar</h2>
+        <div class="card bg-dark border-secondary p-4" style="max-width: 600px;">
+            <form onsubmit="ayarlariKaydet(event)">
+                <div class="mb-3">
+                    <label class="form-label">Site Başlığı</label>
+                    <input type="text" class="form-control bg-secondary text-white border-0" value="Gekkotari Oyun Portalı">
+                </div>
+                <div class="mb-3 form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="bakimModu">
+                    <label class="form-check-label" for="bakimModu">Siteyi Bakım Moduna Al</label>
+                </div>
+                <div class="mb-3 form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="kayitKapat">
+                    <label class="form-check-label" for="kayitKapat">Yeni Üye Kayıtlarını Kapat</label>
+                </div>
+                <hr class="border-secondary">
+                <button type="submit" class="btn btn-primary-custom">Ayarları Kaydet</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal fade" id="oyunEkleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title">Yeni Oyun Ekle</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="oyunEkleForm">
+                    <div class="mb-3">
+                        <label class="form-label">Oyun Adı</label>
+                        <input type="text" id="yeniAd" class="form-control bg-secondary text-white border-0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Kategori</label>
+                        <select id="yeniKategori" class="form-select bg-secondary text-white border-0">
+                            <option value="Aksiyon">Aksiyon</option>
+                            <option value="Macera">Macera</option>
+                            <option value="Strateji">Strateji</option>
+                            <option value="RPG">RPG</option>
+                            <option value="Spor">Spor</option>
+                            <option value="Yarış">Yarış</option>
+                            <option value="Korku">Korku</option>
+                            <option value="Klasik">Klasik</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Resim Anahtar Kelimesi</label>
+                        <input type="text" id="yeniResim" class="form-control bg-secondary text-white border-0" placeholder="Örn: Car, War, Space">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Etiket</label>
+                        <input type="text" id="yeniEtiket" class="form-control bg-secondary text-white border-0" value="Yeni">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" onclick="oyunKaydet()" class="btn btn-success">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        girisKontrol();
+        verileriYukle();
+        istatistikleriGuncelle();
+    });
+
+    // 1. MENÜ GEÇİŞLERİ (TAB SİSTEMİ)
+    function menuSec(bolumId, linkElement) {
+        // Tüm bölümleri gizle
+        document.querySelectorAll('.section-box').forEach(el => el.classList.remove('active'));
+        // Seçileni göster
+        document.getElementById(bolumId).classList.add('active');
+
+        // Menüdeki aktifliği değiştir
+        document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+        linkElement.classList.add('active');
+
+        // İlgili verileri yenile
+        if(bolumId === 'games') oyunTablosunuCiz();
+        if(bolumId === 'users') kullaniciTablosunuCiz();
+        istatistikleriGuncelle();
+    }
+
+    // 2. GÜVENLİK
+    function girisKontrol() {
+        var aktif = JSON.parse(localStorage.getItem("aktifOturum"));
+        if (!aktif || aktif.email !== "admin@gekkotari.com") {
+            window.location.href = "index.html";
+        }
+    }
+
+    // 3. OYUN İŞLEMLERİ
+    function oyunTablosunuCiz() {
+        var oyunlar = JSON.parse(localStorage.getItem("tumOyunlar")) || [];
+        var tablo = document.getElementById("adminOyunListesi");
+        tablo.innerHTML = "";
+        
+        oyunlar.forEach((oyun, index) => {
+            tablo.innerHTML += `
+                <tr>
+                    <td><img src="https://via.placeholder.com/40x40/2c3e50/50F589?text=${oyun.resim}" class="rounded"></td>
+                    <td>${oyun.ad}</td>
+                    <td><span class="badge bg-secondary">${oyun.tur}</span></td>
+                    <td class="text-end">
+                        <button onclick="oyunSil(${index})" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
+        });
+    }
+
+    function oyunKaydet() {
+        var ad = document.getElementById("yeniAd").value;
+        var tur = document.getElementById("yeniKategori").value;
+        var resim = document.getElementById("yeniResim").value;
+        var etiket = document.getElementById("yeniEtiket").value;
+
+        if(!ad) return alert("İsim yazmalısın");
+
+        var oyunlar = JSON.parse(localStorage.getItem("tumOyunlar")) || [];
+        oyunlar.push({ ad, tur, resim, etiket });
+        localStorage.setItem("tumOyunlar", JSON.stringify(oyunlar));
+        
+        // Modalı kapat
+        bootstrap.Modal.getInstance(document.getElementById('oyunEkleModal')).hide();
+        oyunTablosunuCiz();
+        istatistikleriGuncelle();
+        alert("Oyun Eklendi!");
+    }
+
+    function oyunSil(index) {
+        if(confirm("Silmek istediğine emin misin?")) {
+            var oyunlar = JSON.parse(localStorage.getItem("tumOyunlar"));
+            oyunlar.splice(index, 1);
+            localStorage.setItem("tumOyunlar", JSON.stringify(oyunlar));
+            oyunTablosunuCiz();
+            istatistikleriGuncelle();
+        }
+    }
+
+    // 4. KULLANICI İŞLEMLERİ
+    function kullaniciTablosunuCiz() {
+        var kullanicilar = JSON.parse(localStorage.getItem("kullanicilar")) || [];
+        var tablo = document.getElementById("adminKullaniciListesi");
+        tablo.innerHTML = "";
+
+        kullanicilar.forEach((k, index) => {
+            tablo.innerHTML += `
+                <tr>
+                    <td>#${k.id || index}</td>
+                    <td>${k.kadi}</td>
+                    <td>${k.email}</td>
+                    <td class="text-end">
+                        <button onclick="kullaniciSil(${index})" class="btn btn-sm btn-outline-danger"><i class="fas fa-ban"></i> Yasakla</button>
+                    </td>
+                </tr>`;
+        });
+    }
+
+    function kullaniciSil(index) {
+        if(confirm("Bu kullanıcıyı kalıcı olarak silmek istiyor musun?")) {
+            var kullanicilar = JSON.parse(localStorage.getItem("kullanicilar"));
+            kullanicilar.splice(index, 1);
+            localStorage.setItem("kullanicilar", JSON.stringify(kullanicilar));
+            kullaniciTablosunuCiz();
+            istatistikleriGuncelle();
+        }
+    }
+
+    // 5. İSTATİSTİKLER VE AYARLAR
+    function istatistikleriGuncelle() {
+        var oyunSayisi = (JSON.parse(localStorage.getItem("tumOyunlar")) || []).length;
+        var userSayisi = (JSON.parse(localStorage.getItem("kullanicilar")) || []).length;
+        
+        document.getElementById("totalGames").innerText = oyunSayisi;
+        document.getElementById("totalUsers").innerText = userSayisi;
+    }
+
+    function ayarlariKaydet(e) {
+        e.preventDefault();
+        alert("Ayarlar başarıyla güncellendi! (Simülasyon)");
+    }
+
+    function cikisYap() {
+        localStorage.removeItem("aktifOturum");
+        window.location.href = "index.html";
+    }
+
+    function verileriYukle() {
+        if (!localStorage.getItem("tumOyunlar")) {
+            localStorage.setItem("tumOyunlar", JSON.stringify([
+                { ad: "Yılan Oyunu", tur: "Klasik", resim: "Snake", etiket: "Efsane" }
+            ]));
+        }
+    }
+</script>
+</body>
+</html>

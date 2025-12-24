@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Kütüphanem - Gekkotari</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><i class="fas fa-arrow-left"></i> Ana Sayfaya Dön</a>
+        </div>
+    </header>
+
+    <main class="container my-5">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-2">
+            <h2 class="text-warning mb-0">
+                <i class="fas fa-layer-group"></i> Oyun Kütüphanem
+            </h2>
+            <button onclick="window.herSeyisil()" class="btn btn-sm btn-outline-danger">
+                <i class="fas fa-trash-alt"></i> Listeyi Tamamen Temizle
+            </button>
+        </div>
+        
+        <div class="row" id="kutuphaneListesi">
+            </div>
+
+        <div id="bosUyari" class="alert alert-secondary d-none">
+            <i class="fas fa-info-circle"></i> Henüz kütüphanene oyun eklemedin. <a href="kategori.html?tur=Aksiyon" class="alert-link">Oyunlara göz at!</a>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var aktifOturum = localStorage.getItem("aktifOturum");
+            if(!aktifOturum) {
+                alert("Kütüphaneni görmek için giriş yapmalısın!");
+                window.location.href = "giris.html";
+                return;
+            }
+            kutuphaneyiGoster();
+        });
+
+        function kutuphaneyiGoster() {
+            var aktifKullanici = JSON.parse(localStorage.getItem("aktifOturum"));
+            var ozelAnahtar = "kutuphane_" + aktifKullanici.kadi;
+            
+            var kutuphane = JSON.parse(localStorage.getItem(ozelAnahtar)) || [];
+            var listeAlani = document.getElementById("kutuphaneListesi");
+            var bosUyari = document.getElementById("bosUyari");
+
+            listeAlani.innerHTML = ""; 
+
+            if (kutuphane.length === 0) {
+                bosUyari.classList.remove("d-none");
+            } else {
+                bosUyari.classList.add("d-none");
+            }
+
+            kutuphane.forEach(function(oyun, index) {
+                var html = `
+                    <div class="col-12 mb-3">
+                        <div class="card bg-dark border-secondary text-white">
+                            <div class="row g-0 align-items-center">
+                                <div class="col-md-2">
+                                    <img src="https://via.placeholder.com/150x150/2c3e50/50F589?text=${oyun.resim}" class="img-fluid rounded-start w-100" style="height: 100px; object-fit: cover;">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-success">${oyun.ad}</h5>
+                                        <p class="card-text text-muted small">${oyun.tur} Kategorisi</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 text-center p-3">
+                                    <a href="oyun.html" class="btn btn-success btn-sm w-100 mb-2">
+                                        <i class="fas fa-play"></i> Oyna
+                                    </a>
+                                    
+                                    <button onclick="window.oyunuSil(${index})" class="btn btn-outline-danger btn-sm w-100">
+                                        <i class="fas fa-trash"></i> Kaldır
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                listeAlani.innerHTML += html;
+            });
+        }
+
+        window.oyunuSil = function(siraNumarasi) {
+            if(confirm("Bu oyunu silmek istediğine emin misin?")) {
+                var aktifKullanici = JSON.parse(localStorage.getItem("aktifOturum"));
+                var ozelAnahtar = "kutuphane_" + aktifKullanici.kadi;
+                
+                var kutuphane = JSON.parse(localStorage.getItem(ozelAnahtar)) || [];
+                kutuphane.splice(siraNumarasi, 1);
+                
+                localStorage.setItem(ozelAnahtar, JSON.stringify(kutuphane));
+                kutuphaneyiGoster();
+            }
+        };
+
+        window.herSeyisil = function() {
+            if(confirm("TÜM kütüphanen silinecek. Emin misin?")) {
+                var aktifKullanici = JSON.parse(localStorage.getItem("aktifOturum"));
+                var ozelAnahtar = "kutuphane_" + aktifKullanici.kadi;
+                
+                localStorage.removeItem(ozelAnahtar);
+                kutuphaneyiGoster();
+            }
+        };
+    </script>
+</body>
+</html>

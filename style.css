@@ -1,0 +1,183 @@
+/* style.css */
+:root {
+    --primary-color: #50F589;
+    --bg-dark: #1a252f;
+    --bg-darker: #121a21;
+    --text-light: #FFFFFF;
+    --sidebar-width: 250px;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Semantik Header */
+header {
+    background-color: var(--bg-darker);
+    padding: 15px 0;
+    border-bottom: 3px solid var(--primary-color);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: var(--primary-color) !important;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+}
+
+/* Arama Çubuğu */
+.search-container {
+    position: relative;
+}
+.search-input {
+    background-color: #34495e;
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    width: 100%;
+}
+.search-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #bdc3c7;
+    background: none;
+    border: none;
+}
+
+/* Nav Linkleri */
+.nav-link {
+    color: #bdc3c7 !important;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+.nav-link:hover {
+    color: var(--primary-color) !important;
+}
+.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+}
+
+/* Oyun Kartları */
+.game-card {
+    background-color: #34495e;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    transition: transform 0.2s;
+    cursor: pointer;
+    border: 1px solid #465a6e;
+}
+.game-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(80, 245, 137, 0.2);
+    border-color: var(--primary-color);
+}
+.game-thumb {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+}
+.game-info {
+    padding: 10px;
+}
+.game-title {
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin: 0;
+}
+.game-category {
+    font-size: 0.75rem;
+    color: #95a5a6;
+}
+
+/* Giriş/Kayıt Formları */
+.auth-container {
+    max-width: 400px;
+    margin: 50px auto;
+    background-color: var(--bg-darker);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+.custom-input:focus {
+    background-color: #e9ecef !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 5px rgba(80, 245, 137, 0.5);
+}
+.btn-primary-custom {
+    background-color: var(--primary-color);
+    color: #000;
+    font-weight: bold;
+    width: auto; /* Doğrusu bu */
+    min-width: 120px; /* Giriş yap butonuyla eşit boyda durması için */
+    text-align: center;
+}
+.btn-primary-custom:hover {
+    background-color: #3dd675;
+}
+
+/* Admin Paneli */
+.admin-sidebar {
+    height: 100vh;
+    background-color: var(--bg-darker);
+    border-right: 1px solid #333;
+}
+.admin-content {
+    padding: 20px;
+}
+.table-dark {
+    background-color: #34495e;
+}
+
+footer {
+    background-color: var(--bg-darker);
+    padding: 20px 0;
+    margin-top: 50px;
+    text-align: center;
+    border-top: 1px solid #333;
+    font-size: 0.8rem;
+    color: #7f8c8d;
+}
+/* Form etiketlerinin rengini açmak için */
+label, .form-label {
+    color: #bdc3c7 !important; /* Açık beyaz/gri renk */
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+/* "Kuralları kabul ediyorum" yazısını da düzeltelim */
+.form-check-label {
+    color: #bdc3c7 !important;
+}
+/* style.css EN ALTA EKLE */
+
+/* 1. Menünün altta kalmasını engellemek için (Z-Index Ayarı) */
+header {
+    position: relative;
+    z-index: 2000; /* Navbar'dan daha yüksek bir sayı verdik */
+}
+
+/* 2. Kullanıcı butonunun arka planını düzeltmek için */
+#userMenu {
+    background-color: #212529; /* Koyu gri */
+    border: 1px solid #495057;
+    color: white;
+}
+
+#userMenu:hover, #userMenu:focus {
+    background-color: #50F589; /* Logodaki yeşil renk */
+    color: black;
+    border-color: #50F589;
+}
+
+/* 3. Dropdown menüsünün tam oturması için */
+.dropdown-menu {
+    margin-top: 10px !important; /* Butondan biraz aşağıda dursun */
+    border: 1px solid #495057;
+}

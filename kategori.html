@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oyunlar - Gekkotari</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-6">
+                    <a class="navbar-brand" href="index.html"><i class="fas fa-arrow-left"></i> Ana Sayfaya Dön</a>
+                </div>
+                <div class="col-6 text-end">
+                    <div class="dropdown d-inline-block">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            Hızlı Kategori Seç
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end bg-dark border-secondary">
+                            <li><a class="dropdown-item text-light" href="?tur=Aksiyon">Aksiyon</a></li>
+                            <li><a class="dropdown-item text-light" href="?tur=Strateji">Strateji</a></li>
+                            <li><a class="dropdown-item text-light" href="?tur=Yarış">Yarış</a></li>
+                            <li><a class="dropdown-item text-light" href="?tur=Spor">Spor</a></li>
+                            <li><a class="dropdown-item text-light" href="?tur=Korku">Korku</a></li>
+                            <li><a class="dropdown-item text-light" href="?tur=Macera">Macera</a></li>
+                            <li><a class="dropdown-item text-light" href="?tur=RPG">RPG</a></li>
+                            <li><a class="dropdown-item text-light" href="?tur=Bulmaca">Bulmaca</a></li>
+                            <li><a class="dropdown-item text-light" href="?tur=Klasik">Klasik</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container my-5">
+        <h2 id="kategoriBaslik" class="mb-4 text-warning border-bottom border-secondary pb-2">Oyunlar</h2>
+        <div class="row" id="oyunListesiArea"></div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // KİŞİYE ÖZEL KÜTÜPHANE EKLEME
+        function kutuphaneyeEkle(ad, resim, tur) {
+            var aktifOturumStr = localStorage.getItem("aktifOturum");
+            if (!aktifOturumStr) {
+                alert("Oyun eklemek için önce giriş yapmalısın!");
+                window.location.href = "giris.html";
+                return;
+            }
+
+            var aktifKullanici = JSON.parse(aktifOturumStr);
+            var ozelAnahtar = "kutuphane_" + aktifKullanici.kadi;
+            var kutuphane = JSON.parse(localStorage.getItem(ozelAnahtar)) || [];
+
+            if (kutuphane.find(o => o.ad === ad)) {
+                alert("Bu oyun zaten kütüphanende mevcut!");
+                return;
+            }
+
+            kutuphane.push({ ad: ad, resim: resim, tur: tur });
+            localStorage.setItem(ozelAnahtar, JSON.stringify(kutuphane));
+            alert("Oyun kütüphanenize eklendi");
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const secilenTur = urlParams.get('tur');
+            const baslik = document.getElementById('kategoriBaslik');
+            const oyunAlani = document.getElementById('oyunListesiArea');
+
+            // 1. VERİYİ ARTIK LOCALSTORAGE'DAN ÇEKİYORUZ (ADMİNİN YÖNETTİĞİ YER)
+            // Eğer admin henüz hiç veri girmediyse boş kalmasın diye varsayılan koyuyoruz
+            let tumOyunlar = JSON.parse(localStorage.getItem("tumOyunlar"));
+            
+            if (!tumOyunlar) {
+                // İlk açılışta boşsa, varsayılan bir veri seti oluşturup kaydedelim
+                tumOyunlar = [
+                    { ad: "Yılan Oyunu", tur: "Klasik", resim: "Snake", etiket: "Efsane" },
+                    { ad: "Call of Duty", tur: "Aksiyon", resim: "War", etiket: "Popüler" },
+                    { ad: "Forza Horizon", tur: "Yarış", resim: "Car", etiket: "Hızlı" }
+                ];
+                localStorage.setItem("tumOyunlar", JSON.stringify(tumOyunlar));
+            }
+
+            // 2. SEÇİLEN KATEGORİYE GÖRE FİLTRELE
+            if (secilenTur) {
+                baslik.innerHTML = `<i class="fas fa-gamepad text-success"></i> ${secilenTur} Oyunları`;
+                document.title = `${secilenTur} Oyunları`;
+
+                // Filtreleme işlemi
+                const filtrelenmisOyunlar = tumOyunlar.filter(oyun => oyun.tur === secilenTur);
+
+                if (filtrelenmisOyunlar.length > 0) {
+                    let htmlKodlari = "";
+                    filtrelenmisOyunlar.forEach(oyun => {
+                        const guvenliAd = oyun.ad.replace(/'/g, "\\'");
+                        
+                        // Oyna butonu linki: Eğer Yılan Oyunu ise oyun.html'e gitsin, yoksa boş link
+                        let oynaLink = "#";
+                        if(oyun.ad.includes("Yılan")) oynaLink = "oyun.html";
+
+                        htmlKodlari += `
+                            <div class="col-6 col-md-3 mb-4">
+                                <div class="game-card h-100">
+                                    <img src="https://via.placeholder.com/300x200/2c3e50/50F589?text=${oyun.resim}" class="game-thumb">
+                                    <div class="game-info">
+                                        <h5 class="game-title text-white">${oyun.ad}</h5>
+                                        <span class="badge bg-secondary mt-1">${oyun.etiket || 'Oyun'}</span>
+                                        
+                                        <div class="d-grid gap-2 mt-2">
+                                            <a href="${oynaLink}" class="btn btn-sm btn-success"><i class="fas fa-play"></i> Oyna</a>
+                                            <button onclick="kutuphaneyeEkle('${guvenliAd}', '${oyun.resim}', '${secilenTur}')" 
+                                                    class="btn btn-sm btn-outline-light">
+                                                <i class="fas fa-plus"></i> Ekle
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    oyunAlani.innerHTML = htmlKodlari;
+                } else {
+                     oyunAlani.innerHTML = `
+                        <div class="col-12 text-center text-muted mt-5">
+                            <h4><i class="fas fa-search"></i> Bu kategoride henüz oyun eklenmemiş.</h4>
+                            <p>Admin panelinden ekleyebilirsiniz.</p>
+                        </div>
+                    `;
+                }
+
+            } else {
+                baslik.innerText = "Kategori Seçiniz";
+                oyunAlani.innerHTML = `
+                    <div class="col-12 text-center text-muted mt-5">
+                        <h4><i class="fas fa-search"></i> Lütfen yukarıdan bir kategori seçin.</h4>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
