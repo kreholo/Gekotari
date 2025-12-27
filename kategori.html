@@ -46,7 +46,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // KİŞİYE ÖZEL KÜTÜPHANE EKLEME
         function kutuphaneyeEkle(ad, resim, tur) {
             var aktifOturumStr = localStorage.getItem("aktifOturum");
             if (!aktifOturumStr) {
@@ -75,36 +74,41 @@
             const baslik = document.getElementById('kategoriBaslik');
             const oyunAlani = document.getElementById('oyunListesiArea');
 
-            // 1. VERİYİ ARTIK LOCALSTORAGE'DAN ÇEKİYORUZ (ADMİNİN YÖNETTİĞİ YER)
-            // Eğer admin henüz hiç veri girmediyse boş kalmasın diye varsayılan koyuyoruz
-            let tumOyunlar = JSON.parse(localStorage.getItem("tumOyunlar"));
-            
-            if (!tumOyunlar) {
-                // İlk açılışta boşsa, varsayılan bir veri seti oluşturup kaydedelim
-                tumOyunlar = [
-                    { ad: "Yılan Oyunu", tur: "Klasik", resim: "Snake", etiket: "Efsane" },
-                    { ad: "Call of Duty", tur: "Aksiyon", resim: "War", etiket: "Popüler" },
-                    { ad: "Forza Horizon", tur: "Yarış", resim: "Car", etiket: "Hızlı" }
+            // --- OTOMATİK OYUN YÜKLEME (GitHub için) ---
+            if (!localStorage.getItem("tumOyunlar")) {
+                var varsayilanOyunlar = [
+                    { 
+                        ad: "Ateş ve Su", 
+                        tur: "Macera", 
+                        resim: "Fireboy", 
+                        etiket: "Popüler", 
+                        link: "https://html5.gamedistribution.com/5d56d77335604473873497d5d2822d65/" 
+                    },
+                    { 
+                        ad: "Yılan Oyunu", 
+                        tur: "Klasik", 
+                        resim: "Snake", 
+                        etiket: "Efsane", 
+                        link: "yerel" 
+                    }
                 ];
-                localStorage.setItem("tumOyunlar", JSON.stringify(tumOyunlar));
+                localStorage.setItem("tumOyunlar", JSON.stringify(varsayilanOyunlar));
             }
 
-            // 2. SEÇİLEN KATEGORİYE GÖRE FİLTRELE
+            let tumOyunlar = JSON.parse(localStorage.getItem("tumOyunlar"));
+
             if (secilenTur) {
                 baslik.innerHTML = `<i class="fas fa-gamepad text-success"></i> ${secilenTur} Oyunları`;
                 document.title = `${secilenTur} Oyunları`;
 
-                // Filtreleme işlemi
                 const filtrelenmisOyunlar = tumOyunlar.filter(oyun => oyun.tur === secilenTur);
 
                 if (filtrelenmisOyunlar.length > 0) {
                     let htmlKodlari = "";
                     filtrelenmisOyunlar.forEach(oyun => {
                         const guvenliAd = oyun.ad.replace(/'/g, "\\'");
-                        
-                        // Oyna butonu linki: Eğer Yılan Oyunu ise oyun.html'e gitsin, yoksa boş link
-                        let oynaLink = "#";
-                        if(oyun.ad.includes("Yılan")) oynaLink = "oyun.html";
+                        // Linkleme mantığı: ?ad=OyunAdi
+                        let oynaLink = `oyun.html?ad=${encodeURIComponent(oyun.ad)}`;
 
                         htmlKodlari += `
                             <div class="col-6 col-md-3 mb-4">
@@ -113,7 +117,6 @@
                                     <div class="game-info">
                                         <h5 class="game-title text-white">${oyun.ad}</h5>
                                         <span class="badge bg-secondary mt-1">${oyun.etiket || 'Oyun'}</span>
-                                        
                                         <div class="d-grid gap-2 mt-2">
                                             <a href="${oynaLink}" class="btn btn-sm btn-success"><i class="fas fa-play"></i> Oyna</a>
                                             <button onclick="kutuphaneyeEkle('${guvenliAd}', '${oyun.resim}', '${secilenTur}')" 
@@ -128,21 +131,11 @@
                     });
                     oyunAlani.innerHTML = htmlKodlari;
                 } else {
-                     oyunAlani.innerHTML = `
-                        <div class="col-12 text-center text-muted mt-5">
-                            <h4><i class="fas fa-search"></i> Bu kategoride henüz oyun eklenmemiş.</h4>
-                            <p>Admin panelinden ekleyebilirsiniz.</p>
-                        </div>
-                    `;
+                     oyunAlani.innerHTML = `<div class="col-12 text-center text-muted mt-5"><h4><i class="fas fa-search"></i> Bu kategoride henüz oyun eklenmemiş.</h4></div>`;
                 }
-
             } else {
                 baslik.innerText = "Kategori Seçiniz";
-                oyunAlani.innerHTML = `
-                    <div class="col-12 text-center text-muted mt-5">
-                        <h4><i class="fas fa-search"></i> Lütfen yukarıdan bir kategori seçin.</h4>
-                    </div>
-                `;
+                oyunAlani.innerHTML = `<div class="col-12 text-center text-muted mt-5"><h4><i class="fas fa-search"></i> Lütfen yukarıdan bir kategori seçin.</h4></div>`;
             }
         });
     </script>

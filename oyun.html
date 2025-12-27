@@ -7,203 +7,124 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        canvas {
-            display: block;
-            margin: 0 auto;
-            border: 2px solid #50F589;
-            box-shadow: 0 0 20px rgba(80, 245, 137, 0.2);
+        #oyunCercevesi {
+            width: 100%;
+            height: 85vh;
+            border: none;
+            border-radius: 10px;
             background-color: #000;
+            box-shadow: 0 0 20px rgba(80, 245, 137, 0.2);
+            display: none;
         }
+        /* Yılan Oyunu Stili */
+        #yerelOyunAlani { display: none; }
+        canvas { display: block; margin: 0 auto; border: 2px solid #50F589; background-color: #000; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="container">
-            <a class="navbar-brand" href="kutuphane.html"><i class="fas fa-arrow-left"></i> Kütüphaneye Dön</a>
+        <div class="container py-3">
+            <a class="navbar-brand text-white" href="index.html"><i class="fas fa-arrow-left"></i> Ana Sayfaya Dön</a>
         </div>
     </header>
 
-    <main class="container my-4 text-center">
-        <h2 class="text-warning mb-3">Yılan Oyunu (Snake)</h2>
-        <div class="d-flex justify-content-center gap-4 mb-3">
-            <h4 class="text-white">Puan: <span id="skor" class="text-success">0</span></h4>
-            <h4 class="text-white">En Yüksek: <span id="enYuksek" class="text-warning">0</span></h4>
+    <main class="container-fluid px-4">
+        <div class="text-center mb-3">
+            <h2 id="oyunBaslik" class="text-warning">Yükleniyor...</h2>
         </div>
         
-        <canvas id="oyunTahtasi" width="400" height="400"></canvas>
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10">
+                <iframe id="oyunCercevesi" src="" allowfullscreen></iframe>
 
-        <div class="mt-3 text-muted">
-            <p><i class="fas fa-keyboard"></i> <b>WASD</b> veya <b>Yön Tuşları</b> ile oyna!</p>
-            <button onclick="oyunuBaslat()" class="btn btn-primary-custom">
-                <i class="fas fa-redo"></i> Yeniden Başlat
-            </button>
+                <div id="yerelOyunAlani" class="text-center">
+                    <div class="d-flex justify-content-center gap-4 mb-3">
+                        <h4 class="text-white">Puan: <span id="skor" class="text-success">0</span></h4>
+                        <h4 class="text-white">En Yüksek: <span id="enYuksek" class="text-warning">0</span></h4>
+                    </div>
+                    <canvas id="oyunTahtasi" width="400" height="400"></canvas>
+                    <p class="text-muted mt-3">WASD veya Ok Tuşları ile oyna</p>
+                    <button onclick="location.reload()" class="btn btn-primary-custom">Yeniden Başlat</button>
+                </div>
+            </div>
         </div>
     </main>
 
     <script>
-        const canvas = document.getElementById("oyunTahtasi");
-        const ctx = canvas.getContext("2d");
-
-        let hiz = 7; 
-        let tileCount = 20; 
-        let tileSize = canvas.width / tileCount - 2; 
-        
-        let headX = 10;
-        let headY = 10;
-        let xHiz = 0;
-        let yHiz = 0;
-
-        let elmaX = 5;
-        let elmaY = 5;
-
-        let yilanParcalari = [];
-        let kuyrukUzunlugu = 2;
-
-        let skor = 0;
-        let oyunBittiMi = false;
-        let yonDegisti = false;
-
-        window.onload = function() {
-            oyunuCiz();
-            document.addEventListener("keydown", tusBasildi);
-        };
-
-        function oyunuCiz() {
-            if(oyunBittiMi) return;
-
-            konumDegistir();
-            yonDegisti = false; 
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const gelenOyunAdi = urlParams.get('ad');
+            const tumOyunlar = JSON.parse(localStorage.getItem("tumOyunlar")) || [];
             
-            if(oyunBittiKontrol()) {
-                ctx.fillStyle = "white";
-                ctx.font = "30px Verdana";
-                ctx.fillText("Oyun Bitti!", canvas.width / 6.5, canvas.height / 2);
-                return;
+            // Oyunu Bul
+            let bulunanOyun = tumOyunlar.find(oyun => oyun.ad === gelenOyunAdi);
+
+            // Eğer bulamazsa ve isim 'Yılan' içeriyorsa varsayılan yap
+            if(!bulunanOyun && gelenOyunAdi && gelenOyunAdi.includes("Yılan")) {
+                bulunanOyun = { ad: "Yılan Oyunu", link: "yerel" };
             }
 
-            ctx.fillStyle = "black";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            elmaKontrol();
-
-            ctx.fillStyle = "#50F589"; 
-            for(let i = 0; i < yilanParcalari.length; i++){
-                let parca = yilanParcalari[i];
-                ctx.fillRect(parca.x * tileCount, parca.y * tileCount, tileSize, tileSize);
-            }
-
-            yilanParcalari.push(new YilanParcasi(headX, headY));
-            while (yilanParcalari.length > kuyrukUzunlugu) {
-                yilanParcalari.shift(); 
-            }
-
-            ctx.fillStyle = "red";
-            ctx.fillRect(elmaX * tileCount, elmaY * tileCount, tileSize, tileSize);
-
-            document.getElementById("skor").innerText = skor;
-
-            setTimeout(oyunuCiz, 1000 / hiz);
-        }
-
-        function konumDegistir() {
-            headX = headX + xHiz;
-            headY = headY + yHiz;
-        }
-
-        function elmaKontrol() {
-            if (elmaX === headX && elmaY === headY) {
-                elmaX = Math.floor(Math.random() * tileCount);
-                elmaY = Math.floor(Math.random() * tileCount);
-                kuyrukUzunlugu++;
-                skor += 10;
-                if(skor % 50 === 0) hiz++;
-            }
-        }
-
-        function oyunBittiKontrol() {
-            let bitti = false;
-
-            if (xHiz === 0 && yHiz === 0) return false;
-
-            if (headX < 0 || headX === tileCount || headY < 0 || headY === tileCount) {
-                bitti = true;
-            }
-
-            for (let i = 0; i < yilanParcalari.length; i++) {
-                let parca = yilanParcalari[i];
-                if (parca.x === headX && parca.y === headY) {
-                    bitti = true;
-                    break;
+            if (bulunanOyun) {
+                document.getElementById("oyunBaslik").innerText = bulunanOyun.ad;
+                document.title = bulunanOyun.ad + " - Gekkotari";
+                
+                if (bulunanOyun.link === "yerel") {
+                    // YILAN MODU
+                    document.getElementById("yerelOyunAlani").style.display = "block";
+                    baslatYilanOyunu();
+                } else {
+                    // IFRAME MODU (GitHub'da çalışır!)
+                    const iframe = document.getElementById("oyunCercevesi");
+                    iframe.src = bulunanOyun.link;
+                    iframe.style.display = "block";
                 }
+            } else {
+                document.getElementById("oyunBaslik").innerText = "Oyun Bulunamadı veya Linki Yok!";
             }
+        });
 
-            if (bitti) {
-                oyunBittiMi = true;
-                let enYuksek = localStorage.getItem("snakeEnYuksek") || 0;
-                if (skor > enYuksek) {
-                    localStorage.setItem("snakeEnYuksek", skor);
+        // --- Yılan Oyunu Mantığı ---
+        function baslatYilanOyunu() {
+            const canvas = document.getElementById("oyunTahtasi");
+            const ctx = canvas.getContext("2d");
+            let hiz=7, tileCount=20, tileSize=canvas.width/tileCount-2;
+            let headX=10, headY=10, xHiz=0, yHiz=0, elmaX=5, elmaY=5;
+            let yilanParcalari=[], kuyruk=2, skor=0, yonDegisti=false;
+
+            document.addEventListener("keydown", tusBasildi);
+            setInterval(oyunuCiz, 1000/hiz);
+
+            function oyunuCiz() {
+                headX+=xHiz; headY+=yHiz; yonDegisti=false;
+                if(headX<0||headX>=tileCount||headY<0||headY>=tileCount) return reset();
+                for(let p of yilanParcalari) if(p.x===headX && p.y===headY && kuyruk>2) return reset();
+                
+                ctx.fillStyle="black"; ctx.fillRect(0,0,canvas.width,canvas.height);
+                ctx.fillStyle="lime";
+                for(let p of yilanParcalari) ctx.fillRect(p.x*tileCount, p.y*tileCount, tileSize, tileSize);
+                yilanParcalari.push({x:headX, y:headY});
+                while(yilanParcalari.length>kuyruk) yilanParcalari.shift();
+
+                if(elmaX===headX && elmaY===headY) {
+                    kuyruk++; skor+=10; 
+                    elmaX=Math.floor(Math.random()*tileCount); 
+                    elmaY=Math.floor(Math.random()*tileCount);
+                    document.getElementById("skor").innerText = skor;
                 }
-                document.getElementById("enYuksek").innerText = localStorage.getItem("snakeEnYuksek");
+                ctx.fillStyle="red"; ctx.fillRect(elmaX*tileCount, elmaY*tileCount, tileSize, tileSize);
             }
-            return bitti;
-        }
-
-        function tusBasildi(event) {
-            // Tuş kodları:
-            // Oklar: Sol(37), Yukarı(38), Sağ(39), Aşağı(40)
-            // WASD:  A(65), W(87), D(68), S(83)
-
-            // Sayfa kaymasını engelle
-            if([37, 38, 39, 40, 65, 87, 68, 83].indexOf(event.keyCode) > -1) {
-                event.preventDefault();
-            }
-
-            if(yonDegisti) return;
-
-            // Yukarı (Ok Yukarı veya W)
-            if (event.keyCode == 38 || event.keyCode == 87) {
-                if (yHiz == 1) return; 
-                yHiz = -1;
-                xHiz = 0;
-                yonDegisti = true;
-            }
-            // Aşağı (Ok Aşağı veya S)
-            if (event.keyCode == 40 || event.keyCode == 83) {
-                if (yHiz == -1) return;
-                yHiz = 1;
-                xHiz = 0;
-                yonDegisti = true;
-            }
-            // Sol (Ok Sol veya A)
-            if (event.keyCode == 37 || event.keyCode == 65) {
-                if (xHiz == 1) return;
-                yHiz = 0;
-                xHiz = -1;
-                yonDegisti = true;
-            }
-            // Sağ (Ok Sağ veya D)
-            if (event.keyCode == 39 || event.keyCode == 68) {
-                if (xHiz == -1) return;
-                yHiz = 0;
-                xHiz = 1;
-                yonDegisti = true;
+            function reset() { xHiz=0; yHiz=0; headX=10; headY=10; kuyruk=2; skor=0; yilanParcalari=[]; document.getElementById("skor").innerText=0; }
+            function tusBasildi(e) {
+                if([37,38,39,40,65,87,68,83].indexOf(e.keyCode)>-1) e.preventDefault();
+                if(yonDegisti) return;
+                if((e.keyCode==37||e.keyCode==65) && xHiz!=1) {xHiz=-1; yHiz=0; yonDegisti=true;}
+                if((e.keyCode==38||e.keyCode==87) && yHiz!=1) {xHiz=0; yHiz=-1; yonDegisti=true;}
+                if((e.keyCode==39||e.keyCode==68) && xHiz!=-1) {xHiz=1; yHiz=0; yonDegisti=true;}
+                if((e.keyCode==40||e.keyCode==83) && yHiz!=-1) {xHiz=0; yHiz=1; yonDegisti=true;}
             }
         }
-
-        function oyunuBaslat() {
-            location.reload(); 
-        }
-
-        class YilanParcasi {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-            }
-        }
-        
         document.getElementById("enYuksek").innerText = localStorage.getItem("snakeEnYuksek") || 0;
-
     </script>
 </body>
 </html>
