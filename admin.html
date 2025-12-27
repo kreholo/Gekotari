@@ -1,24 +1,128 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Yönetici Paneli - Gekkotari</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background-color: #1a1d20; color: #ddd; }
+        .sidebar { background-color: #212529; min-height: 100vh; border-right: 1px solid #495057; position: fixed; width: 250px; }
+        .content { margin-left: 250px; padding: 20px; }
+        .nav-link { color: #adb5bd; margin-bottom: 5px; cursor: pointer; border-radius: 5px; }
+        .nav-link:hover { background-color: #343a40; color: white; }
+        .nav-link.active { background-color: #50F589; color: #000; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar p-3">
+    <h3 class="text-success mb-4 px-2"><i class="fas fa-gamepad"></i> Panel</h3>
+    <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link active"><i class="fas fa-list me-2"></i> Oyun Yönetimi</a></li>
+        <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-arrow-left me-2"></i> Siteye Dön</a></li>
+        <li class="nav-item mt-5"><a class="nav-link text-danger" onclick="cikisYap()"><i class="fas fa-sign-out-alt me-2"></i> Çıkış</a></li>
+    </ul>
+</div>
+
+<div class="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Bulut Oyun Listesi (Firebase)</h2>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#oyunEkleModal">
+            <i class="fas fa-plus"></i> Yeni Oyun Ekle
+        </button>
+    </div>
+    <div class="card bg-dark border-secondary">
+        <div class="card-body p-0">
+            <table class="table table-dark table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Görsel</th>
+                        <th>Oyun Adı</th>
+                        <th>Tür</th>
+                        <th>Kaynak</th>
+                        <th class="text-end">İşlem</th>
+                    </tr>
+                </thead>
+                <tbody id="adminOyunListesi">
+                    <tr><td colspan="5" class="text-center text-muted">Veriler yükleniyor...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="oyunEkleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title">Yeni Oyun Ekle</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="oyunEkleForm">
+                    <div class="mb-3">
+                        <label class="form-label">Oyun Adı</label>
+                        <input type="text" id="yeniAd" class="form-control bg-secondary text-white border-0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Kategori</label>
+                        <select id="yeniKategori" class="form-select bg-secondary text-white border-0">
+                            <option value="Aksiyon">Aksiyon</option>
+                            <option value="Macera">Macera</option>
+                            <option value="Strateji">Strateji</option>
+                            <option value="RPG">RPG</option>
+                            <option value="Spor">Spor</option>
+                            <option value="Yarış">Yarış</option>
+                            <option value="Korku">Korku</option>
+                            <option value="Klasik">Klasik</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-warning">Oyun Linki (Embed URL)</label>
+                        <input type="text" id="yeniLink" class="form-control bg-secondary text-white border-0" placeholder="Link yoksa 'yerel' yazın">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Resim Anahtar Kelimesi</label>
+                        <input type="text" id="yeniResim" class="form-control bg-secondary text-white border-0" placeholder="Örn: Fireboy, Snake">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Etiket</label>
+                        <input type="text" id="yeniEtiket" class="form-control bg-secondary text-white border-0" value="Yeni">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" onclick="oyunKaydet()" class="btn btn-success">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script type="module">
-  // 1. Firebase Kütüphanelerini İnternetten Çekiyoruz (Tarayıcı için)
+  // 1. Firebase Kütüphaneleri
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  // 2. SENİN PROJE AYARLARIN (Attığın kodları buraya işledim)
+  // 2. SENİN ANAHTARLARIN (Ekledim)
   const firebaseConfig = {
-    apiKey: "AIzaSyDGprox9gi-aYNI6jeh0sj52C9M5zxEtzc",
-    authDomain: "gekkotari.firebaseapp.com",
-    projectId: "gekkotari",
-    storageBucket: "gekkotari.firebasestorage.app",
-    messagingSenderId: "313683103714",
-    appId: "1:313683103714:web:050b8947af000d26a833bb",
-    measurementId: "G-8K9Y0SQQ5C"
+      apiKey: "AIzaSyDGprox9gi-aYNI6jeh0sj52C9M5zxEtzc",
+      authDomain: "gekkotari.firebaseapp.com",
+      projectId: "gekkotari",
+      storageBucket: "gekkotari.firebasestorage.app",
+      messagingSenderId: "313683103714",
+      appId: "1:313683103714:web:050b8947af000d26a833bb",
+      measurementId: "G-8K9Y0SQQ5C"
   };
 
-  // 3. Veritabanını Başlatıyoruz
+  // 3. Başlatma
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // --- OYUN KAYDETME (Firebase'e Gönderir) ---
+  // --- OYUN KAYDETME ---
   window.oyunKaydet = async function() {
       const ad = document.getElementById("yeniAd").value;
       const tur = document.getElementById("yeniKategori").value;
@@ -26,71 +130,85 @@
       const etiket = document.getElementById("yeniEtiket").value;
       const link = document.getElementById("yeniLink").value || "yerel";
 
-      if(!ad) return alert("Lütfen oyun adını yaz!");
+      if(!ad) return alert("İsim yazmalısın!");
 
       try {
-          // 'oyunlar' adlı koleksiyona (tabloya) ekle
           await addDoc(collection(db, "oyunlar"), {
               ad: ad, tur: tur, resim: resim, etiket: etiket, link: link
           });
-          alert("BAŞARILI! Oyun Google veritabanına kaydedildi.");
+          alert("Oyun Google Buluta Kaydedildi!");
           
-          // Pencereyi kapat ve listeyi yenile
-          bootstrap.Modal.getInstance(document.getElementById('oyunEkleModal')).hide();
+          const modalEl = document.getElementById('oyunEkleModal');
+          const modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+          modalInstance.hide();
+
           listeyiYenile(); 
-      } catch (hata) {
-          console.error("Hata detayı:", hata);
-          alert("Bir hata oluştu: " + hata.message);
+      } catch (e) {
+          console.error("Hata:", e);
+          alert("Hata oluştu: " + e.message);
       }
   }
 
-  // --- OYUNLARI LİSTELEME (Google'dan Çeker) ---
+  // --- LİSTELEME ---
   window.listeyiYenile = async function() {
       const tablo = document.getElementById("adminOyunListesi");
-      tablo.innerHTML = "<tr><td colspan='5' class='text-center'>Veriler Google'dan yükleniyor...</td></tr>";
-
+      
       try {
-          const veriler = await getDocs(collection(db, "oyunlar"));
-          tablo.innerHTML = ""; // Temizle
+          const querySnapshot = await getDocs(collection(db, "oyunlar"));
+          tablo.innerHTML = ""; 
           
-          veriler.forEach((belge) => {
-              const oyun = belge.data();
-              const id = belge.id; // Silmek için lazım olan kimlik
-              
-              let linkDurumu = oyun.link === "yerel" ? "<span class='badge bg-info'>Yerel</span>" : "<span class='badge bg-warning text-dark'>Web</span>";
+          if(querySnapshot.empty) {
+              tablo.innerHTML = "<tr><td colspan='5' class='text-center'>Henüz oyun eklenmemiş.</td></tr>";
+              return;
+          }
+
+          querySnapshot.forEach((doc) => {
+              const oyun = doc.data();
+              const id = doc.id; 
+              let linkGoster = oyun.link === "yerel" ? "<span class='badge bg-info'>Yerel</span>" : "<span class='badge bg-warning text-dark'>Web</span>";
 
               tablo.innerHTML += `
                   <tr>
                       <td><img src="https://via.placeholder.com/40x40/2c3e50/50F589?text=${oyun.resim}" class="rounded"></td>
                       <td>${oyun.ad}</td>
                       <td><span class="badge bg-secondary">${oyun.tur}</span></td>
-                      <td>${linkDurumu}</td>
+                      <td>${linkGoster}</td>
                       <td class="text-end">
                           <button onclick="oyunSil('${id}')" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i> Sil</button>
                       </td>
                   </tr>`;
           });
-      } catch (hata) {
-          tablo.innerHTML = `<tr><td colspan='5' class='text-danger'>Veri çekilemedi: ${hata.message}</td></tr>`;
+      } catch(e) {
+          console.error(e);
+          tablo.innerHTML = "<tr><td colspan='5' class='text-danger'>Veri çekilemedi. Konsola bak.</td></tr>";
       }
   }
 
-  // --- OYUN SİLME ---
+  // --- SİLME ---
   window.oyunSil = async function(id) {
-      if(confirm("Bu oyunu kalıcı olarak silmek istiyor musun?")) {
+      if(confirm("Silmek istediğine emin misin?")) {
           await deleteDoc(doc(db, "oyunlar", id));
           listeyiYenile();
       }
   }
 
-  // Sayfa açıldığında
-  document.addEventListener('DOMContentLoaded', function() {
-      // Giriş kontrolü (Admin mi?)
-      var aktif = JSON.parse(localStorage.getItem("aktifOturum"));
+  // --- ÇIKIŞ ---
+  window.cikisYap = function() {
+      localStorage.removeItem("aktifOturum");
+      window.location.href = "index.html";
+  }
+
+  // Sayfa Açılınca Çalıştır
+  document.addEventListener('DOMContentLoaded', () => {
+      // Giriş Kontrolü
+      const aktif = JSON.parse(localStorage.getItem("aktifOturum"));
       if (!aktif || aktif.email !== "admin@gekkotari.com") {
-           window.location.href = "index.html";
-           return;
+          window.location.href = "index.html";
+          return;
       }
       listeyiYenile();
   });
 </script>
+
+</body>
+</html>
