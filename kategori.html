@@ -39,21 +39,25 @@
     </header>
 
     <main class="container my-5">
-        <h2 id="kategoriBaslik" class="mb-4 text-warning border-bottom border-secondary pb-2">Oyunlar</h2>
-        <div class="row" id="oyunListesiArea"></div>
+        <h2 id="kategoriBaslik" class="mb-4 text-warning border-bottom border-secondary pb-2">Yükleniyor...</h2>
+        <div class="row" id="oyunListesiArea">
+            <div class="col-12 text-center mt-5">
+                <div class="spinner-border text-success" role="status"></div>
+                <p class="text-muted mt-2">Oyunlar Google Buluttan Çekiliyor...</p>
+            </div>
+        </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        function kutuphaneyeEkle(ad, resim, tur) {
+        window.kutuphaneyeEkle = function(ad, resim, tur) {
             var aktifOturumStr = localStorage.getItem("aktifOturum");
             if (!aktifOturumStr) {
                 alert("Oyun eklemek için önce giriş yapmalısın!");
                 window.location.href = "giris.html";
                 return;
             }
-
             var aktifKullanici = JSON.parse(aktifOturumStr);
             var ozelAnahtar = "kutuphane_" + aktifKullanici.kadi;
             var kutuphane = JSON.parse(localStorage.getItem(ozelAnahtar)) || [];
@@ -62,64 +66,81 @@
                 alert("Bu oyun zaten kütüphanende mevcut!");
                 return;
             }
-
             kutuphane.push({ ad: ad, resim: resim, tur: tur });
             localStorage.setItem(ozelAnahtar, JSON.stringify(kutuphane));
             alert("Oyun kütüphanenize eklendi");
         }
+    </script>
 
-        document.addEventListener('DOMContentLoaded', function() {
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // SENİN FIREBASE ANAHTARLARIN
+        const firebaseConfig = {
+            apiKey: "AIzaSyDGprox9gi-aYNI6jeh0sj52C9M5zxEtzc",
+            authDomain: "gekkotari.firebaseapp.com",
+            projectId: "gekkotari",
+            storageBucket: "gekkotari.firebasestorage.app",
+            messagingSenderId: "313683103714",
+            appId: "1:313683103714:web:050b8947af000d26a833bb",
+            measurementId: "G-8K9Y0SQQ5C"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.addEventListener('DOMContentLoaded', async function() {
             const urlParams = new URLSearchParams(window.location.search);
             const secilenTur = urlParams.get('tur');
             const baslik = document.getElementById('kategoriBaslik');
             const oyunAlani = document.getElementById('oyunListesiArea');
 
-            // --- OTOMATİK OYUN YÜKLEME (GitHub için) ---
-            if (!localStorage.getItem("tumOyunlar")) {
-                var varsayilanOyunlar = [
-                    { 
-                        ad: "Ateş ve Su", 
-                        tur: "Macera", 
-                        resim: "Fireboy", 
-                        etiket: "Popüler", 
-                        link: "https://html5.gamedistribution.com/5d56d77335604473873497d5d2822d65/" 
-                    },
-                    { 
-                        ad: "Yılan Oyunu", 
-                        tur: "Klasik", 
-                        resim: "Snake", 
-                        etiket: "Efsane", 
-                        link: "yerel" 
-                    }
-                ];
-                localStorage.setItem("tumOyunlar", JSON.stringify(varsayilanOyunlar));
-            }
-
-            let tumOyunlar = JSON.parse(localStorage.getItem("tumOyunlar"));
-
+            // 1. Kategoriyi Başlığa Yaz
             if (secilenTur) {
                 baslik.innerHTML = `<i class="fas fa-gamepad text-success"></i> ${secilenTur} Oyunları`;
-                document.title = `${secilenTur} Oyunları`;
+                document.title = `${secilenTur} Oyunları - Gekkotari`;
+            } else {
+                baslik.innerText = "Tüm Oyunlar";
+            }
 
-                const filtrelenmisOyunlar = tumOyunlar.filter(oyun => oyun.tur === secilenTur);
+            try {
+                // 2. Google'dan (Firestore) Tüm Oyunları Çek
+                const querySnapshot = await getDocs(collection(db, "oyunlar"));
+                let tumOyunlar = [];
+                
+                querySnapshot.forEach((doc) => {
+                    tumOyunlar.push(doc.data());
+                });
 
+                // 3. Kategoriye Göre Filtrele
+                let filtrelenmisOyunlar = tumOyunlar;
+                if(secilenTur) {
+                    filtrelenmisOyunlar = tumOyunlar.filter(oyun => oyun.tur === secilenTur);
+                }
+
+                // 4. Ekrana Bas
                 if (filtrelenmisOyunlar.length > 0) {
                     let htmlKodlari = "";
                     filtrelenmisOyunlar.forEach(oyun => {
                         const guvenliAd = oyun.ad.replace(/'/g, "\\'");
-                        // Linkleme mantığı: ?ad=OyunAdi
+                        // Linkleme: İsmi gönderiyoruz, oyun.html veritabanından bulacak
                         let oynaLink = `oyun.html?ad=${encodeURIComponent(oyun.ad)}`;
+
+                        // Eğer resim yoksa varsayılan placeholder kullan
+                        let resimUrl = oyun.resim.startsWith("http") ? oyun.resim : `https://via.placeholder.com/300x200/2c3e50/50F589?text=${oyun.resim}`;
 
                         htmlKodlari += `
                             <div class="col-6 col-md-3 mb-4">
                                 <div class="game-card h-100">
-                                    <img src="https://via.placeholder.com/300x200/2c3e50/50F589?text=${oyun.resim}" class="game-thumb">
+                                    <img src="${resimUrl}" class="game-thumb">
                                     <div class="game-info">
                                         <h5 class="game-title text-white">${oyun.ad}</h5>
                                         <span class="badge bg-secondary mt-1">${oyun.etiket || 'Oyun'}</span>
+                                        
                                         <div class="d-grid gap-2 mt-2">
                                             <a href="${oynaLink}" class="btn btn-sm btn-success"><i class="fas fa-play"></i> Oyna</a>
-                                            <button onclick="kutuphaneyeEkle('${guvenliAd}', '${oyun.resim}', '${secilenTur}')" 
+                                            <button onclick="kutuphaneyeEkle('${guvenliAd}', '${oyun.resim}', '${oyun.tur}')" 
                                                     class="btn btn-sm btn-outline-light">
                                                 <i class="fas fa-plus"></i> Ekle
                                             </button>
@@ -131,11 +152,17 @@
                     });
                     oyunAlani.innerHTML = htmlKodlari;
                 } else {
-                     oyunAlani.innerHTML = `<div class="col-12 text-center text-muted mt-5"><h4><i class="fas fa-search"></i> Bu kategoride henüz oyun eklenmemiş.</h4></div>`;
+                    oyunAlani.innerHTML = `
+                        <div class="col-12 text-center text-muted mt-5">
+                            <h4><i class="fas fa-search"></i> Bu kategoride oyun bulunamadı.</h4>
+                            <p>Admin panelinden ekleyebilirsiniz.</p>
+                        </div>
+                    `;
                 }
-            } else {
-                baslik.innerText = "Kategori Seçiniz";
-                oyunAlani.innerHTML = `<div class="col-12 text-center text-muted mt-5"><h4><i class="fas fa-search"></i> Lütfen yukarıdan bir kategori seçin.</h4></div>`;
+
+            } catch (hata) {
+                console.error("Hata:", hata);
+                oyunAlani.innerHTML = `<div class="alert alert-danger">Oyunlar yüklenirken hata oluştu: ${hata.message}</div>`;
             }
         });
     </script>
