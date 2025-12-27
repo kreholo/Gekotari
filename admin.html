@@ -1,204 +1,96 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <title>Yönetici Paneli - Gekkotari</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <style>
-        body { background-color: #1a1d20; color: #ddd; }
-        .sidebar { background-color: #212529; min-height: 100vh; border-right: 1px solid #495057; position: fixed; width: 250px; }
-        .content { margin-left: 250px; padding: 20px; }
-        .nav-link { color: #adb5bd; margin-bottom: 5px; cursor: pointer; border-radius: 5px; }
-        .nav-link:hover { background-color: #343a40; color: white; }
-        .nav-link.active { background-color: #50F589; color: #000; font-weight: bold; }
-    </style>
-</head>
-<body>
+<script type="module">
+  // 1. Firebase Kütüphanelerini İnternetten Çekiyoruz (Tarayıcı için)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-<div class="sidebar p-3">
-    <h3 class="text-success mb-4 px-2"><i class="fas fa-gamepad"></i> Panel</h3>
-    <ul class="nav flex-column">
-        <li class="nav-item"><a class="nav-link active"><i class="fas fa-list me-2"></i> Oyun Yönetimi</a></li>
-        <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-arrow-left me-2"></i> Siteye Dön</a></li>
-        <li class="nav-item mt-5"><a class="nav-link text-danger" onclick="cikisYap()"><i class="fas fa-sign-out-alt me-2"></i> Çıkış</a></li>
-    </ul>
-</div>
+  // 2. SENİN PROJE AYARLARIN (Attığın kodları buraya işledim)
+  const firebaseConfig = {
+    apiKey: "AIzaSyDGprox9gi-aYNI6jeh0sj52C9M5zxEtzc",
+    authDomain: "gekkotari.firebaseapp.com",
+    projectId: "gekkotari",
+    storageBucket: "gekkotari.firebasestorage.app",
+    messagingSenderId: "313683103714",
+    appId: "1:313683103714:web:050b8947af000d26a833bb",
+    measurementId: "G-8K9Y0SQQ5C"
+  };
 
-<div class="content">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Oyun Listesi</h2>
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#oyunEkleModal">
-            <i class="fas fa-plus"></i> Yeni Oyun Ekle
-        </button>
-    </div>
-    <div class="card bg-dark border-secondary">
-        <div class="card-body p-0">
-            <table class="table table-dark table-hover mb-0">
-                <thead>
-                    <tr>
-                        <th>Görsel</th>
-                        <th>Oyun Adı</th>
-                        <th>Tür</th>
-                        <th>Kaynak</th>
-                        <th class="text-end">İşlem</th>
-                    </tr>
-                </thead>
-                <tbody id="adminOyunListesi"></tbody>
-            </table>
-        </div>
-    </div>
-</div>
+  // 3. Veritabanını Başlatıyoruz
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-<div class="modal fade" id="oyunEkleModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content bg-dark text-white border-secondary">
-            <div class="modal-header border-secondary">
-                <h5 class="modal-title">Yeni Oyun Ekle</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="oyunEkleForm">
-                    <div class="mb-3">
-                        <label class="form-label">Oyun Adı</label>
-                        <input type="text" id="yeniAd" class="form-control bg-secondary text-white border-0" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Kategori</label>
-                        <select id="yeniKategori" class="form-select bg-secondary text-white border-0">
-                            <option value="Aksiyon">Aksiyon</option>
-                            <option value="Macera">Macera</option>
-                            <option value="Strateji">Strateji</option>
-                            <option value="RPG">RPG</option>
-                            <option value="Spor">Spor</option>
-                            <option value="Yarış">Yarış</option>
-                            <option value="Korku">Korku</option>
-                            <option value="Klasik">Klasik</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-warning">Oyun Linki (Embed URL)</label>
-                        <input type="text" id="yeniLink" class="form-control bg-secondary text-white border-0" placeholder="https://... veya 'yerel'">
-                        <div class="form-text text-muted">
-                            Yılan oyunu için: <b>yerel</b><br>
-                            Dışarıdan oyun için link yapıştır.
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Resim Anahtar Kelimesi</label>
-                        <input type="text" id="yeniResim" class="form-control bg-secondary text-white border-0" placeholder="Örn: Fireboy, Snake, Car">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Etiket</label>
-                        <input type="text" id="yeniEtiket" class="form-control bg-secondary text-white border-0" value="Yeni">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer border-secondary">
-                <button type="button" onclick="oyunKaydet()" class="btn btn-success">Kaydet</button>
-            </div>
-        </div>
-    </div>
-</div>
+  // --- OYUN KAYDETME (Firebase'e Gönderir) ---
+  window.oyunKaydet = async function() {
+      const ad = document.getElementById("yeniAd").value;
+      const tur = document.getElementById("yeniKategori").value;
+      const resim = document.getElementById("yeniResim").value;
+      const etiket = document.getElementById("yeniEtiket").value;
+      const link = document.getElementById("yeniLink").value || "yerel";
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+      if(!ad) return alert("Lütfen oyun adını yaz!");
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        girisKontrol();
-        verileriYukle();
-        oyunTablosunuCiz();
-    });
+      try {
+          // 'oyunlar' adlı koleksiyona (tabloya) ekle
+          await addDoc(collection(db, "oyunlar"), {
+              ad: ad, tur: tur, resim: resim, etiket: etiket, link: link
+          });
+          alert("BAŞARILI! Oyun Google veritabanına kaydedildi.");
+          
+          // Pencereyi kapat ve listeyi yenile
+          bootstrap.Modal.getInstance(document.getElementById('oyunEkleModal')).hide();
+          listeyiYenile(); 
+      } catch (hata) {
+          console.error("Hata detayı:", hata);
+          alert("Bir hata oluştu: " + hata.message);
+      }
+  }
 
-    function girisKontrol() {
-        var aktif = JSON.parse(localStorage.getItem("aktifOturum"));
-        if (!aktif || aktif.email !== "admin@gekkotari.com") {
-            // Eğer giriş yoksa indexe at
-             window.location.href = "index.html";
-        }
-    }
+  // --- OYUNLARI LİSTELEME (Google'dan Çeker) ---
+  window.listeyiYenile = async function() {
+      const tablo = document.getElementById("adminOyunListesi");
+      tablo.innerHTML = "<tr><td colspan='5' class='text-center'>Veriler Google'dan yükleniyor...</td></tr>";
 
-    // --- BURASI ÇOK ÖNEMLİ: GITHUB'DA ÇALIŞACAK LİNKLERİ BURAYA GÖMDÜM ---
-    function verileriYukle() {
-        if (!localStorage.getItem("tumOyunlar")) {
-            var varsayilanOyunlar = [
-                { 
-                    ad: "Ateş ve Su", 
-                    tur: "Macera", 
-                    resim: "Fireboy", 
-                    etiket: "Popüler", 
-                    // Bu link GitHub'da çalışır!
-                    link: "https://html5.gamedistribution.com/5d56d77335604473873497d5d2822d65/" 
-                },
-                { 
-                    ad: "Yılan Oyunu", 
-                    tur: "Klasik", 
-                    resim: "Snake", 
-                    etiket: "Efsane", 
-                    link: "yerel" 
-                }
-            ];
-            localStorage.setItem("tumOyunlar", JSON.stringify(varsayilanOyunlar));
-        }
-    }
+      try {
+          const veriler = await getDocs(collection(db, "oyunlar"));
+          tablo.innerHTML = ""; // Temizle
+          
+          veriler.forEach((belge) => {
+              const oyun = belge.data();
+              const id = belge.id; // Silmek için lazım olan kimlik
+              
+              let linkDurumu = oyun.link === "yerel" ? "<span class='badge bg-info'>Yerel</span>" : "<span class='badge bg-warning text-dark'>Web</span>";
 
-    function oyunTablosunuCiz() {
-        var oyunlar = JSON.parse(localStorage.getItem("tumOyunlar")) || [];
-        var tablo = document.getElementById("adminOyunListesi");
-        tablo.innerHTML = "";
-        
-        oyunlar.forEach((oyun, index) => {
-            var linkGoster = oyun.link === "yerel" ? "<span class='badge bg-info'>Yerel</span>" : "<span class='badge bg-warning text-dark'>Web</span>";
+              tablo.innerHTML += `
+                  <tr>
+                      <td><img src="https://via.placeholder.com/40x40/2c3e50/50F589?text=${oyun.resim}" class="rounded"></td>
+                      <td>${oyun.ad}</td>
+                      <td><span class="badge bg-secondary">${oyun.tur}</span></td>
+                      <td>${linkDurumu}</td>
+                      <td class="text-end">
+                          <button onclick="oyunSil('${id}')" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i> Sil</button>
+                      </td>
+                  </tr>`;
+          });
+      } catch (hata) {
+          tablo.innerHTML = `<tr><td colspan='5' class='text-danger'>Veri çekilemedi: ${hata.message}</td></tr>`;
+      }
+  }
 
-            tablo.innerHTML += `
-                <tr>
-                    <td><img src="https://via.placeholder.com/40x40/2c3e50/50F589?text=${oyun.resim}" class="rounded"></td>
-                    <td>${oyun.ad}</td>
-                    <td><span class="badge bg-secondary">${oyun.tur}</span></td>
-                    <td>${linkGoster}</td>
-                    <td class="text-end">
-                        <button onclick="oyunSil(${index})" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>`;
-        });
-    }
+  // --- OYUN SİLME ---
+  window.oyunSil = async function(id) {
+      if(confirm("Bu oyunu kalıcı olarak silmek istiyor musun?")) {
+          await deleteDoc(doc(db, "oyunlar", id));
+          listeyiYenile();
+      }
+  }
 
-    function oyunKaydet() {
-        var ad = document.getElementById("yeniAd").value;
-        var tur = document.getElementById("yeniKategori").value;
-        var resim = document.getElementById("yeniResim").value;
-        var etiket = document.getElementById("yeniEtiket").value;
-        var link = document.getElementById("yeniLink").value || "yerel"; 
-
-        if(!ad) return alert("İsim yazmalısın");
-
-        var oyunlar = JSON.parse(localStorage.getItem("tumOyunlar")) || [];
-        oyunlar.push({ ad, tur, resim, etiket, link });
-        localStorage.setItem("tumOyunlar", JSON.stringify(oyunlar));
-        
-        // Modalı kapat
-        var modalEl = document.getElementById('oyunEkleModal');
-        var modal = bootstrap.Modal.getInstance(modalEl);
-        modal.hide();
-        
-        oyunTablosunuCiz();
-        alert("Oyun Eklendi!");
-    }
-
-    function oyunSil(index) {
-        if(confirm("Silmek istediğine emin misin?")) {
-            var oyunlar = JSON.parse(localStorage.getItem("tumOyunlar"));
-            oyunlar.splice(index, 1);
-            localStorage.setItem("tumOyunlar", JSON.stringify(oyunlar));
-            oyunTablosunuCiz();
-        }
-    }
-
-    function cikisYap() {
-        localStorage.removeItem("aktifOturum");
-        window.location.href = "index.html";
-    }
+  // Sayfa açıldığında
+  document.addEventListener('DOMContentLoaded', function() {
+      // Giriş kontrolü (Admin mi?)
+      var aktif = JSON.parse(localStorage.getItem("aktifOturum"));
+      if (!aktif || aktif.email !== "admin@gekkotari.com") {
+           window.location.href = "index.html";
+           return;
+      }
+      listeyiYenile();
+  });
 </script>
-</body>
-</html>
