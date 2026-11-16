@@ -4,14 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Gekkotari oyun arşivi: 2 kişilik, Flash efsaneler, aksiyon, strateji, yarış ve bulmaca oyunlarını filtrele ve ücretsiz oyna.">
+    <meta name="keywords" content="tüm flash oyunlar, 2 kişilik oyunlar, html5 oyunlar, aksiyon, strateji, rpg, bulmaca, yarış oyunları, gekkotari">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" id="canonicalLink" href="https://gekotari.vercel.app/kategori.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Gekkotari">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:title" content="Tüm Oyunlar - Gekkotari">
+    <meta property="og:description" content="200+ doğrulanmış Flash ve HTML5 oyununu filtrele ve hemen oyna!">
     <meta name="theme-color" content="#2ee57a">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/svg+xml" href="assets/icon-192.svg">
+    <link rel="preconnect" href="https://rltpodnczpcwnefovitz.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://img.gamedistribution.com" crossorigin>
     <title>Tüm Oyunlar - Gekkotari</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=10">
 </head>
 <body>
 
@@ -56,9 +66,10 @@
 <div id="siteFooterMount"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="assets/js/ads-config.js"></script>
-<script src="assets/js/games-data.js"></script>
-<script src="assets/js/common.js"></script>
+<script src="assets/js/ads-config.js?v=9"></script>
+<script src="assets/js/supabase-sync.js?v=9"></script>
+<script src="assets/js/games-data.js?v=12"></script>
+<script src="assets/js/common.js?v=9"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     renderHeader('kategori.html');
@@ -106,18 +117,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             if (arama) {
-                const q = arama.toLowerCase();
-                const inTitle = (g.oyun_adi || '').toLowerCase().includes(q);
-                const inDesc = (g.aciklama || '').toLowerCase().includes(q);
-                const inCat = (g.kategori_adi || '').toLowerCase().includes(q);
-                if (!inTitle && !inDesc && !inCat) return false;
+                const q = normalizeTr(arama.trim());
+                const hay = normalizeTr(
+                    [g.oyun_adi, g.aciklama, g.kategori_adi, g.etiket, g.seri, g.anahtar_kelimeler].filter(Boolean).join(' ')
+                );
+                const tokens = q.split(/\s+/).filter(Boolean);
+                if (!tokens.every(tok => hay.includes(tok))) return false;
             }
             return true;
         });
 
         filtered.sort((a, b) => {
-            if (siralama === 'populer') return (parseInt(b.oynama_sayisi, 10) || 0) - (parseInt(a.oynama_sayisi, 10) || 0);
-            if (siralama === 'puan') return (parseFloat(b.puan) || 0) - (parseFloat(a.puan) || 0);
+            if (siralama === 'populer') return getGameLiveStat(b).plays - getGameLiveStat(a).plays || parseInt(b.id, 10) - parseInt(a.id, 10);
+            if (siralama === 'puan') return getGameLiveStat(b).rating - getGameLiveStat(a).rating || parseInt(b.id, 10) - parseInt(a.id, 10);
             if (siralama === 'isim') return (a.oyun_adi || '').localeCompare(b.oyun_adi || '', 'tr');
             return parseInt(b.id, 10) - parseInt(a.id, 10);
         });
@@ -131,6 +143,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <small class="text-muted fs-6 ms-2">(${filtered.length} oyun)</small>
         `;
         document.title = titleText + ' - Gekkotari';
+        const canon = document.getElementById('canonicalLink');
+        if (canon) canon.href = window.location.origin + '/' + buildQuery();
+        const ogT = document.querySelector('meta[property="og:title"]');
+        if (ogT) ogT.content = document.title;
 
         // Mod çipleri
         const modes = [
@@ -215,6 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     updateView();
+    syncPortalLiveStats(() => updateView());
 });
 </script>
 </body>

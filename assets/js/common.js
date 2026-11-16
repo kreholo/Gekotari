@@ -1,17 +1,18 @@
 /**
- * GEKKOTARİ - ORTAK SİSTEM VE VERİ YÖNETİMİ (Common JS v6)
- * 93 Doğrulanmış Oyun + Son Oynananlar + Günün Oyunu + Reklam Slotları + Geri Bildirim
+ * GEKKOTARİ - ORTAK SİSTEM VE VERİ YÖNETİMİ (Common JS v8)
+ * Hafif Bellek Veri Okuma + Supabase Canlı Senkronizasyon + Tek-Sekme Semantik Kartlar
  */
 
-const DATA_VERSION = 'gekkotari_v7_2026_11';
+const DATA_VERSION = 'gekkotari_v9_2026_11';
 
 function initGekkotariStore() {
     const currentVer = localStorage.getItem('gekkotari_version');
-    if (currentVer !== DATA_VERSION && window.GEKKOTARI_DEFAULT_DATA) {
-        localStorage.setItem('gekkotari_games', JSON.stringify(window.GEKKOTARI_DEFAULT_DATA.oyunlar));
-        localStorage.setItem('gekkotari_categories', JSON.stringify(window.GEKKOTARI_DEFAULT_DATA.kategoriler));
-        localStorage.setItem('gekkotari_sliders', JSON.stringify(window.GEKKOTARI_DEFAULT_DATA.slider));
-        localStorage.setItem('gekkotari_pages', JSON.stringify(window.GEKKOTARI_DEFAULT_DATA.sayfalar));
+    if (currentVer !== DATA_VERSION) {
+        // Eski şişkin localStorage kopyalarını temizle (RAM'deki GEKKOTARI_DEFAULT_DATA doğrudan kullanılır)
+        localStorage.removeItem('gekkotari_games');
+        localStorage.removeItem('gekkotari_categories');
+        localStorage.removeItem('gekkotari_sliders');
+        localStorage.removeItem('gekkotari_pages');
         localStorage.setItem('gekkotari_version', DATA_VERSION);
     }
 
@@ -35,37 +36,27 @@ initGekkotariStore();
 
 function getGames() {
     try {
-        const raw = localStorage.getItem('gekkotari_games');
-        if (raw) return JSON.parse(raw);
+        const customRaw = localStorage.getItem('gekkotari_custom_games');
+        if (customRaw) return JSON.parse(customRaw);
     } catch (e) {}
     return (window.GEKKOTARI_DEFAULT_DATA && window.GEKKOTARI_DEFAULT_DATA.oyunlar) || [];
 }
 
 function saveGames(games) {
-    localStorage.setItem('gekkotari_games', JSON.stringify(games));
+    try {
+        localStorage.setItem('gekkotari_custom_games', JSON.stringify(games));
+    } catch (e) {}
 }
 
 function getCategories() {
-    try {
-        const raw = localStorage.getItem('gekkotari_categories');
-        if (raw) return JSON.parse(raw);
-    } catch (e) {}
     return (window.GEKKOTARI_DEFAULT_DATA && window.GEKKOTARI_DEFAULT_DATA.kategoriler) || [];
 }
 
 function getSliders() {
-    try {
-        const raw = localStorage.getItem('gekkotari_sliders');
-        if (raw) return JSON.parse(raw);
-    } catch (e) {}
     return (window.GEKKOTARI_DEFAULT_DATA && window.GEKKOTARI_DEFAULT_DATA.slider) || [];
 }
 
 function getPages() {
-    try {
-        const raw = localStorage.getItem('gekkotari_pages');
-        if (raw) return JSON.parse(raw);
-    } catch (e) {}
     return (window.GEKKOTARI_DEFAULT_DATA && window.GEKKOTARI_DEFAULT_DATA.sayfalar) || [];
 }
 
@@ -98,7 +89,22 @@ function logoutUser() {
     showToast('info', 'Başarıyla çıkış yapıldı.');
     setTimeout(() => {
         window.location.href = 'index.html';
-    }, 500);
+    }, 450);
+}
+
+function normalizeTr(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/İ/g, 'i')
+        .replace(/I/g, 'i')
+        .toLowerCase()
+        .replace(/ı/g, 'i')
+        .replace(/ğ/g, 'g')
+        .replace(/ü/g, 'u')
+        .replace(/ş/g, 's')
+        .replace(/ö/g, 'o')
+        .replace(/ç/g, 'c')
+        .replace(/['’`]/g, '');
 }
 
 function escapeHtml(str) {
@@ -144,6 +150,31 @@ function showToast(tip, mesaj) {
     setTimeout(() => {
         if (wrapper && wrapper.parentNode) wrapper.remove();
     }, 3500);
+}
+
+// --- SUPABASE CANLI İSTATİSTİK SENKRONİZASYONU ---
+async function syncPortalLiveStats(onStatsReady) {
+    if (!window.GekkotariDB) return null;
+    try {
+        const stats = await window.GekkotariDB.fetchAllGameStats();
+        window.GEKKOTARI_LIVE_STATS = stats;
+        window.GekkotariDB.applyLiveStatsToDom(stats);
+        if (typeof onStatsReady === 'function') onStatsReady(stats);
+        return stats;
+    } catch (e) {
+        return null;
+    }
+}
+
+function getGameLiveStat(oyun) {
+    const map = window.GEKKOTARI_LIVE_STATS || {};
+    const live = map[String(oyun.id)];
+    if (live) return live;
+    return {
+        plays: parseInt(oyun.oynama_sayisi || 0, 10) || 0,
+        rating: Number(oyun.puan || 0) || 0,
+        ratingCount: parseInt(oyun.puan_sayisi || 0, 10) || 0
+    };
 }
 
 // --- SON OYNANANLAR & GÜNÜN OYUNU ---
@@ -293,6 +324,10 @@ function ensureFeedbackModal() {
             localStorage.setItem('gekkotari_feedback', JSON.stringify(list.slice(0, 100)));
         } catch (err) {}
 
+        if (window.GekkotariDB) {
+            try { await window.GekkotariDB.submitRemoteFeedback(entry); } catch (err) {}
+        }
+
         const fbCfg = window.GEKKOTARI_FEEDBACK_CONFIG || {};
         if (fbCfg.discordWebhookUrl) {
             try {
@@ -323,7 +358,7 @@ function ensureFeedbackModal() {
 
         bootstrap.Modal.getInstance(document.getElementById('gekkotariFeedbackModal')).hide();
         document.getElementById('gekkotariFeedbackForm').reset();
-        showToast('success', 'Geri bildirimin kaydedildi, teşekkürler!');
+        showToast('success', 'Geri bildirimin veritabanına kaydedildi, teşekkürler!');
     });
 }
 
@@ -341,6 +376,7 @@ function openFeedbackModal(defaultTur = 'Oyun İste', defaultKonu = '') {
 
 // --- İKON & KART YARDIMCILARI ---
 function getGameIcon(oyun) {
+    if (oyun.ikon && parseInt(oyun.id, 10) >= 100) return oyun.ikon;
     const name = (oyun.oyun_adi || '').toLowerCase();
     if (name.includes('ateş ve su') || name.includes('fireboy')) return 'fas fa-fire-alt';
     if (name.includes('savaş') || name.includes('war') || name.includes('strike') || name.includes('knights') || name.includes('tank')) return 'fas fa-shield-alt';
@@ -372,9 +408,11 @@ function renderGameCard(oyun, colClass = 'col') {
     const gorsel = oyun.gorsel || 'default_game.png';
     const renk = oyun.renk || getCategoryColor(oyun.kategori_adi);
     const ikon = getGameIcon(oyun);
-    const hasImage = gorsel && gorsel !== 'default_game.png' && gorsel.startsWith('http');
+    const hasImage = gorsel && gorsel !== 'default_game.png' && (gorsel.startsWith('http') || gorsel.startsWith('assets/'));
     const isSwf = (oyun.oyun_linki || '').toLowerCase().endsWith('.swf');
     const is2P = Array.isArray(oyun.modlar) && oyun.modlar.includes('2 Kişilik');
+    const stat = getGameLiveStat(oyun);
+    const gameUrl = `oyun.html?id=${oyun.id}`;
 
     let badgeColor = 'info text-dark';
     if (is2P || oyun.etiket === '2 Kişilik') badgeColor = 'success';
@@ -396,7 +434,7 @@ function renderGameCard(oyun, colClass = 'col') {
                    <span class="fw-bold text-white small px-1">${escapeHtml(oyun.oyun_adi)}</span>
                </div>
            </div>`
-        : `<div class="d-flex flex-column align-items-center justify-content-center text-center p-3"
+        : `<div class="d-flex flex-column align-items-center justify-content:center text-center p-3"
                 style="width:100%; height:100%; background:radial-gradient(circle at 30% 25%, ${renk}bb, #0d1512 85%);">
                <div style="width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:6px;border:1px solid rgba(255,255,255,0.18);">
                    <i class="${escapeHtml(ikon)} fa-lg text-white"></i>
@@ -406,21 +444,23 @@ function renderGameCard(oyun, colClass = 'col') {
 
     return `
     <article class="${colClass}">
-        <div class="game-card h-100 d-flex flex-column" onclick="window.location.href='oyun.html?id=${oyun.id}'">
-            <div class="game-thumb-wrapper">
+        <div class="game-card h-100 d-flex flex-column">
+            <a href="${gameUrl}" class="d-block game-thumb-wrapper text-decoration-none">
                 ${posterHtml}
                 ${(is2P || oyun.etiket) ? `<span class="game-badge bg-${badgeColor}">${escapeHtml(is2P ? '2 Kişilik' : oyun.etiket)}</span>` : ''}
-                ${Number(oyun.puan || 0) > 0 ? `<span class="game-rating"><i class="fas fa-star"></i> ${Number(oyun.puan).toFixed(1)}</span>` : ''}
+                <span class="game-rating" data-game-rating="${oyun.id}" style="${stat.rating > 0 ? '' : 'display:none;'}"><i class="fas fa-star"></i> ${stat.rating > 0 ? stat.rating.toFixed(1) : ''}</span>
                 ${typePill}
-            </div>
+            </a>
             <div class="game-info d-flex flex-column flex-grow-1">
-                <h4 class="game-title" title="${escapeHtml(oyun.oyun_adi)}">${escapeHtml(oyun.oyun_adi)}</h4>
+                <a href="${gameUrl}" class="text-decoration-none">
+                    <h4 class="game-title" title="${escapeHtml(oyun.oyun_adi)}">${escapeHtml(oyun.oyun_adi)}</h4>
+                </a>
                 <div class="game-stats mb-2">
                     <span class="game-category"><i class="${escapeHtml(oyun.ikon || 'fas fa-gamepad')} me-1"></i>${escapeHtml(oyun.kategori_adi)}</span>
-                    <span><i class="fas fa-play me-1"></i>${formatNumber(oyun.oynama_sayisi)}</span>
+                    <span><i class="fas fa-play me-1"></i><span data-game-plays="${oyun.id}">${formatNumber(stat.plays)}</span></span>
                 </div>
-                <div class="d-flex gap-1 mt-auto" onclick="event.stopPropagation();">
-                    <a href="oyun.html?id=${oyun.id}" class="btn btn-play flex-grow-1 text-center">
+                <div class="d-flex gap-1 mt-auto">
+                    <a href="${gameUrl}" class="btn btn-play flex-grow-1 text-center">
                         <i class="fas fa-play me-1"></i>Oyna
                     </a>
                     <button type="button" onclick="kutuphaneyeEkle(${oyun.id})" class="btn btn-add-library-icon" title="Kütüphaneye Ekle">
@@ -554,7 +594,7 @@ function renderHeader(activePage = 'index.html') {
                 <div class="col-lg-5 col-md-4 d-none d-md-block">
                     <form class="search-form" action="kategori.html" method="GET">
                         <div class="search-wrapper">
-                            <input type="text" name="arama" class="search-input" placeholder="93 doğrulanmış oyunda ara (Ateş ve Su, MotoX3M, Age of War...)" autocomplete="off">
+                            <input type="text" name="arama" class="search-input" placeholder="${getGames().length} doğrulanmış oyunda ara (Papa's Pizzeria, Stick War, Feodalizm, Earn to Die...)" autocomplete="off">
                             <button type="submit" class="search-btn" aria-label="Ara"><i class="fas fa-search"></i></button>
                         </div>
                     </form>

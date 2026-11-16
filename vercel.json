@@ -1,57 +1,33 @@
 {
     "cleanUrls": false,
-    "rewrites": [
+    "headers": [
         {
-            "source": "/index.php",
-            "destination": "/index.html"
+            "source": "/assets/(stub\\.swf|stub-as2\\.swf|stub\\.txt|icon-192\\.svg)",
+            "headers": [
+                { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+            ]
         },
         {
-            "source": "/oyun.php",
-            "destination": "/oyun.html"
-        },
-        {
-            "source": "/kategori.php",
-            "destination": "/kategori.html"
-        },
-        {
-            "source": "/kutuphane.php",
-            "destination": "/kutuphane.html"
-        },
-        {
-            "source": "/giris.php",
-            "destination": "/giris.html"
-        },
-        {
-            "source": "/kayit.php",
-            "destination": "/kayit.html"
-        },
-        {
-            "source": "/sayfa.php",
-            "destination": "/sayfa.html"
-        },
-        {
-            "source": "/rastgele.php",
-            "destination": "/oyun.html?random=1"
-        },
-        {
-            "source": "/swf_proxy.php",
-            "destination": "/api/swf-proxy"
-        },
-        {
-            "source": "/admin",
-            "destination": "/admin.html"
-        },
-        {
-            "source": "/admin/",
-            "destination": "/admin.html"
-        },
-        {
-            "source": "/admin/index.php",
-            "destination": "/admin.html"
-        },
-        {
-            "source": "/admin/oyunlar.php",
-            "destination": "/admin.html"
+            "source": "/assets/(css|js)/(.*)",
+            "headers": [
+                { "key": "Cache-Control", "value": "public, max-age=3600, stale-while-revalidate=86400" }
+            ]
         }
+    ],
+    "rewrites": [
+        { "source": "/index.php", "destination": "/index.html" },
+        { "source": "/oyun.php", "destination": "/oyun.html" },
+        { "source": "/kategori.php", "destination": "/kategori.html" },
+        { "source": "/kutuphane.php", "destination": "/kutuphane.html" },
+        { "source": "/giris.php", "destination": "/giris.html" },
+        { "source": "/kayit.php", "destination": "/kayit.html" },
+        { "source": "/sayfa.php", "destination": "/sayfa.html" },
+        { "source": "/rastgele.php", "destination": "/oyun.html?random=1" },
+        { "source": "/swf_proxy.php", "destination": "/api/swf-proxy" },
+        { "source": "/p/(.*)", "destination": "/api/swf-proxy?path=$1" },
+        { "source": "/admin", "destination": "/admin.html" },
+        { "source": "/admin/", "destination": "/admin.html" },
+        { "source": "/admin/index.php", "destination": "/admin.html" },
+        { "source": "/admin/oyunlar.php", "destination": "/admin.html" }
     ]
 }

@@ -3,15 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Gekkotari - Ateş ve Su 1-5, MotoX3M, Çağlar Boyu Savaş ve 93 doğrulanmış ücretsiz HTML5 & Flash oyunu kurulumsuz hemen oyna!">
+    <meta name="description" content="Gekkotari — Ateş ve Su 1-5, Çağlar Boyu Savaş 1-2, Papa's Pizzeria serisi, Stick War, Feodalizm, Earn to Die, Jacksmith, Swords and Sandals ve 200+ ücretsiz HTML5 & Flash oyunu kurulumsuz hemen oyna!">
+    <meta name="keywords" content="flash oyunlar, html5 oyunlar, gekkotari, ateş ve su, çağlar boyu savaş, papa's pizzeria, stick war, earn to die, feodalizm, swords and sandals, jacksmith, kingdom rush, strike force heroes, snail bob, sos oyunu, xox oyunu">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://gekotari.vercel.app/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Gekkotari">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:title" content="Gekkotari — Ücretsiz Flash & HTML5 Oyun Portalı">
+    <meta property="og:description" content="Kurulumsuz ve reklamsız 200+ doğrulanmış Flash & HTML5 oyunu tek adreste oyna!">
+    <meta property="og:url" content="https://gekotari.vercel.app/">
+    <meta property="og:image" content="https://gekotari.vercel.app/assets/icon-192.svg">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#2ee57a">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/svg+xml" href="assets/icon-192.svg">
+    <link rel="preconnect" href="https://rltpodnczpcwnefovitz.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://img.gamedistribution.com" crossorigin>
     <title>Gekkotari — Ücretsiz Flash & HTML5 Oyun Portalı</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=10">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Gekkotari","url":"https://gekotari.vercel.app/","potentialAction":{"@type":"SearchAction","target":"https://gekotari.vercel.app/kategori.html?arama={search_term_string}","query-input":"required name=search_term_string"}}</script>
 </head>
 <body>
 
@@ -77,9 +91,10 @@
 <div id="siteFooterMount"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="assets/js/ads-config.js"></script>
-<script src="assets/js/games-data.js"></script>
-<script src="assets/js/common.js"></script>
+<script src="assets/js/ads-config.js?v=9"></script>
+<script src="assets/js/supabase-sync.js?v=9"></script>
+<script src="assets/js/games-data.js?v=12"></script>
+<script src="assets/js/common.js?v=9"></script>
 <script>
 function temizleSonOynanan() {
     localStorage.removeItem('gekkotari_recent');
@@ -123,9 +138,9 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
 
         sliderSec.innerHTML = `
-            <div id="heroCarousel" class="carousel slide h-100" data-bs-ride="carousel" data-bs-interval="5500">
-                <div class="carousel-indicators">${indicators}</div>
-                <div class="carousel-inner h-100">${slides}</div>
+            <div id="heroCarousel" class="carousel slide h-100 d-flex flex-column justify-content-between" data-bs-ride="carousel" data-bs-interval="5500">
+                <div class="carousel-inner flex-grow-1">${slides}</div>
+                <div class="carousel-indicators" style="position:static;margin:0;padding:8px 0 12px;">${indicators}</div>
                 ${sliders.length > 1 ? `
                 <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon"></span>
@@ -141,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const daily = getDailyGame(games);
     const dailyEl = document.getElementById('dailySpotlightMount');
     if (daily && dailyEl) {
-        const hasImg = daily.gorsel && daily.gorsel.startsWith('http');
+        const hasImg = daily.gorsel && (daily.gorsel.startsWith('http') || daily.gorsel.startsWith('assets/'));
         dailyEl.innerHTML = `
             <div>
                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -149,10 +164,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${Number(daily.puan || 0) > 0 ? `<span class="small fw-bold" style="color:var(--warning);"><i class="fas fa-star me-1"></i>${Number(daily.puan).toFixed(1)}</span>` : ''}
                 </div>
                 <div class="d-flex gap-3 align-items-center mb-3">
-                    <div style="width:92px;height:68px;border-radius:10px;overflow:hidden;flex-shrink:0;background:var(--bg-darker);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;">
+                    <div style="width:92px;height:68px;border-radius:10px;overflow:hidden;flex-shrink:0;background:var(--bg-darker);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;position:relative;">
+                        <i class="${escapeHtml(getGameIcon(daily))} fa-2x" style="color:var(--primary);"></i>
                         ${hasImg
-                            ? `<img src="${escapeHtml(daily.gorsel)}" alt="${escapeHtml(daily.oyun_adi)}" style="width:100%;height:100%;object-fit:cover;">`
-                            : `<i class="${escapeHtml(getGameIcon(daily))} fa-2x" style="color:var(--primary);"></i>`}
+                            ? `<img src="${escapeHtml(daily.gorsel)}" alt="${escapeHtml(daily.oyun_adi)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';">`
+                            : ''}
                     </div>
                     <div class="overflow-hidden">
                         <h5 class="mb-1 text-white fw-bold text-truncate">${escapeHtml(daily.oyun_adi)}</h5>
@@ -200,25 +216,34 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('recentGamesGrid').innerHTML = recents.map(g => renderGameCard(g, 'col')).join('');
     }
 
-    // 5. Efsane Seriler & Flash Klasikler (ID >= 51)
-    const classics = games
-        .filter(g => parseInt(g.id, 10) >= 51)
-        .sort((a, b) => (parseInt(b.oynama_sayisi, 10) || 0) - (parseInt(a.oynama_sayisi, 10) || 0))
-        .slice(0, 15);
-    document.getElementById('classicGamesGrid').innerHTML = classics.map(g => renderGameCard(g, 'col')).join('');
+    // 5-7. Oyun Vitrinleri Render (ve Supabase canlı verisi gelince otomatik güncelleme)
+    function renderHomeGrids() {
+        const classics = games
+            .filter(g => parseInt(g.id, 10) >= 51)
+            .sort((a, b) => getGameLiveStat(b).plays - getGameLiveStat(a).plays || parseInt(a.id, 10) - parseInt(b.id, 10))
+            .slice(0, 30);
+        document.getElementById('classicGamesGrid').innerHTML = classics.map(g => renderGameCard(g, 'col')).join('');
 
-    // 6. Popüler HTML5 Oyunlar (ID <= 50)
-    const popularHtml5 = games
-        .filter(g => parseInt(g.id, 10) <= 50)
-        .sort((a, b) => (parseInt(b.oynama_sayisi, 10) || 0) - (parseInt(a.oynama_sayisi, 10) || 0))
-        .slice(0, 10);
-    document.getElementById('popularGamesGrid').innerHTML = popularHtml5.map(g => renderGameCard(g, 'col')).join('');
+        const popularHtml5 = games
+            .filter(g => parseInt(g.id, 10) <= 50)
+            .sort((a, b) => getGameLiveStat(b).plays - getGameLiveStat(a).plays || parseInt(a.id, 10) - parseInt(b.id, 10))
+            .slice(0, 10);
+        document.getElementById('popularGamesGrid').innerHTML = popularHtml5.map(g => renderGameCard(g, 'col')).join('');
 
-    // 7. Yeni Eklenenler
-    const newest = [...games]
-        .sort((a, b) => parseInt(b.id, 10) - parseInt(a.id, 10))
-        .slice(0, 10);
-    document.getElementById('newGamesGrid').innerHTML = newest.map(g => renderGameCard(g, 'col')).join('');
+        const newest = [...games]
+            .sort((a, b) => parseInt(b.id, 10) - parseInt(a.id, 10))
+            .slice(0, 15);
+        document.getElementById('newGamesGrid').innerHTML = newest.map(g => renderGameCard(g, 'col')).join('');
+    }
+
+    renderHomeGrids();
+    syncPortalLiveStats(() => {
+        renderHomeGrids();
+        const rec = getRecentGames(5);
+        if (rec.length > 0) {
+            document.getElementById('recentGamesGrid').innerHTML = rec.map(g => renderGameCard(g, 'col')).join('');
+        }
+    });
 });
 </script>
 </body>

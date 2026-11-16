@@ -4,14 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Gekkotari üzerinde ücretsiz ve reklamsız Flash & HTML5 oyunlarını tam ekran oyna!">
+    <meta name="keywords" content="ücretsiz oyun oyna, flash oyunlar, html5 oyunlar, gekkotari">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" id="canonicalLink" href="https://gekotari.vercel.app/oyun.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Gekkotari">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:title" content="Oyun Oyna - Gekkotari">
+    <meta property="og:description" content="Gekkotari üzerinde ücretsiz ve reklamsız Flash & HTML5 oyunlarını tam ekran oyna!">
+    <meta property="og:image" content="https://gekotari.vercel.app/assets/icon-192.svg">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#2ee57a">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/svg+xml" href="assets/icon-192.svg">
+    <link rel="preconnect" href="https://rltpodnczpcwnefovitz.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://html5.gamedistribution.com" crossorigin>
+    <link rel="preconnect" href="https://img.gamedistribution.com" crossorigin>
     <title>Oyun Oyna - Gekkotari</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=10">
 </head>
 <body>
 
@@ -102,6 +115,7 @@
                         <div class="small text-muted" id="ruffleSaveTip" style="display:none;">
                             <i class="fas fa-save me-1" style="color:var(--primary);"></i> Flash kayıtların cihazında tarayıcı önbelleğinde otomatik saklanır.
                         </div>
+                        <div class="mt-3" id="gameTagsMount" style="display:none;"></div>
                     </div>
                 </div>
             </div>
@@ -128,12 +142,14 @@
                         </div>
                     </div>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary-custom btn-sm px-4">
+                        <button type="submit" id="yorumSubmitBtn" class="btn btn-primary-custom btn-sm px-4">
                             <i class="fas fa-paper-plane me-1"></i> Yorum Yap
                         </button>
                     </div>
                 </form>
-                <div id="commentsList"></div>
+                <div id="commentsList">
+                    <div class="text-muted small py-3 text-center">Yorumlar yükleniyor...</div>
+                </div>
             </div>
         </div>
 
@@ -149,15 +165,37 @@
 <div id="siteFooterMount"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
-<script src="assets/js/ads-config.js"></script>
-<script src="assets/js/games-data.js"></script>
-<script src="assets/js/common.js"></script>
+<script src="assets/js/ads-config.js?v=9"></script>
+<script src="assets/js/supabase-sync.js?v=9"></script>
+<script src="assets/js/games-data.js?v=12"></script>
+<script src="assets/js/common.js?v=9"></script>
 <script>
 let currentGame = null;
 let scrollLockEnabled = true;
+let ruffleScriptPromise = null;
 
-// Space ve Ok Tuşlarında Sayfa Kaymasını Önle
+function ensureRuffleLoaded() {
+    if (window.RufflePlayer && typeof window.RufflePlayer.newest === 'function') {
+        return Promise.resolve();
+    }
+    if (ruffleScriptPromise) return ruffleScriptPromise;
+    ruffleScriptPromise = new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://unpkg.com/@ruffle-rs/ruffle';
+        s.async = true;
+        s.onload = () => {
+            const waitReady = () => {
+                if (window.RufflePlayer && typeof window.RufflePlayer.newest === 'function') resolve();
+                else setTimeout(waitReady, 80);
+            };
+            waitReady();
+        };
+        s.onerror = () => reject(new Error('Ruffle yüklenemedi'));
+        document.head.appendChild(s);
+    });
+    return ruffleScriptPromise;
+}
+
 window.addEventListener('keydown', (e) => {
     if (!scrollLockEnabled) return;
     const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
@@ -227,40 +265,47 @@ function oyunuYenidenYukle() {
     if (currentGame) mountGameEngine(currentGame);
 }
 
-function puanVer() {
-    if (!currentGame) return;
-    let p = prompt('Bu oyuna kaç puan verirsin? (1 ile 5 arasında bir sayı girin):', '5');
-    if (p !== null && p !== '') {
-        let num = parseFloat(p);
-        if (num >= 1 && num <= 5) {
-            const oldCount = parseInt(currentGame.puan_sayisi || 0, 10);
-            const oldAvg = parseFloat(currentGame.puan || 0);
-            const newCount = oldCount + 1;
-            const yeniPuan = ((oldAvg * oldCount + num) / newCount).toFixed(1);
-            currentGame.puan = yeniPuan;
-            currentGame.puan_sayisi = String(newCount);
-            document.getElementById('puanGosterge').innerText = yeniPuan;
-            const games = getGames();
-            const idx = games.findIndex(g => String(g.id) === String(currentGame.id));
-            if (idx > -1) {
-                games[idx].puan = yeniPuan;
-                games[idx].puan_sayisi = String(newCount);
-                saveGames(games);
-            }
-            showToast('success', 'Puanınız kaydedildi! Ortalama: ' + yeniPuan);
-        } else {
-            showToast('warning', 'Lütfen 1 ile 5 arasında bir puan girin.');
-        }
-    }
+function updateStatsUi(st) {
+    if (!st) return;
+    document.getElementById('oynamaSayisiGosterge').innerText = formatNumber(st.plays);
+    document.getElementById('puanGosterge').innerText = st.rating > 0
+        ? `${st.rating.toFixed(1)} (${st.ratingCount})`
+        : 'Henüz puan yok';
 }
 
-function mountGameEngine(oyun) {
+async function puanVer() {
+    if (!currentGame) return;
+    const p = prompt('Bu oyuna kaç puan verirsin? (1 ile 5 arasında bir tam sayı girin):', '5');
+    if (p === null || p.trim() === '') return;
+    const num = Math.round(Number(p));
+    if (!(num >= 1 && num <= 5)) {
+        showToast('warning', 'Lütfen 1 ile 5 arasında bir puan girin.');
+        return;
+    }
+
+    if (window.GekkotariDB) {
+        try {
+            const st = await window.GekkotariDB.submitRemoteRating(currentGame.id, num);
+            if (st) {
+                updateStatsUi(st);
+                showToast('success', `Puanınız ortak veritabanına kaydedildi! Yeni ortalama: ${st.rating.toFixed(1)}`);
+                return;
+            }
+        } catch (err) {}
+    }
+    showToast('danger', 'Puan şu an kaydedilemedi, lütfen tekrar dene.');
+}
+
+async function mountGameEngine(oyun) {
     const container = document.getElementById('oyunAlani');
     container.innerHTML = '';
     const link = (oyun.oyun_linki || '').trim();
 
     if (link.toLowerCase().endsWith('.swf')) {
-        container.innerHTML = `<div id="ruffle-container" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;"></div>`;
+        container.innerHTML = `
+            <div id="ruffle-container" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <div class="text-muted small"><i class="fas fa-spinner fa-spin me-2"></i>Flash emülatörü (Ruffle) yükleniyor...</div>
+            </div>`;
         const ruffleBox = document.getElementById('ruffle-container');
         const origin = window.location.origin;
 
@@ -288,16 +333,13 @@ function mountGameEngine(oyun) {
             letterbox: "on",
             scale: "showAll",
             quality: "high",
-            openUrlMode: "confirm",
+            openUrlMode: "deny",
             allowNetworking: "all",
             urlRewriteRules: rewriteRules
         };
 
-        const startRuffle = () => {
-            if (!window.RufflePlayer || typeof window.RufflePlayer.newest !== 'function') {
-                setTimeout(startRuffle, 200);
-                return;
-            }
+        try {
+            await ensureRuffleLoaded();
             const ruffle = window.RufflePlayer.newest();
             const player = ruffle.createPlayer();
             player.style.width = '100%';
@@ -308,20 +350,26 @@ function mountGameEngine(oyun) {
             const proxyUrl = link.startsWith('http')
                 ? '/api/swf-proxy?url=' + encodeURIComponent(link)
                 : link;
-
-            player.load({
+            const loadOpts = {
                 url: proxyUrl,
                 autoplay: "on",
                 unmuteOverlay: "visible",
                 warnOnUnsupportedContent: false,
                 letterbox: "on",
                 scale: "showAll",
-                openUrlMode: "confirm",
+                openUrlMode: "deny",
                 allowNetworking: "all",
                 urlRewriteRules: rewriteRules
-            });
-        };
-        startRuffle();
+            };
+            if (link.startsWith('https://')) {
+                const baseDir = link.substring(0, link.lastIndexOf('/') + 1);
+                loadOpts.base = origin + '/p/' + baseDir.replace(/^https:\/\//i, 'https/');
+            }
+
+            player.load(loadOpts);
+        } catch (err) {
+            ruffleBox.innerHTML = `<div class="text-danger p-3">Flash yüklenirken hata oluştu. Yenile butonuna basabilirsin.</div>`;
+        }
         return;
     }
 
@@ -331,8 +379,10 @@ function mountGameEngine(oyun) {
         embedLink = 'https://html5.gamedistribution.com/rvvASMiM/' + gdMatch[1].toLowerCase() + '/index.html';
     }
 
+    // Strict popup & top-navigation sandbox: games CANNOT open new tabs or hijack top window
     container.innerHTML = `
         <iframe src="${escapeHtml(embedLink)}"
+                sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-orientation-lock"
                 allow="autoplay; fullscreen; gamepad; accelerometer; gyroscope"
                 allowfullscreen
                 referrerpolicy="no-referrer"
@@ -340,48 +390,39 @@ function mountGameEngine(oyun) {
     `;
 }
 
-function getComments(oyunId) {
-    try {
-        const all = JSON.parse(localStorage.getItem('gekkotari_comments')) || {};
-        if (Array.isArray(all[oyunId])) return all[oyunId];
-    } catch (e) {}
-    return [];
-}
-
-function saveComment(oyunId, yazar, yorum) {
-    let all = {};
-    try { all = JSON.parse(localStorage.getItem('gekkotari_comments')) || {}; } catch (e) {}
-    if (!Array.isArray(all[oyunId])) all[oyunId] = [];
-    const now = new Date();
-    const tarihStr = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
-    all[oyunId].unshift({ yazar, tarih: tarihStr, yorum });
-    localStorage.setItem('gekkotari_comments', JSON.stringify(all));
-}
-
-function renderComments(oyunId) {
-    const list = getComments(oyunId);
+async function renderComments(oyunId) {
     const el = document.getElementById('commentsList');
+    let list = [];
+    if (window.GekkotariDB) {
+        try {
+            list = await window.GekkotariDB.fetchRemoteComments(oyunId);
+        } catch (e) {}
+    }
+
     if (!list.length) {
         el.innerHTML = `<div class="text-muted small py-3 text-center" style="border:1px dashed var(--border-color);border-radius:10px;">Henüz yorum yapılmamış. İlk yorumu sen yaz!</div>`;
         return;
     }
-    el.innerHTML = list.map(y => `
+
+    el.innerHTML = list.map(y => {
+        const dt = y.created_at ? new Date(y.created_at).toLocaleString('tr-TR', { dateStyle: 'short', timeStyle: 'short' }) : '';
+        return `
         <div class="d-flex mb-3 p-3 rounded" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);">
             <div class="me-3">
                 <div class="rounded-circle d-flex align-items-center justify-content-center text-dark fw-bold"
                      style="width: 38px; height: 38px; background: var(--primary);">
-                    ${escapeHtml((y.yazar || 'O').charAt(0).toUpperCase())}
+                    ${escapeHtml((y.author || 'O').charAt(0).toUpperCase())}
                 </div>
             </div>
             <div class="flex-grow-1">
                 <div class="d-flex justify-content-between align-items-center mb-1">
-                    <h6 class="text-white mb-0">${escapeHtml(y.yazar)}</h6>
-                    <small class="text-muted">${escapeHtml(y.tarih)}</small>
+                    <h6 class="text-white mb-0">${escapeHtml(y.author)}</h6>
+                    <small class="text-muted">${escapeHtml(dt)}</small>
                 </div>
-                <p class="mb-0" style="font-size: 0.94rem; color: var(--text-secondary);">${escapeHtml(y.yorum)}</p>
+                <p class="mb-0" style="font-size: 0.94rem; color: var(--text-secondary);">${escapeHtml(y.body)}</p>
             </div>
-        </div>
-    `).join('');
+        </div>`;
+    }).join('');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -408,24 +449,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
     recordRecentPlay(currentGame.id);
 
-    currentGame.oynama_sayisi = (parseInt(currentGame.oynama_sayisi, 10) || 0) + 1;
-    const gIdx = games.findIndex(g => String(g.id) === String(currentGame.id));
-    if (gIdx > -1) {
-        games[gIdx].oynama_sayisi = currentGame.oynama_sayisi;
-        saveGames(games);
-    }
-
     const descText = currentGame.aciklama || (currentGame.oyun_adi + ' oyununu Gekkotari üzerinden ücretsiz ve tam ekran oyna!');
+    const keywordsList = (currentGame.anahtar_kelimeler || `${currentGame.oyun_adi}, ${currentGame.kategori_adi}, ücretsiz tarayıcı oyunu`).split(',').map(s => s.trim()).filter(Boolean);
     document.title = currentGame.oyun_adi + ' Oyna - Gekkotari';
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) metaDesc.setAttribute('content', `${currentGame.oyun_adi} ücretsiz tarayıcıda oyna. ${descText}`);
+    const metaKw = document.querySelector('meta[name="keywords"]');
+    if (metaKw) metaKw.setAttribute('content', keywordsList.join(', '));
+    const canon = document.getElementById('canonicalLink');
+    if (canon) canon.setAttribute('href', `https://gekotari.vercel.app/oyun.html?id=${currentGame.id}`);
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute('content', document.title);
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute('content', descText);
+    const ogImg = document.querySelector('meta[property="og:image"]');
+    if (ogImg && currentGame.gorsel && currentGame.gorsel !== 'default_game.png') {
+        ogImg.setAttribute('content', currentGame.gorsel.startsWith('http') ? currentGame.gorsel : ('https://gekotari.vercel.app/' + currentGame.gorsel));
+    }
+    const ldEl = document.createElement('script');
+    ldEl.type = 'application/ld+json';
+    ldEl.textContent = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'VideoGame',
+        name: currentGame.oyun_adi,
+        description: descText,
+        genre: currentGame.kategori_adi,
+        keywords: keywordsList.join(', '),
+        gamePlatform: ['Web Browser'],
+        applicationCategory: 'Game',
+        url: `https://gekotari.vercel.app/oyun.html?id=${currentGame.id}`
+    });
+    document.head.appendChild(ldEl);
+
+    const tagsEl = document.getElementById('gameTagsMount');
+    if (tagsEl && keywordsList.length) {
+        tagsEl.style.display = 'block';
+        tagsEl.innerHTML = '<div class="small fw-bold mb-1 text-muted"><i class="fas fa-tags me-1" style="color:var(--primary);"></i>Etiketler</div>' +
+            keywordsList.slice(0, 8).map(t => `<a href="kategori.html?arama=${encodeURIComponent(t)}" class="badge bg-dark border border-secondary text-decoration-none text-light me-1 mb-1">${escapeHtml(t)}</a>`).join('');
+    }
 
     document.getElementById('gameTitleHeading').innerHTML = `<i class="${escapeHtml(getGameIcon(currentGame))}"></i> ${escapeHtml(currentGame.oyun_adi)}`;
     document.getElementById('backCatLink').href = 'kategori.html?tur=' + encodeURIComponent(currentGame.kategori_adi);
     document.getElementById('backCatLink').innerHTML = `<i class="fas fa-arrow-left me-1"></i> ${escapeHtml(currentGame.kategori_adi)} Oyunları`;
-    const curScore = Number(currentGame.puan || 0);
-    document.getElementById('puanGosterge').innerText = curScore > 0 ? curScore.toFixed(1) : 'Henüz puan yok';
-    document.getElementById('oynamaSayisiGosterge').innerText = formatNumber(currentGame.oynama_sayisi);
+    document.getElementById('puanGosterge').innerText = 'Henüz puan yok';
+    document.getElementById('oynamaSayisiGosterge').innerText = '...';
     document.getElementById('etiketBadge').innerText = currentGame.etiket || 'Popüler';
     document.getElementById('gameDescription').innerText = descText;
     document.getElementById('gameTipText').innerText = currentGame.ipucu || 'Tam ekran veya Işıkları Kapat modunu kullanarak oyuna odaklanabilirsin.';
@@ -469,44 +536,58 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('yorumYazar').value = user.ad_soyad || user.kullanici_adi;
     }
 
-    document.getElementById('yorumFormu').addEventListener('submit', (e) => {
+    document.getElementById('yorumFormu').addEventListener('submit', async (e) => {
         e.preventDefault();
+        const btn = document.getElementById('yorumSubmitBtn');
         const yazar = document.getElementById('yorumYazar').value.trim() || 'Misafir Oyuncu';
         const metin = document.getElementById('yorumMetni').value.trim();
         if (!metin) return;
-        saveComment(currentGame.id, yazar, metin);
-        document.getElementById('yorumMetni').value = '';
-        renderComments(currentGame.id);
-        showToast('success', 'Yorumunuz eklendi!');
-    });
 
-    renderComments(currentGame.id);
+        btn.disabled = true;
+        try {
+            await window.GekkotariDB.postRemoteComment(currentGame.id, yazar, metin);
+            document.getElementById('yorumMetni').value = '';
+            await renderComments(currentGame.id);
+            showToast('success', 'Yorumun paylaşıldı!');
+        } catch (err) {
+            showToast('danger', 'Yorum gönderilemedi, lütfen tekrar dene.');
+        } finally {
+            btn.disabled = false;
+        }
+    });
 
     const similars = games
         .filter(g => g.kategori_adi === currentGame.kategori_adi && String(g.id) !== String(currentGame.id))
         .slice(0, 5);
     document.getElementById('similarGamesContainer').innerHTML = similars.map(b => {
-        const hasImg = b.gorsel && b.gorsel.startsWith('http');
+        const hasImg = b.gorsel && b.gorsel !== 'default_game.png' && (b.gorsel.startsWith('http') || b.gorsel.startsWith('assets/'));
         return `
-        <div class="game-card mb-2 p-2" onclick="window.location.href='oyun.html?id=${b.id}'">
-            <div class="d-flex align-items-center gap-2">
-                <div style="width:58px;height:44px;border-radius:8px;overflow:hidden;background:linear-gradient(135deg, ${b.renk || getCategoryColor(b.kategori_adi)}, var(--bg-darker));display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <div class="game-card mb-2 p-2">
+            <a href="oyun.html?id=${b.id}" class="d-flex align-items-center gap-2 text-decoration-none">
+                <div style="width:58px;height:44px;border-radius:8px;overflow:hidden;background:linear-gradient(135deg, ${b.renk || getCategoryColor(b.kategori_adi)}, var(--bg-darker));display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;">
+                    <i class="${escapeHtml(getGameIcon(b))} text-white"></i>
                     ${hasImg
-                        ? `<img src="${escapeHtml(b.gorsel)}" alt="${escapeHtml(b.oyun_adi)}" style="width:100%;height:100%;object-fit:cover;">`
-                        : `<i class="${escapeHtml(getGameIcon(b))} text-white"></i>`}
+                        ? `<img src="${escapeHtml(b.gorsel)}" alt="${escapeHtml(b.oyun_adi)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';">`
+                        : ''}
                 </div>
                 <div class="flex-grow-1 overflow-hidden">
                     <h4 class="game-title mb-0" style="font-size:0.84rem;">${escapeHtml(b.oyun_adi)}</h4>
-                    <span class="game-category d-block" style="font-size:0.72rem;">${escapeHtml(b.kategori_adi)}${Number(b.puan || 0) > 0 ? ' • ⭐ ' + Number(b.puan).toFixed(1) : ''}</span>
+                    <span class="game-category d-block" style="font-size:0.72rem;">${escapeHtml(b.kategori_adi)}</span>
                 </div>
-                <a href="oyun.html?id=${b.id}" class="btn btn-play btn-sm px-2" style="width:auto;" aria-label="Oyna">
-                    <i class="fas fa-play"></i>
-                </a>
-            </div>
+                <span class="btn btn-play btn-sm px-2" style="width:auto;"><i class="fas fa-play"></i></span>
+            </a>
         </div>`;
     }).join('');
 
+    // Start game immediately, and sync Supabase play count + comments + stats in parallel
     mountGameEngine(currentGame);
+    renderComments(currentGame.id);
+    if (window.GekkotariDB) {
+        window.GekkotariDB.recordRemotePlay(currentGame.id)
+            .then(st => { if (st) updateStatsUi(st); })
+            .catch(() => { document.getElementById('oynamaSayisiGosterge').innerText = '0'; });
+        syncPortalLiveStats();
+    }
 });
 </script>
 </body>

@@ -32,15 +32,50 @@ export async function OPTIONS() {
   return new Response(null, { status: 204, headers: CORS_HEADERS });
 }
 
+const MIME_BY_EXT = {
+  '.swf': 'application/x-shockwave-flash',
+  '.xml': 'application/xml; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.txt': 'text/plain; charset=utf-8',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.svg': 'image/svg+xml',
+  '.mp3': 'audio/mpeg',
+  '.wav': 'audio/wav',
+  '.ogg': 'audio/ogg',
+  '.oep': 'application/xml; charset=utf-8',
+};
+
+function resolveContentType(targetUrl, upstreamHeader) {
+  try {
+    const pathname = new URL(targetUrl).pathname.toLowerCase();
+    const dotIdx = pathname.lastIndexOf('.');
+    if (dotIdx !== -1) {
+      const ext = pathname.slice(dotIdx);
+      if (MIME_BY_EXT[ext]) return MIME_BY_EXT[ext];
+    }
+  } catch {}
+  return upstreamHeader || 'application/x-shockwave-flash';
+}
+
 async function proxySwf(request) {
   const { searchParams } = new URL(request.url);
   const rawUrl = searchParams.get('url');
+  const rawPath = searchParams.get('path');
 
-  if (!rawUrl) {
+  if (!rawUrl && !rawPath) {
     return new Response('Missing url parameter', { status: 400, headers: CORS_HEADERS });
   }
 
-  const targetUrl = rawUrl.trim().replace(/ /g, '%20');
+  let targetUrl = '';
+  if (rawUrl) {
+    targetUrl = rawUrl.trim().replace(/ /g, '%20');
+  } else {
+    targetUrl = rawPath.trim().replace(/^https\/+/i, 'https://').replace(/ /g, '%20');
+  }
+
   if (!isAllowedUpstreamUrl(targetUrl)) {
     return new Response('Invalid or disallowed upstream URL', { status: 400, headers: CORS_HEADERS });
   }
@@ -70,7 +105,7 @@ async function proxySwf(request) {
     }
 
     const headers = new Headers(CORS_HEADERS);
-    headers.set('Content-Type', 'application/x-shockwave-flash');
+    headers.set('Content-Type', resolveContentType(targetUrl, upstream.headers.get('content-type')));
     headers.set('Cache-Control', 'public, s-maxage=31536000, max-age=31536000, immutable');
 
     for (const h of ['content-length', 'content-range', 'accept-ranges']) {
