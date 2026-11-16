@@ -3,168 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oyunlar - Gekkotari</title>
+    <meta name="description" content="Gekkotari oyun arşivi: 2 kişilik, Flash efsaneler, aksiyon, strateji, yarış ve bulmaca oyunlarını filtrele ve ücretsiz oyna.">
+    <meta name="theme-color" content="#2ee57a">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="assets/icon-192.svg">
+    <title>Tüm Oyunlar - Gekkotari</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-    <header>
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-6">
-                    <a class="navbar-brand" href="index.html"><i class="fas fa-arrow-left"></i> Ana Sayfaya Dön</a>
-                </div>
-                <div class="col-6 text-end">
-                    <div class="dropdown d-inline-block">
-                        <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            Hızlı Kategori Seç
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end bg-dark border-secondary">
-                            <li><a class="dropdown-item text-light" href="?tur=Aksiyon">Aksiyon</a></li>
-                            <li><a class="dropdown-item text-light" href="?tur=Strateji">Strateji</a></li>
-                            <li><a class="dropdown-item text-light" href="?tur=Yarış">Yarış</a></li>
-                            <li><a class="dropdown-item text-light" href="?tur=Spor">Spor</a></li>
-                            <li><a class="dropdown-item text-light" href="?tur=Korku">Korku</a></li>
-                            <li><a class="dropdown-item text-light" href="?tur=Macera">Macera</a></li>
-                            <li><a class="dropdown-item text-light" href="?tur=RPG">RPG</a></li>
-                            <li><a class="dropdown-item text-light" href="?tur=Bulmaca">Bulmaca</a></li>
-                            <li><a class="dropdown-item text-light" href="?tur=Klasik">Klasik</a></li>
-                        </ul>
+<div id="siteHeaderMount"></div>
+
+<main class="container-xl my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h2 class="section-title mb-0" id="pageHeading">
+            <i class="fas fa-gamepad"></i> Tüm Oyunlar
+        </h2>
+        <a href="index.html" class="btn btn-outline-light btn-sm">
+            <i class="fas fa-arrow-left me-1"></i> Ana Sayfa
+        </a>
+    </div>
+
+    <!-- Hızlı Mod Çipleri -->
+    <div class="mode-chips-bar mb-2" id="modeFilterBar"></div>
+
+    <!-- Kategori Filtreleri -->
+    <div class="category-filter-bar" id="categoryFilterBar"></div>
+
+    <!-- Sıralama ve Arama -->
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div class="d-flex gap-2 flex-wrap" id="sortButtonsArea"></div>
+        <form id="inlineSearchForm" class="d-flex gap-2">
+            <input type="text" id="inlineSearchInput" class="form-control form-control-sm"
+                   style="width:230px;" placeholder="Oyun adı ara...">
+            <button class="btn btn-sm btn-success" type="submit"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+
+    <!-- Kategori Reklam Alanı (728x90 Leaderboard) -->
+    <div class="my-3" id="categoryLeaderboardAd"></div>
+
+    <!-- Oyun Listesi (5'li rahat ızgara) -->
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3" id="gamesListContainer"></div>
+
+    <!-- Sayfalama -->
+    <nav class="mt-4 d-flex justify-content-center" id="paginationContainer"></nav>
+</main>
+
+<div id="siteFooterMount"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/ads-config.js"></script>
+<script src="assets/js/games-data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    renderHeader('kategori.html');
+    renderFooter();
+    renderAdSlot('categoryLeaderboardAd', 'category_leaderboard');
+
+    const params = new URLSearchParams(window.location.search);
+    let secilenTur = params.get('tur') || '';
+    let secilenMod = params.get('mod') || '';
+    let arama = params.get('arama') || '';
+    let siralama = params.get('siralama') || 'populer';
+    let sayfa = Math.max(1, parseInt(params.get('sayfa') || '1', 10));
+    const perSayfa = 25;
+
+    const searchInput = document.getElementById('inlineSearchInput');
+    searchInput.value = arama;
+
+    function buildQuery(overrides = {}) {
+        const q = new URLSearchParams();
+        const tur = overrides.hasOwnProperty('tur') ? overrides.tur : secilenTur;
+        const mod = overrides.hasOwnProperty('mod') ? overrides.mod : secilenMod;
+        const ar = overrides.hasOwnProperty('arama') ? overrides.arama : arama;
+        const sir = overrides.hasOwnProperty('siralama') ? overrides.siralama : siralama;
+        const pg = overrides.hasOwnProperty('sayfa') ? overrides.sayfa : 1;
+        if (tur) q.set('tur', tur);
+        if (mod) q.set('mod', mod);
+        if (ar) q.set('arama', ar);
+        if (sir) q.set('siralama', sir);
+        if (pg > 1) q.set('sayfa', String(pg));
+        return 'kategori.html' + (q.toString() ? '?' + q.toString() : '');
+    }
+
+    function updateView() {
+        const allGames = getGames().filter(g => String(g.durum) !== '0');
+        const categories = getCategories();
+
+        let filtered = allGames.filter(g => {
+            if (secilenTur && g.kategori_adi !== secilenTur) return false;
+            if (secilenMod) {
+                if (secilenMod === 'Flash') {
+                    if (!(g.oyun_linki || '').toLowerCase().endsWith('.swf')) return false;
+                } else {
+                    const mods = Array.isArray(g.modlar) ? g.modlar : [];
+                    if (!mods.includes(secilenMod)) return false;
+                }
+            }
+            if (arama) {
+                const q = arama.toLowerCase();
+                const inTitle = (g.oyun_adi || '').toLowerCase().includes(q);
+                const inDesc = (g.aciklama || '').toLowerCase().includes(q);
+                const inCat = (g.kategori_adi || '').toLowerCase().includes(q);
+                if (!inTitle && !inDesc && !inCat) return false;
+            }
+            return true;
+        });
+
+        filtered.sort((a, b) => {
+            if (siralama === 'populer') return (parseInt(b.oynama_sayisi, 10) || 0) - (parseInt(a.oynama_sayisi, 10) || 0);
+            if (siralama === 'puan') return (parseFloat(b.puan) || 0) - (parseFloat(a.puan) || 0);
+            if (siralama === 'isim') return (a.oyun_adi || '').localeCompare(b.oyun_adi || '', 'tr');
+            return parseInt(b.id, 10) - parseInt(a.id, 10);
+        });
+
+        let titleText = 'Tüm Oyunlar';
+        if (secilenTur) titleText = secilenTur + ' Oyunları';
+        if (secilenMod) titleText = (secilenTur ? secilenTur + ' • ' : '') + secilenMod + ' Oyunları';
+        if (arama) titleText = 'Arama: "' + arama + '"';
+        document.getElementById('pageHeading').innerHTML = `
+            <i class="fas fa-gamepad"></i> ${escapeHtml(titleText)}
+            <small class="text-muted fs-6 ms-2">(${filtered.length} oyun)</small>
+        `;
+        document.title = titleText + ' - Gekkotari';
+
+        // Mod çipleri
+        const modes = [
+            { key: '', icon: 'fas fa-border-all', label: 'Hepsi' },
+            { key: '2 Kişilik', icon: 'fas fa-user-friends', label: '2 Kişilik' },
+            { key: 'Hızlı', icon: 'fas fa-stopwatch', label: '5 Dk Molalık' },
+            { key: 'Zeka', icon: 'fas fa-brain', label: 'Zeka & Bulmaca' },
+            { key: 'Flash', icon: 'fas fa-bolt', label: 'Flash Klasik' },
+            { key: 'Mobil Uyumlu', icon: 'fas fa-mobile-alt', label: 'Mobil Uyumlu' }
+        ];
+        document.getElementById('modeFilterBar').innerHTML =
+            `<span class="small text-muted fw-semibold me-1">Oynanış Modu:</span>` +
+            modes.map(m => `<a href="${buildQuery({ mod: m.key, sayfa: 1 })}" class="mode-chip ${secilenMod === m.key ? 'active' : ''}">
+                <i class="${m.icon}"></i>${m.label}
+            </a>`).join('');
+
+        // Kategori Filtre Bar
+        const catBar = document.getElementById('categoryFilterBar');
+        catBar.innerHTML = `<a href="${buildQuery({ tur: '', sayfa: 1 })}" class="filter-btn ${!secilenTur ? 'active' : ''}">
+            <i class="fas fa-th me-1"></i> Tüm Kategoriler
+        </a>` + categories.map(k => {
+            const count = allGames.filter(g => g.kategori_adi === k.kategori_adi).length;
+            if (!count) return '';
+            return `<a href="${buildQuery({ tur: k.kategori_adi, sayfa: 1 })}" class="filter-btn ${secilenTur === k.kategori_adi ? 'active' : ''}">
+                <i class="${escapeHtml(k.ikon)} me-1"></i> ${escapeHtml(k.kategori_adi)}
+            </a>`;
+        }).join('');
+
+        // Sıralama
+        const sorts = [
+            { key: 'populer', label: 'Popüler', icon: 'fas fa-fire' },
+            { key: 'yeni', label: 'Yeni', icon: 'fas fa-clock' },
+            { key: 'puan', label: 'Puan', icon: 'fas fa-star' },
+            { key: 'isim', label: 'A-Z', icon: 'fas fa-sort-alpha-down' }
+        ];
+        document.getElementById('sortButtonsArea').innerHTML = `<span class="text-muted small align-self-center">Sırala:</span>` +
+            sorts.map(s => `<a href="${buildQuery({ siralama: s.key, sayfa: 1 })}" class="filter-btn ${siralama === s.key ? 'active' : ''}" style="font-size:0.76rem;padding:5px 12px;">
+                <i class="${s.icon} me-1"></i>${s.label}
+            </a>`).join('');
+
+        const totalPages = Math.max(1, Math.ceil(filtered.length / perSayfa));
+        if (sayfa > totalPages) sayfa = 1;
+        const offset = (sayfa - 1) * perSayfa;
+        const pageItems = filtered.slice(offset, offset + perSayfa);
+
+        const listEl = document.getElementById('gamesListContainer');
+        if (pageItems.length > 0) {
+            listEl.innerHTML = pageItems.map(g => renderGameCard(g, 'col')).join('');
+        } else {
+            listEl.innerHTML = `
+                <div class="col-12" style="grid-column:1/-1;">
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <h4>Oyun Bulunamadı</h4>
+                        <p>Farklı bir kategori, mod veya arama terimi deneyin.</p>
+                        <a href="kategori.html" class="btn btn-primary-custom">Tüm Oyunları Göster</a>
                     </div>
                 </div>
-            </div>
-        </div>
-    </header>
-
-    <main class="container my-5">
-        <h2 id="kategoriBaslik" class="mb-4 text-warning border-bottom border-secondary pb-2">Yükleniyor...</h2>
-        <div class="row" id="oyunListesiArea">
-            <div class="col-12 text-center mt-5">
-                <div class="spinner-border text-success" role="status"></div>
-                <p class="text-muted mt-2">Oyunlar Google Buluttan Çekiliyor...</p>
-            </div>
-        </div>
-    </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        window.kutuphaneyeEkle = function(ad, resim, tur) {
-            var aktifOturumStr = localStorage.getItem("aktifOturum");
-            if (!aktifOturumStr) {
-                alert("Oyun eklemek için önce giriş yapmalısın!");
-                window.location.href = "giris.html";
-                return;
-            }
-            var aktifKullanici = JSON.parse(aktifOturumStr);
-            var ozelAnahtar = "kutuphane_" + aktifKullanici.kadi;
-            var kutuphane = JSON.parse(localStorage.getItem(ozelAnahtar)) || [];
-
-            if (kutuphane.find(o => o.ad === ad)) {
-                alert("Bu oyun zaten kütüphanende mevcut!");
-                return;
-            }
-            kutuphane.push({ ad: ad, resim: resim, tur: tur });
-            localStorage.setItem(ozelAnahtar, JSON.stringify(kutuphane));
-            alert("Oyun kütüphanenize eklendi");
+            `;
         }
-    </script>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        // SENİN FIREBASE ANAHTARLARIN
-        const firebaseConfig = {
-            apiKey: "AIzaSyDGprox9gi-aYNI6jeh0sj52C9M5zxEtzc",
-            authDomain: "gekkotari.firebaseapp.com",
-            projectId: "gekkotari",
-            storageBucket: "gekkotari.firebasestorage.app",
-            messagingSenderId: "313683103714",
-            appId: "1:313683103714:web:050b8947af000d26a833bb",
-            measurementId: "G-8K9Y0SQQ5C"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        document.addEventListener('DOMContentLoaded', async function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const secilenTur = urlParams.get('tur');
-            const baslik = document.getElementById('kategoriBaslik');
-            const oyunAlani = document.getElementById('oyunListesiArea');
-
-            // 1. Kategoriyi Başlığa Yaz
-            if (secilenTur) {
-                baslik.innerHTML = `<i class="fas fa-gamepad text-success"></i> ${secilenTur} Oyunları`;
-                document.title = `${secilenTur} Oyunları - Gekkotari`;
-            } else {
-                baslik.innerText = "Tüm Oyunlar";
+        const pagEl = document.getElementById('paginationContainer');
+        if (totalPages > 1) {
+            let pagHtml = '<ul class="pagination">';
+            for (let i = 1; i <= totalPages; i++) {
+                pagHtml += `<li class="page-item ${sayfa === i ? 'active' : ''}">
+                    <a class="page-link" href="${buildQuery({ sayfa: i })}">${i}</a>
+                </li>`;
             }
+            pagHtml += '</ul>';
+            pagEl.innerHTML = pagHtml;
+        } else {
+            pagEl.innerHTML = '';
+        }
+    }
 
-            try {
-                // 2. Google'dan (Firestore) Tüm Oyunları Çek
-                const querySnapshot = await getDocs(collection(db, "oyunlar"));
-                let tumOyunlar = [];
-                
-                querySnapshot.forEach((doc) => {
-                    tumOyunlar.push(doc.data());
-                });
+    document.getElementById('inlineSearchForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        arama = searchInput.value.trim();
+        sayfa = 1;
+        updateView();
+    });
 
-                // 3. Kategoriye Göre Filtrele
-                let filtrelenmisOyunlar = tumOyunlar;
-                if(secilenTur) {
-                    filtrelenmisOyunlar = tumOyunlar.filter(oyun => oyun.tur === secilenTur);
-                }
-
-                // 4. Ekrana Bas
-                if (filtrelenmisOyunlar.length > 0) {
-                    let htmlKodlari = "";
-                    filtrelenmisOyunlar.forEach(oyun => {
-                        const guvenliAd = oyun.ad.replace(/'/g, "\\'");
-                        // Linkleme: İsmi gönderiyoruz, oyun.html veritabanından bulacak
-                        let oynaLink = `oyun.html?ad=${encodeURIComponent(oyun.ad)}`;
-
-                        // Eğer resim yoksa varsayılan placeholder kullan
-                        let resimUrl = oyun.resim.startsWith("http") ? oyun.resim : `https://via.placeholder.com/300x200/2c3e50/50F589?text=${oyun.resim}`;
-
-                        htmlKodlari += `
-                            <div class="col-6 col-md-3 mb-4">
-                                <div class="game-card h-100">
-                                    <img src="${resimUrl}" class="game-thumb">
-                                    <div class="game-info">
-                                        <h5 class="game-title text-white">${oyun.ad}</h5>
-                                        <span class="badge bg-secondary mt-1">${oyun.etiket || 'Oyun'}</span>
-                                        
-                                        <div class="d-grid gap-2 mt-2">
-                                            <a href="${oynaLink}" class="btn btn-sm btn-success"><i class="fas fa-play"></i> Oyna</a>
-                                            <button onclick="kutuphaneyeEkle('${guvenliAd}', '${oyun.resim}', '${oyun.tur}')" 
-                                                    class="btn btn-sm btn-outline-light">
-                                                <i class="fas fa-plus"></i> Ekle
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    oyunAlani.innerHTML = htmlKodlari;
-                } else {
-                    oyunAlani.innerHTML = `
-                        <div class="col-12 text-center text-muted mt-5">
-                            <h4><i class="fas fa-search"></i> Bu kategoride oyun bulunamadı.</h4>
-                            <p>Admin panelinden ekleyebilirsiniz.</p>
-                        </div>
-                    `;
-                }
-
-            } catch (hata) {
-                console.error("Hata:", hata);
-                oyunAlani.innerHTML = `<div class="alert alert-danger">Oyunlar yüklenirken hata oluştu: ${hata.message}</div>`;
-            }
-        });
-    </script>
+    updateView();
+});
+</script>
 </body>
 </html>

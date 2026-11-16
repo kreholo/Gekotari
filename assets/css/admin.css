@@ -1,0 +1,473 @@
+/* =====================================================
+   GEKKOTARİ - ADMİN PANELİ STİL DOSYASI
+   ===================================================== */
+
+/* --- ADMİN LAYOUT --- */
+.admin-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- SİDEBAR --- */
+.admin-sidebar {
+    width: 260px;
+    background: linear-gradient(180deg, var(--bg-darker) 0%, #090e0c 100%);
+    border-right: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 1000;
+    transition: var(--transition);
+}
+
+.sidebar-brand {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar-brand h4 {
+    margin: 0;
+    font-weight: 800;
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+.sidebar-brand small {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    font-weight: 400;
+}
+
+.sidebar-user {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sidebar-user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.sidebar-user-info {
+    overflow: hidden;
+}
+
+.sidebar-user-info strong {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-user-info small {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+}
+
+/* Sidebar Menü */
+.sidebar-menu {
+    list-style: none;
+    padding: 10px;
+    margin: 0;
+}
+
+.sidebar-menu-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    padding: 12px 12px 6px;
+    font-weight: 700;
+}
+
+.sidebar-menu li a,
+.sidebar-menu li button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.sidebar-menu li a:hover,
+.sidebar-menu li button:hover {
+    background: rgba(80, 245, 137, 0.1);
+    color: var(--primary);
+}
+
+.sidebar-menu li a.active {
+    background: var(--primary);
+    color: #000;
+    font-weight: 700;
+    box-shadow: 0 2px 10px var(--primary-glow);
+}
+
+.sidebar-menu li a i,
+.sidebar-menu li button i {
+    width: 20px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.menu-badge {
+    margin-left: auto;
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+/* --- ANA İÇERİK --- */
+.admin-content {
+    margin-left: 260px;
+    padding: 24px;
+    width: calc(100% - 260px);
+    min-height: 100vh;
+    background: var(--bg-body);
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.admin-page-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-page-title i {
+    color: var(--primary);
+}
+
+/* --- DASHBOARD KARTLARI (Req #14) --- */
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    border-radius: 4px 0 0 4px;
+}
+
+.stat-card.primary::before { background: var(--primary); }
+.stat-card.warning::before { background: var(--warning); }
+.stat-card.info::before { background: var(--info); }
+.stat-card.danger::before { background: var(--danger); }
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+    border-color: var(--border-hover);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+.stat-icon.primary { background: rgba(80, 245, 137, 0.15); color: var(--primary); }
+.stat-icon.warning { background: rgba(243, 156, 18, 0.15); color: var(--warning); }
+.stat-icon.info { background: rgba(52, 152, 219, 0.15); color: var(--info); }
+.stat-icon.danger { background: rgba(231, 76, 60, 0.15); color: var(--danger); }
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.stat-label {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* --- TABLOLAR --- */
+.admin-table-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.admin-table-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table thead th {
+    background: var(--bg-darker);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 12px 16px;
+    font-weight: 700;
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+.admin-table tbody tr {
+    border-bottom: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.admin-table tbody tr:hover {
+    background: rgba(80, 245, 137, 0.04);
+}
+
+.admin-table tbody td {
+    padding: 12px 16px;
+    vertical-align: middle;
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+}
+
+.admin-table .table-check {
+    width: 40px;
+    text-align: center;
+}
+
+.admin-table .table-actions {
+    white-space: nowrap;
+    text-align: right;
+}
+
+/* --- BUTONLAR --- */
+.btn-admin {
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.82rem;
+    padding: 6px 14px;
+    transition: var(--transition);
+}
+
+.btn-admin-success {
+    background: var(--primary);
+    color: #000;
+    border: none;
+}
+
+.btn-admin-success:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    color: #000;
+}
+
+.btn-admin-danger {
+    background: rgba(231, 76, 60, 0.15);
+    color: var(--danger);
+    border: 1px solid transparent;
+}
+
+.btn-admin-danger:hover {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-admin-warning {
+    background: rgba(243, 156, 18, 0.15);
+    color: var(--warning);
+    border: 1px solid transparent;
+}
+
+.btn-admin-warning:hover {
+    background: var(--warning);
+    color: #000;
+}
+
+.btn-admin-info {
+    background: rgba(52, 152, 219, 0.15);
+    color: var(--info);
+    border: 1px solid transparent;
+}
+
+.btn-admin-info:hover {
+    background: var(--info);
+    color: white;
+}
+
+/* --- MODAL --- */
+.modal-content {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border-color);
+}
+
+.modal-title {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+/* --- TOPLU İŞLEM BARI --- */
+.bulk-action-bar {
+    background: var(--bg-darker);
+    border: 1px solid var(--primary);
+    border-radius: var(--radius-md);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    animation: slideDown 0.3s ease-out;
+}
+
+/* --- EXPORT BUTONLARI (Req #17) --- */
+.export-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+.btn-export {
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    font-weight: 600;
+}
+
+/* --- SON HATALAR WIDGET --- */
+.log-entry {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.82rem;
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+}
+
+.log-entry .log-type {
+    font-weight: 700;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.log-entry .log-time {
+    color: var(--text-muted);
+    font-size: 0.72rem;
+}
+
+/* --- RESPONSİVE (Req #1) --- */
+.sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1100;
+    background: var(--primary);
+    color: #000;
+    border: none;
+    border-radius: var(--radius-sm);
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+@media (max-width: 991.98px) {
+    .sidebar-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .admin-sidebar {
+        transform: translateX(-100%);
+    }
+    
+    .admin-sidebar.show {
+        transform: translateX(0);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .admin-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 16px;
+        padding-top: 60px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .stat-value {
+        font-size: 1.4rem;
+    }
+    .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

@@ -2,129 +2,504 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Oyna - Gekkotari</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Gekkotari üzerinde ücretsiz ve reklamsız Flash & HTML5 oyunlarını tam ekran oyna!">
+    <meta name="theme-color" content="#2ee57a">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="assets/icon-192.svg">
+    <title>Oyun Oyna - Gekkotari</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <style>
-        #oyunCercevesi {
-            width: 100%;
-            height: 85vh;
-            border: none;
-            border-radius: 10px;
-            background-color: #000;
-            box-shadow: 0 0 20px rgba(80, 245, 137, 0.2);
-            display: none;
-        }
-        /* Yılan Oyunu Stili */
-        #yerelOyunAlani { display: none; }
-        canvas { display: block; margin: 0 auto; border: 2px solid #50F589; background-color: #000; }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-    <header>
-        <div class="container py-3">
-            <a class="navbar-brand text-white" href="index.html"><i class="fas fa-arrow-left"></i> Ana Sayfaya Dön</a>
-        </div>
-    </header>
+<div id="siteHeaderMount"></div>
 
-    <main class="container-fluid px-4">
-        <div class="text-center mb-3">
-            <h2 id="oyunBaslik" class="text-warning">Yükleniyor...</h2>
+<main class="container-xl my-4">
+    <!-- Üst Başlık & İstatistik -->
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div>
+            <a href="kategori.html" id="backCatLink" class="text-muted small">
+                <i class="fas fa-arrow-left me-1"></i> Tüm Oyunlar
+            </a>
+            <h1 class="section-title mt-1 mb-0" id="gameTitleHeading" style="font-size:1.55rem;">
+                <i class="fas fa-gamepad"></i> Yükleniyor...
+            </h1>
         </div>
-        
-        <div class="row justify-content-center">
-            <div class="col-12 col-lg-10">
-                <iframe id="oyunCercevesi" src="" allowfullscreen></iframe>
+        <div class="d-flex gap-2 align-items-center flex-wrap">
+            <span class="badge bg-warning text-dark" onclick="puanVer()" title="Puan Ver!" style="cursor:pointer;font-size:0.86rem;padding:7px 11px;">
+                <i class="fas fa-star me-1"></i><span id="puanGosterge">4.8</span> <small class="ms-1">(Puanla)</small>
+            </span>
+            <span class="badge bg-dark border border-secondary" style="font-size:0.86rem;padding:7px 11px;">
+                <i class="fas fa-play me-1" style="color:var(--primary);"></i><span id="oynamaSayisiGosterge">0</span>
+            </span>
+            <span id="etiketBadge" class="badge bg-success" style="font-size:0.86rem;padding:7px 11px;"></span>
+            <button id="addLibBtn" class="btn btn-sm btn-outline-success">
+                <i class="fas fa-bookmark me-1"></i> Kütüphaneye Ekle
+            </button>
+        </div>
+    </div>
 
-                <div id="yerelOyunAlani" class="text-center">
-                    <div class="d-flex justify-content-center gap-4 mb-3">
-                        <h4 class="text-white">Puan: <span id="skor" class="text-success">0</span></h4>
-                        <h4 class="text-white">En Yüksek: <span id="enYuksek" class="text-warning">0</span></h4>
+    <!-- Mobil Yatay Döndürme İpucu -->
+    <div class="d-md-none alert alert-info py-2 px-3 small mb-3 d-flex align-items-center gap-2" id="mobileTipBanner" style="display:none !important;">
+        <i class="fas fa-mobile-alt"></i>
+        <span id="mobileTipText"></span>
+    </div>
+
+    <div class="row g-4">
+        <!-- SOL ANA SAHNE -->
+        <div class="col-lg-9" id="playerStageCol">
+            <div class="game-stage-card mb-3">
+                <div class="game-toolbar">
+                    <div class="d-flex align-items-center gap-2 flex-wrap" id="platformBadgesMount"></div>
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                        <button id="scrollLockBtn" onclick="toggleScrollLock()" class="btn btn-sm btn-outline-success" title="Oynarken Space/Ok tuşlarının sayfayı kaydırmasını engeller">
+                            <i class="fas fa-lock me-1"></i>Tuş Kilidi: Açık
+                        </button>
+                        <button id="cinemaBtn" onclick="toggleCinemaMode()" class="btn btn-sm btn-dark border-secondary" title="Etrafı karart (Işıkları Kapat)">
+                            <i class="fas fa-moon me-1"></i>Işıkları Kapat
+                        </button>
+                        <button id="wideBtn" onclick="toggleWideMode()" class="btn btn-sm btn-dark border-secondary d-none d-lg-inline-block" title="Yan paneli gizle / Genişlet">
+                            <i class="fas fa-arrows-alt-h me-1"></i>Geniş Mod
+                        </button>
+                        <button onclick="paylasOyunu()" class="btn btn-sm btn-dark border-secondary" title="Arkadaşına Gönder">
+                            <i class="fas fa-share-alt me-1"></i>Paylaş
+                        </button>
+                        <button onclick="openFeedbackModal('Sorun Bildir', currentGame ? currentGame.oyun_adi : '')" class="btn btn-sm btn-dark border-secondary" title="Oyun açılmıyorsa bildir">
+                            <i class="fas fa-flag me-1 text-warning"></i>Bildir
+                        </button>
+                        <button onclick="oyunuYenidenYukle()" class="btn btn-sm btn-dark border-secondary" title="Yeniden Başlat">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                        <button onclick="tamEkranYap()" class="btn btn-sm btn-primary-custom" title="Tam Ekran Oyna">
+                            <i class="fas fa-expand me-1"></i>Tam Ekran
+                        </button>
                     </div>
-                    <canvas id="oyunTahtasi" width="400" height="400"></canvas>
-                    <p class="text-muted mt-3">WASD veya Ok Tuşları ile oyna</p>
-                    <button onclick="location.reload()" class="btn btn-primary-custom">Yeniden Başlat</button>
+                </div>
+                <div class="game-frame-container">
+                    <div id="oyunAlani" class="game-player-box"></div>
                 </div>
             </div>
+
+            <!-- KONTROLLER & OYUN HAKKINDA (SEO + Rehber) -->
+            <div class="page-content mb-4">
+                <div class="row g-3 align-items-start">
+                    <div class="col-md-7">
+                        <h5 class="text-white mb-2"><i class="fas fa-info-circle me-2" style="color:var(--primary);"></i>Oyun Hakkında</h5>
+                        <p class="mb-2" id="gameDescription"></p>
+                        <div class="p-3 rounded mt-2" style="background:var(--bg-darker);border:1px solid var(--border-color);">
+                            <div class="small fw-bold mb-1" style="color:var(--primary-bright);"><i class="fas fa-lightbulb me-1"></i>Taktik & Püf Noktası</div>
+                            <div class="small text-muted" id="gameTipText"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <h5 class="text-white mb-2"><i class="fas fa-keyboard me-2" style="color:var(--primary);"></i>Kontroller & Tuşlar</h5>
+                        <div class="control-badge-pill w-100 mb-2" id="gameControlsText">
+                            <i class="fas fa-gamepad"></i> <span>Fare / Klavye</span>
+                        </div>
+                        <div class="small text-muted" id="ruffleSaveTip" style="display:none;">
+                            <i class="fas fa-save me-1" style="color:var(--primary);"></i> Flash kayıtların cihazında tarayıcı önbelleğinde otomatik saklanır.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BU SERİNİN DİĞER OYUNLARI -->
+            <section class="mb-4" id="seriesSection" style="display:none;">
+                <h5 class="section-title mb-3"><i class="fas fa-layer-group"></i> Bu Serinin Diğer Oyunları</h5>
+                <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-3" id="seriesGamesGrid"></div>
+            </section>
+
+            <!-- OYUN ALTI REKLAM ALANI (728x90 Leaderboard) -->
+            <section class="my-4" id="playerBottomAd"></section>
+
+            <!-- YORUMLAR BÖLÜMÜ -->
+            <div class="page-content mb-4">
+                <h5 class="text-white mb-4"><i class="fas fa-comments me-2" style="color:var(--primary);"></i>Oyuncu Yorumları</h5>
+                <form id="yorumFormu" class="mb-4">
+                    <div class="row g-2 mb-2">
+                        <div class="col-md-4">
+                            <input type="text" id="yorumYazar" class="form-control" placeholder="Adınız / Rumuz" required>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="yorumMetni" class="form-control" placeholder="Oyun hakkında ne düşünüyorsun?" required>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary-custom btn-sm px-4">
+                            <i class="fas fa-paper-plane me-1"></i> Yorum Yap
+                        </button>
+                    </div>
+                </form>
+                <div id="commentsList"></div>
+            </div>
         </div>
-    </main>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const gelenOyunAdi = urlParams.get('ad');
-            const tumOyunlar = JSON.parse(localStorage.getItem("tumOyunlar")) || [];
-            
-            // Oyunu Bul
-            let bulunanOyun = tumOyunlar.find(oyun => oyun.ad === gelenOyunAdi);
+        <!-- SAĞ YAN PANEL: REKLAM + BENZER OYUNLAR -->
+        <div class="col-lg-3" id="playerSidebarCol">
+            <div class="mb-4" id="playerSidebarAd"></div>
+            <h5 class="section-title mb-3"><i class="fas fa-dice"></i> Benzer Oyunlar</h5>
+            <div id="similarGamesContainer"></div>
+        </div>
+    </div>
+</main>
 
-            // Eğer bulamazsa ve isim 'Yılan' içeriyorsa varsayılan yap
-            if(!bulunanOyun && gelenOyunAdi && gelenOyunAdi.includes("Yılan")) {
-                bulunanOyun = { ad: "Yılan Oyunu", link: "yerel" };
-            }
+<div id="siteFooterMount"></div>
 
-            if (bulunanOyun) {
-                document.getElementById("oyunBaslik").innerText = bulunanOyun.ad;
-                document.title = bulunanOyun.ad + " - Gekkotari";
-                
-                if (bulunanOyun.link === "yerel") {
-                    // YILAN MODU
-                    document.getElementById("yerelOyunAlani").style.display = "block";
-                    baslatYilanOyunu();
-                } else {
-                    // IFRAME MODU (GitHub'da çalışır!)
-                    const iframe = document.getElementById("oyunCercevesi");
-                    iframe.src = bulunanOyun.link;
-                    iframe.style.display = "block";
-                }
-            } else {
-                document.getElementById("oyunBaslik").innerText = "Oyun Bulunamadı veya Linki Yok!";
-            }
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+<script src="assets/js/ads-config.js"></script>
+<script src="assets/js/games-data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+let currentGame = null;
+let scrollLockEnabled = true;
+
+// Space ve Ok Tuşlarında Sayfa Kaymasını Önle
+window.addEventListener('keydown', (e) => {
+    if (!scrollLockEnabled) return;
+    const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+    if (tag === 'input' || tag === 'textarea' || tag === 'select' || (e.target && e.target.isContentEditable)) return;
+    if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
+        e.preventDefault();
+    }
+}, { passive: false });
+
+function toggleScrollLock() {
+    scrollLockEnabled = !scrollLockEnabled;
+    const btn = document.getElementById('scrollLockBtn');
+    btn.innerHTML = scrollLockEnabled
+        ? '<i class="fas fa-lock me-1"></i>Tuş Kilidi: Açık'
+        : '<i class="fas fa-unlock me-1"></i>Tuş Kilidi: Kapalı';
+    btn.className = scrollLockEnabled ? 'btn btn-sm btn-outline-success' : 'btn btn-sm btn-dark border-secondary';
+}
+
+function toggleCinemaMode() {
+    const active = document.body.classList.toggle('cinema-mode');
+    const btn = document.getElementById('cinemaBtn');
+    btn.innerHTML = active
+        ? '<i class="fas fa-sun me-1"></i>Işıkları Aç'
+        : '<i class="fas fa-moon me-1"></i>Işıkları Kapat';
+}
+
+function toggleWideMode() {
+    const stage = document.getElementById('playerStageCol');
+    const sidebar = document.getElementById('playerSidebarCol');
+    const btn = document.getElementById('wideBtn');
+    const isWide = stage.classList.contains('col-lg-12');
+    if (isWide) {
+        stage.classList.replace('col-lg-12', 'col-lg-9');
+        sidebar.style.display = '';
+        btn.innerHTML = '<i class="fas fa-arrows-alt-h me-1"></i>Geniş Mod';
+    } else {
+        stage.classList.replace('col-lg-9', 'col-lg-12');
+        sidebar.style.display = 'none';
+        btn.innerHTML = '<i class="fas fa-compress-alt me-1"></i>Normal Mod';
+    }
+}
+
+function paylasOyunu() {
+    if (!currentGame) return;
+    const url = window.location.href;
+    if (navigator.share) {
+        navigator.share({ title: currentGame.oyun_adi + ' - Gekkotari', url }).catch(() => {});
+        return;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(() => {
+            showToast('success', 'Oyun bağlantısı panoya kopyalandı! Arkadaşına atabilirsin.');
         });
+    } else {
+        prompt('Oyunu arkadaşınla paylaşmak için bağlantıyı kopyala:', url);
+    }
+}
 
-        // --- Yılan Oyunu Mantığı ---
-        function baslatYilanOyunu() {
-            const canvas = document.getElementById("oyunTahtasi");
-            const ctx = canvas.getContext("2d");
-            let hiz=7, tileCount=20, tileSize=canvas.width/tileCount-2;
-            let headX=10, headY=10, xHiz=0, yHiz=0, elmaX=5, elmaY=5;
-            let yilanParcalari=[], kuyruk=2, skor=0, yonDegisti=false;
+function tamEkranYap() {
+    const elem = document.getElementById('oyunAlani');
+    if (elem.requestFullscreen) elem.requestFullscreen();
+    else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+    else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
+}
 
-            document.addEventListener("keydown", tusBasildi);
-            setInterval(oyunuCiz, 1000/hiz);
+function oyunuYenidenYukle() {
+    if (currentGame) mountGameEngine(currentGame);
+}
 
-            function oyunuCiz() {
-                headX+=xHiz; headY+=yHiz; yonDegisti=false;
-                if(headX<0||headX>=tileCount||headY<0||headY>=tileCount) return reset();
-                for(let p of yilanParcalari) if(p.x===headX && p.y===headY && kuyruk>2) return reset();
-                
-                ctx.fillStyle="black"; ctx.fillRect(0,0,canvas.width,canvas.height);
-                ctx.fillStyle="lime";
-                for(let p of yilanParcalari) ctx.fillRect(p.x*tileCount, p.y*tileCount, tileSize, tileSize);
-                yilanParcalari.push({x:headX, y:headY});
-                while(yilanParcalari.length>kuyruk) yilanParcalari.shift();
-
-                if(elmaX===headX && elmaY===headY) {
-                    kuyruk++; skor+=10; 
-                    elmaX=Math.floor(Math.random()*tileCount); 
-                    elmaY=Math.floor(Math.random()*tileCount);
-                    document.getElementById("skor").innerText = skor;
-                }
-                ctx.fillStyle="red"; ctx.fillRect(elmaX*tileCount, elmaY*tileCount, tileSize, tileSize);
+function puanVer() {
+    if (!currentGame) return;
+    let p = prompt('Bu oyuna kaç puan verirsin? (1 ile 5 arasında bir sayı girin):', '5');
+    if (p !== null && p !== '') {
+        let num = parseFloat(p);
+        if (num >= 1 && num <= 5) {
+            const yeniPuan = ((parseFloat(currentGame.puan || 4.8) * 4 + num) / 5).toFixed(1);
+            currentGame.puan = yeniPuan;
+            document.getElementById('puanGosterge').innerText = yeniPuan;
+            const games = getGames();
+            const idx = games.findIndex(g => String(g.id) === String(currentGame.id));
+            if (idx > -1) {
+                games[idx].puan = yeniPuan;
+                saveGames(games);
             }
-            function reset() { xHiz=0; yHiz=0; headX=10; headY=10; kuyruk=2; skor=0; yilanParcalari=[]; document.getElementById("skor").innerText=0; }
-            function tusBasildi(e) {
-                if([37,38,39,40,65,87,68,83].indexOf(e.keyCode)>-1) e.preventDefault();
-                if(yonDegisti) return;
-                if((e.keyCode==37||e.keyCode==65) && xHiz!=1) {xHiz=-1; yHiz=0; yonDegisti=true;}
-                if((e.keyCode==38||e.keyCode==87) && yHiz!=1) {xHiz=0; yHiz=-1; yonDegisti=true;}
-                if((e.keyCode==39||e.keyCode==68) && xHiz!=-1) {xHiz=1; yHiz=0; yonDegisti=true;}
-                if((e.keyCode==40||e.keyCode==83) && yHiz!=-1) {xHiz=0; yHiz=1; yonDegisti=true;}
-            }
+            showToast('success', 'Puanınız kaydedildi! Yeni ortalama: ' + yeniPuan);
+        } else {
+            showToast('warning', 'Lütfen 1 ile 5 arasında bir puan girin.');
         }
-        document.getElementById("enYuksek").innerText = localStorage.getItem("snakeEnYuksek") || 0;
-    </script>
+    }
+}
+
+function mountGameEngine(oyun) {
+    const container = document.getElementById('oyunAlani');
+    container.innerHTML = '';
+    const link = (oyun.oyun_linki || '').trim();
+
+    if (link.toLowerCase().endsWith('.swf')) {
+        container.innerHTML = `<div id="ruffle-container" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;"></div>`;
+        const ruffleBox = document.getElementById('ruffle-container');
+        const origin = window.location.origin;
+
+        const rewriteRules = [
+            [/^https?:\/\/[^/]*cpmstar\.com\/.*adviewas2.*/i, origin + '/assets/stub-as2.swf'],
+            [/^https?:\/\/[^/]*cpmstar\.com\/.*/i, origin + '/assets/stub.swf'],
+            [/^https?:\/\/[^/]*mochi(?:ads|bot)\.com\/.*/i, origin + '/assets/stub-as2.swf'],
+            [/^https?:\/\/[^/]*fliplineads\.com\/.*\.swf/i, origin + '/assets/stub-as2.swf'],
+            [/^https?:\/\/[^/]*agi\.armorgames\.com\/.*\.swf/i, origin + '/assets/stub.swf'],
+            [/^https?:\/\/[^/]*kongregate\.com\/flash\/.*/i, origin + '/assets/stub.swf'],
+            [/^https?:\/\/[^/]*mindjolt\.com\/.*\.swf/i, origin + '/assets/stub.swf'],
+            [/^https?:\/\/[^/]*spilapi.*/i, origin + '/assets/stub.swf'],
+            [/^https?:\/\/[^/]*fliplineads\.com\/.*/i, origin + '/assets/stub.txt'],
+            [/^https?:\/\/[^/]*playtomic\.com\/.*/i, origin + '/assets/stub.txt'],
+            [/^https?:\/\/[^/]*swfstats\.com\/.*/i, origin + '/assets/stub.txt'],
+            [/^https?:\/\/[^/]*miniclip\.com\/.*/i, origin + '/assets/stub.txt']
+        ];
+
+        window.RufflePlayer = window.RufflePlayer || {};
+        window.RufflePlayer.config = {
+            autoplay: "on",
+            unmuteOverlay: "visible",
+            splashScreen: true,
+            warnOnUnsupportedContent: false,
+            letterbox: "on",
+            scale: "showAll",
+            quality: "high",
+            openUrlMode: "confirm",
+            allowNetworking: "all",
+            urlRewriteRules: rewriteRules
+        };
+
+        const startRuffle = () => {
+            if (!window.RufflePlayer || typeof window.RufflePlayer.newest !== 'function') {
+                setTimeout(startRuffle, 200);
+                return;
+            }
+            const ruffle = window.RufflePlayer.newest();
+            const player = ruffle.createPlayer();
+            player.style.width = '100%';
+            player.style.height = '100%';
+            ruffleBox.innerHTML = '';
+            ruffleBox.appendChild(player);
+
+            const proxyUrl = link.startsWith('http')
+                ? '/api/swf-proxy?url=' + encodeURIComponent(link)
+                : link;
+
+            player.load({
+                url: proxyUrl,
+                autoplay: "on",
+                unmuteOverlay: "visible",
+                warnOnUnsupportedContent: false,
+                letterbox: "on",
+                scale: "showAll",
+                openUrlMode: "confirm",
+                allowNetworking: "all",
+                urlRewriteRules: rewriteRules
+            });
+        };
+        startRuffle();
+        return;
+    }
+
+    let embedLink = link;
+    const gdMatch = embedLink.match(/gamedistribution\.com\/(?:rvvASMiM\/)?([a-f0-9]{32})/i);
+    if (gdMatch) {
+        embedLink = 'https://html5.gamedistribution.com/rvvASMiM/' + gdMatch[1].toLowerCase() + '/index.html';
+    }
+
+    container.innerHTML = `
+        <iframe src="${escapeHtml(embedLink)}"
+                allow="autoplay; fullscreen; gamepad; accelerometer; gyroscope"
+                allowfullscreen
+                referrerpolicy="no-referrer"
+                style="width:100%; height:100%; border:none;"></iframe>
+    `;
+}
+
+function getComments(oyunId) {
+    try {
+        const all = JSON.parse(localStorage.getItem('gekkotari_comments')) || {};
+        if (all[oyunId]) return all[oyunId];
+    } catch (e) {}
+    return [
+        { yazar: 'Emre K.', tarih: '14.05.2026 18:30', yorum: 'Hiç takılmadan tek tıkla açıldı, harika olmuş!' },
+        { yazar: 'Zeynep T.', tarih: '15.05.2026 11:15', yorum: 'Işıkları kapat moduyla tam ekran oynaması çok keyifli.' }
+    ];
+}
+
+function saveComment(oyunId, yazar, yorum) {
+    let all = {};
+    try { all = JSON.parse(localStorage.getItem('gekkotari_comments')) || {}; } catch (e) {}
+    if (!all[oyunId]) all[oyunId] = getComments(oyunId);
+    const now = new Date();
+    const tarihStr = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+    all[oyunId].unshift({ yazar, tarih: tarihStr, yorum });
+    localStorage.setItem('gekkotari_comments', JSON.stringify(all));
+}
+
+function renderComments(oyunId) {
+    const list = getComments(oyunId);
+    document.getElementById('commentsList').innerHTML = list.map(y => `
+        <div class="d-flex mb-3 p-3 rounded" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);">
+            <div class="me-3">
+                <div class="rounded-circle d-flex align-items-center justify-content-center text-dark fw-bold"
+                     style="width: 38px; height: 38px; background: var(--primary);">
+                    ${escapeHtml((y.yazar || 'O').charAt(0).toUpperCase())}
+                </div>
+            </div>
+            <div class="flex-grow-1">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <h6 class="text-white mb-0">${escapeHtml(y.yazar)}</h6>
+                    <small class="text-muted">${escapeHtml(y.tarih)}</small>
+                </div>
+                <p class="mb-0" style="font-size: 0.94rem; color: var(--text-secondary);">${escapeHtml(y.yorum)}</p>
+            </div>
+        </div>
+    `).join('');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderHeader('oyun.html');
+    renderFooter();
+    renderAdSlot('playerBottomAd', 'player_bottom');
+    renderAdSlot('playerSidebarAd', 'player_sidebar');
+
+    const params = new URLSearchParams(window.location.search);
+    const games = getGames();
+
+    if (params.get('random') === '1') {
+        const rand = games[Math.floor(Math.random() * games.length)];
+        window.location.replace('oyun.html?id=' + rand.id);
+        return;
+    }
+
+    const idParam = params.get('id');
+    const adParam = params.get('ad');
+
+    if (idParam) currentGame = games.find(g => String(g.id) === String(idParam));
+    else if (adParam) currentGame = games.find(g => (g.oyun_adi || '').toLowerCase().includes(adParam.toLowerCase()));
+    if (!currentGame) currentGame = games[0];
+
+    recordRecentPlay(currentGame.id);
+
+    currentGame.oynama_sayisi = (parseInt(currentGame.oynama_sayisi, 10) || 1000) + 1;
+    const gIdx = games.findIndex(g => String(g.id) === String(currentGame.id));
+    if (gIdx > -1) {
+        games[gIdx].oynama_sayisi = currentGame.oynama_sayisi;
+        saveGames(games);
+    }
+
+    const descText = currentGame.aciklama || (currentGame.oyun_adi + ' oyununu Gekkotari üzerinden ücretsiz ve tam ekran oyna!');
+    document.title = currentGame.oyun_adi + ' Oyna - Gekkotari';
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', `${currentGame.oyun_adi} ücretsiz tarayıcıda oyna. ${descText}`);
+
+    document.getElementById('gameTitleHeading').innerHTML = `<i class="${escapeHtml(getGameIcon(currentGame))}"></i> ${escapeHtml(currentGame.oyun_adi)}`;
+    document.getElementById('backCatLink').href = 'kategori.html?tur=' + encodeURIComponent(currentGame.kategori_adi);
+    document.getElementById('backCatLink').innerHTML = `<i class="fas fa-arrow-left me-1"></i> ${escapeHtml(currentGame.kategori_adi)} Oyunları`;
+    document.getElementById('puanGosterge').innerText = Number(currentGame.puan || 4.8).toFixed(1);
+    document.getElementById('oynamaSayisiGosterge').innerText = formatNumber(currentGame.oynama_sayisi);
+    document.getElementById('etiketBadge').innerText = currentGame.etiket || 'Popüler';
+    document.getElementById('gameDescription').innerText = descText;
+    document.getElementById('gameTipText').innerText = currentGame.ipucu || 'Tam ekran veya Işıkları Kapat modunu kullanarak oyuna odaklanabilirsin.';
+    document.getElementById('gameControlsText').innerHTML = `<i class="fas fa-gamepad"></i> <span>${escapeHtml(currentGame.kontroller || 'Fare / Klavye')}</span>`;
+    document.getElementById('addLibBtn').onclick = () => kutuphaneyeEkle(currentGame.id);
+
+    const isSwf = (currentGame.oyun_linki || '').toLowerCase().endsWith('.swf');
+    if (isSwf) {
+        document.getElementById('ruffleSaveTip').style.display = 'block';
+    }
+
+    const mods = Array.isArray(currentGame.modlar) ? currentGame.modlar : [];
+    const platEl = document.getElementById('platformBadgesMount');
+    let platHtml = isSwf
+        ? `<span class="badge bg-dark border border-secondary"><i class="fas fa-bolt text-warning me-1"></i>Flash (Klavye/Fare)</span>`
+        : `<span class="badge bg-dark border border-secondary"><i class="fab fa-html5 text-info me-1"></i>HTML5 (PC & Mobil)</span>`;
+    if (mods.includes('2 Kişilik')) {
+        platHtml += `<span class="badge bg-success"><i class="fas fa-user-friends me-1"></i>Aynı Ekranda 2 Kişilik</span>`;
+    }
+    platEl.innerHTML = platHtml;
+
+    const mobBanner = document.getElementById('mobileTipBanner');
+    const mobText = document.getElementById('mobileTipText');
+    if (mobBanner && mobText) {
+        mobBanner.style.removeProperty('display');
+        mobText.innerText = isSwf
+            ? 'Bu klasik Flash oyunu klavye/fare için tasarlanmıştır; en iyi performans için bilgisayarda veya yatay ekranda deneyin.'
+            : 'Daha geniş oyun alanı için telefonunuzu yan çevirebilirsiniz.';
+    }
+
+    if (currentGame.seri) {
+        const seriesGames = games.filter(g => g.seri === currentGame.seri && String(g.id) !== String(currentGame.id));
+        if (seriesGames.length > 0) {
+            document.getElementById('seriesSection').style.display = 'block';
+            document.getElementById('seriesGamesGrid').innerHTML = seriesGames.map(g => renderGameCard(g, 'col')).join('');
+        }
+    }
+
+    const user = getActiveUser();
+    if (user) {
+        document.getElementById('yorumYazar').value = user.ad_soyad || user.kullanici_adi;
+    }
+
+    document.getElementById('yorumFormu').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const yazar = document.getElementById('yorumYazar').value.trim() || 'Misafir Oyuncu';
+        const metin = document.getElementById('yorumMetni').value.trim();
+        if (!metin) return;
+        saveComment(currentGame.id, yazar, metin);
+        document.getElementById('yorumMetni').value = '';
+        renderComments(currentGame.id);
+        showToast('success', 'Yorumunuz eklendi!');
+    });
+
+    renderComments(currentGame.id);
+
+    const similars = games
+        .filter(g => g.kategori_adi === currentGame.kategori_adi && String(g.id) !== String(currentGame.id))
+        .slice(0, 5);
+    document.getElementById('similarGamesContainer').innerHTML = similars.map(b => {
+        const hasImg = b.gorsel && b.gorsel.startsWith('http');
+        return `
+        <div class="game-card mb-2 p-2" onclick="window.location.href='oyun.html?id=${b.id}'">
+            <div class="d-flex align-items-center gap-2">
+                <div style="width:58px;height:44px;border-radius:8px;overflow:hidden;background:linear-gradient(135deg, ${b.renk || getCategoryColor(b.kategori_adi)}, var(--bg-darker));display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    ${hasImg
+                        ? `<img src="${escapeHtml(b.gorsel)}" alt="${escapeHtml(b.oyun_adi)}" style="width:100%;height:100%;object-fit:cover;">`
+                        : `<i class="${escapeHtml(getGameIcon(b))} text-white"></i>`}
+                </div>
+                <div class="flex-grow-1 overflow-hidden">
+                    <h4 class="game-title mb-0" style="font-size:0.84rem;">${escapeHtml(b.oyun_adi)}</h4>
+                    <span class="game-category d-block" style="font-size:0.72rem;">${escapeHtml(b.kategori_adi)} • ⭐ ${Number(b.puan || 4.7).toFixed(1)}</span>
+                </div>
+                <a href="oyun.html?id=${b.id}" class="btn btn-play btn-sm px-2" style="width:auto;" aria-label="Oyna">
+                    <i class="fas fa-play"></i>
+                </a>
+            </div>
+        </div>`;
+    }).join('');
+
+    mountGameEngine(currentGame);
+});
+</script>
 </body>
 </html>

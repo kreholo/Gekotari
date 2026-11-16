@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gekotari.vercel.app/sitemap.xml

@@ -1,0 +1,57 @@
+{
+    "cleanUrls": false,
+    "rewrites": [
+        {
+            "source": "/index.php",
+            "destination": "/index.html"
+        },
+        {
+            "source": "/oyun.php",
+            "destination": "/oyun.html"
+        },
+        {
+            "source": "/kategori.php",
+            "destination": "/kategori.html"
+        },
+        {
+            "source": "/kutuphane.php",
+            "destination": "/kutuphane.html"
+        },
+        {
+            "source": "/giris.php",
+            "destination": "/giris.html"
+        },
+        {
+            "source": "/kayit.php",
+            "destination": "/kayit.html"
+        },
+        {
+            "source": "/sayfa.php",
+            "destination": "/sayfa.html"
+        },
+        {
+            "source": "/rastgele.php",
+            "destination": "/oyun.html?random=1"
+        },
+        {
+            "source": "/swf_proxy.php",
+            "destination": "/api/swf-proxy"
+        },
+        {
+            "source": "/admin",
+            "destination": "/admin.html"
+        },
+        {
+            "source": "/admin/",
+            "destination": "/admin.html"
+        },
+        {
+            "source": "/admin/index.php",
+            "destination": "/admin.html"
+        },
+        {
+            "source": "/admin/oyunlar.php",
+            "destination": "/admin.html"
+        }
+    ]
+}

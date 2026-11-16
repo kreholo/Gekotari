@@ -2,119 +2,125 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2ee57a">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="assets/icon-192.svg">
     <title>Kütüphanem - Gekkotari</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-    <header>
-        <div class="container">
-            <a class="navbar-brand" href="index.html"><i class="fas fa-arrow-left"></i> Ana Sayfaya Dön</a>
-        </div>
-    </header>
+<div id="siteHeaderMount"></div>
 
-    <main class="container my-5">
-        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-2">
-            <h2 class="text-warning mb-0">
-                <i class="fas fa-layer-group"></i> Oyun Kütüphanem
-            </h2>
-            <button onclick="window.herSeyisil()" class="btn btn-sm btn-outline-danger">
-                <i class="fas fa-trash-alt"></i> Listeyi Tamamen Temizle
-            </button>
-        </div>
-        
-        <div class="row" id="kutuphaneListesi">
+<main class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <h2 class="section-title" id="libTitle">
+            <i class="fas fa-layer-group"></i> Oyun Kütüphanem
+        </h2>
+        <button id="clearAllBtn" onclick="hepsiniTemizle()" class="btn btn-sm btn-outline-danger" style="display:none;">
+            <i class="fas fa-trash-alt me-1"></i> Listeyi Tamamen Temizle
+        </button>
+    </div>
+
+    <div class="row g-3" id="libraryContainer"></div>
+</main>
+
+<div id="siteFooterMount"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/ads-config.js"></script>
+<script src="assets/js/games-data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+function renderLibrary() {
+    const list = getKutuphane();
+    const allGames = getGames();
+    const container = document.getElementById('libraryContainer');
+    const clearBtn = document.getElementById('clearAllBtn');
+
+    document.getElementById('libTitle').innerHTML = `
+        <i class="fas fa-layer-group"></i> Oyun Kütüphanem
+        <small class="text-muted fs-6 ms-2">(${list.length} oyun)</small>
+    `;
+
+    if (list.length === 0) {
+        clearBtn.style.display = 'none';
+        container.innerHTML = `
+            <div class="col-12">
+                <div class="empty-state">
+                    <i class="fas fa-layer-group"></i>
+                    <h4>Kütüphanen henüz boş</h4>
+                    <p>Beğendiğin oyunları "Kütüphaneye Ekle" butonuyla buraya kaydedebilirsin!</p>
+                    <a href="kategori.html" class="btn btn-primary-custom">
+                        <i class="fas fa-gamepad me-2"></i>Oyunlara Göz At
+                    </a>
+                </div>
             </div>
+        `;
+        return;
+    }
 
-        <div id="bosUyari" class="alert alert-secondary d-none">
-            <i class="fas fa-info-circle"></i> Henüz kütüphanene oyun eklemedin. <a href="kategori.html?tur=Aksiyon" class="alert-link">Oyunlara göz at!</a>
-        </div>
-    </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var aktifOturum = localStorage.getItem("aktifOturum");
-            if(!aktifOturum) {
-                alert("Kütüphaneni görmek için giriş yapmalısın!");
-                window.location.href = "giris.html";
-                return;
-            }
-            kutuphaneyiGoster();
-        });
-
-        function kutuphaneyiGoster() {
-            var aktifKullanici = JSON.parse(localStorage.getItem("aktifOturum"));
-            var ozelAnahtar = "kutuphane_" + aktifKullanici.kadi;
-            
-            var kutuphane = JSON.parse(localStorage.getItem(ozelAnahtar)) || [];
-            var listeAlani = document.getElementById("kutuphaneListesi");
-            var bosUyari = document.getElementById("bosUyari");
-
-            listeAlani.innerHTML = ""; 
-
-            if (kutuphane.length === 0) {
-                bosUyari.classList.remove("d-none");
-            } else {
-                bosUyari.classList.add("d-none");
-            }
-
-            kutuphane.forEach(function(oyun, index) {
-                var html = `
-                    <div class="col-12 mb-3">
-                        <div class="card bg-dark border-secondary text-white">
-                            <div class="row g-0 align-items-center">
-                                <div class="col-md-2">
-                                    <img src="https://via.placeholder.com/150x150/2c3e50/50F589?text=${oyun.resim}" class="img-fluid rounded-start w-100" style="height: 100px; object-fit: cover;">
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-success">${oyun.ad}</h5>
-                                        <p class="card-text text-muted small">${oyun.tur} Kategorisi</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-2 text-center p-3">
-                                    <a href="oyun.html" class="btn btn-success btn-sm w-100 mb-2">
-                                        <i class="fas fa-play"></i> Oyna
-                                    </a>
-                                    
-                                    <button onclick="window.oyunuSil(${index})" class="btn btn-outline-danger btn-sm w-100">
-                                        <i class="fas fa-trash"></i> Kaldır
-                                    </button>
-                                </div>
-                            </div>
+    clearBtn.style.display = 'inline-block';
+    container.innerHTML = list.map(item => {
+        const oyun = allGames.find(g => String(g.id) === String(item.oyun_id));
+        if (!oyun) return '';
+        const tarih = item.ekleme_tarihi ? new Date(item.ekleme_tarihi).toLocaleDateString('tr-TR') : 'Bugün';
+        const ikon = getGameIcon(oyun);
+        const renk = oyun.renk || getCategoryColor(oyun.kategori_adi);
+        return `
+        <div class="col-12">
+            <div class="library-card">
+                <div class="row g-0 align-items-center">
+                    <div class="col-md-2 col-3">
+                        <div style="height:100px;position:relative;overflow:hidden;background:linear-gradient(135deg, ${renk}, var(--bg-card));display:flex;align-items:center;justify-content:center;border-radius:var(--radius-md) 0 0 var(--radius-md);">
+                            ${oyun.gorsel && oyun.gorsel.startsWith('http')
+                                ? `<img src="${escapeHtml(oyun.gorsel)}" alt="${escapeHtml(oyun.oyun_adi)}" style="width:100%;height:100%;object-fit:cover;">`
+                                : `<i class="${escapeHtml(ikon)} fa-2x" style="color:white;"></i>`}
                         </div>
                     </div>
-                `;
-                listeAlani.innerHTML += html;
-            });
-        }
+                    <div class="col-md-7 col-5">
+                        <div class="p-3">
+                            <h5 class="mb-1" style="color:var(--primary);">${escapeHtml(oyun.oyun_adi)}</h5>
+                            <p class="text-muted small mb-1">${escapeHtml(oyun.kategori_adi)} Kategorisi</p>
+                            <small class="text-muted"><i class="fas fa-clock me-1"></i>${tarih} tarihinde eklendi</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-4 text-center p-3">
+                        <a href="oyun.html?id=${oyun.id}" class="btn btn-play btn-sm w-100 mb-2">
+                            <i class="fas fa-play me-1"></i> Oyna
+                        </a>
+                        <button onclick="kaldirVeYenile(${oyun.id})" class="btn btn-outline-danger btn-sm w-100">
+                            <i class="fas fa-trash me-1"></i> Kaldır
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
 
-        window.oyunuSil = function(siraNumarasi) {
-            if(confirm("Bu oyunu silmek istediğine emin misin?")) {
-                var aktifKullanici = JSON.parse(localStorage.getItem("aktifOturum"));
-                var ozelAnahtar = "kutuphane_" + aktifKullanici.kadi;
-                
-                var kutuphane = JSON.parse(localStorage.getItem(ozelAnahtar)) || [];
-                kutuphane.splice(siraNumarasi, 1);
-                
-                localStorage.setItem(ozelAnahtar, JSON.stringify(kutuphane));
-                kutuphaneyiGoster();
-            }
-        };
+function kaldirVeYenile(id) {
+    kutuphanedenKaldir(id);
+    renderLibrary();
+}
 
-        window.herSeyisil = function() {
-            if(confirm("TÜM kütüphanen silinecek. Emin misin?")) {
-                var aktifKullanici = JSON.parse(localStorage.getItem("aktifOturum"));
-                var ozelAnahtar = "kutuphane_" + aktifKullanici.kadi;
-                
-                localStorage.removeItem(ozelAnahtar);
-                kutuphaneyiGoster();
-            }
-        };
-    </script>
+function hepsiniTemizle() {
+    if (confirm('TÜM kütüphane temizlenecek. Emin misiniz?')) {
+        localStorage.removeItem(getKutuphaneKey());
+        showToast('info', 'Kütüphaneniz tamamen temizlendi.');
+        renderLibrary();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderHeader('kutuphane.html');
+    renderFooter();
+    renderLibrary();
+});
+</script>
 </body>
 </html>

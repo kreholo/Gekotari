@@ -3,252 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gekkotari - Ana Sayfa</title>
+    <meta name="description" content="Gekkotari - Ateş ve Su 1-5, MotoX3M, Çağlar Boyu Savaş ve 93 doğrulanmış ücretsiz HTML5 & Flash oyunu kurulumsuz hemen oyna!">
+    <meta name="theme-color" content="#2ee57a">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="assets/icon-192.svg">
+    <title>Gekkotari — Ücretsiz Flash & HTML5 Oyun Portalı</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-    <header>
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-3">
-                    <a class="navbar-brand" href="index.html"><i class="fas fa-gamepad"></i> gekkotari</a>
-                </div>
-                <div class="col-md-5 my-2 my-md-0">
-                    <div class="search-container">
-                        <input type="text" class="search-input" placeholder="Oyun ara...">
-                        <button class="search-btn"><i class="fas fa-search"></i></button>
-                    </div>
-                </div>
-                <div class="col-md-4 text-end" id="userArea">
-                    <a href="giris.html" class="btn btn-outline-light btn-sm me-2 btn-auth">
-                        <i class="fas fa-sign-in-alt"></i> Giriş Yap
-                    </a>
-                    <a href="kayit.html" class="btn btn-primary-custom btn-sm btn-auth">
-                        <i class="fas fa-user-plus"></i> Kayıt Ol
-                    </a>
-                </div>
-            </div>
+<div id="siteHeaderMount"></div>
+
+<main class="container-xl my-4">
+    <!-- HERO + GÜNÜN OYUNU -->
+    <div class="row g-3 mb-4 align-items-stretch">
+        <div class="col-lg-8">
+            <section class="hero-slider h-100" id="sliderSection"></section>
         </div>
-    </header>
-
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-        <div class="container">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a class="nav-link active" href="index.html">Ana Sayfa</a></li>
-                    
-                    <li class="nav-item">
-                        <a class="nav-link" href="kutuphane.html"><i class="fas fa-layer-group"></i> Kütüphanem</a>
-                    </li>
-
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-list"></i> Kategoriler
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-dark">
-                            <li><a class="dropdown-item" href="kategori.html?tur=Aksiyon">Aksiyon</a></li>
-                            <li><a class="dropdown-item" href="kategori.html?tur=Macera">Macera</a></li>
-                            <li><a class="dropdown-item" href="kategori.html?tur=Strateji">Strateji</a></li>
-                            <li><a class="dropdown-item" href="kategori.html?tur=RPG">RPG</a></li>
-                            <li><a class="dropdown-item" href="kategori.html?tur=Spor">Spor</a></li>
-                            <li><a class="dropdown-item" href="kategori.html?tur=Yarış">Yarış</a></li>
-                            <li><a class="dropdown-item" href="kategori.html?tur=Korku">Korku</a></li>
-                            <li><a class="dropdown-item" href="kategori.html?tur=Klasik">Klasik</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
+        <div class="col-lg-4">
+            <aside class="daily-spotlight-card" id="dailySpotlightMount"></aside>
         </div>
-    </nav>
+    </div>
 
-    <main class="container my-4">
-        
-        <section class="row mb-4">
-            <div class="col-12">
-                <div class="p-5 bg-dark rounded-3 border border-secondary" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://via.placeholder.com/1200x400/50F589/000?text=Gekkotari+Oyun+Dunyasi'); background-size: cover;">
-                    <h1 class="display-5 fw-bold text-white">Haftanın Oyunu: Space Explorer</h1>
-                    <p class="col-md-8 fs-4 text-light">Yepyeni uzay macerası şimdi kütüphanede.</p>
-                    <a href="oyun.html?ad=Space Explorer" class="btn btn-primary-custom btn-lg">Hemen Oyna</a>
+    <!-- HIZLI MODLAR & KATEGORİLER -->
+    <section class="mb-4">
+        <div class="mode-chips-bar mb-2" id="quickModesBar"></div>
+        <div class="d-flex flex-wrap gap-2" id="categoryBadgesArea"></div>
+    </section>
+
+    <!-- SON OYNADIKLARIN (Varsa otomatik açılır) -->
+    <section class="mb-4" id="recentSection" style="display:none;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="section-title mb-0"><i class="fas fa-history"></i> Kaldığın Yerden Devam Et</h3>
+            <button onclick="temizleSonOynanan()" class="btn btn-sm btn-outline-secondary" style="font-size:0.75rem;">Temizle</button>
+        </div>
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3" id="recentGamesGrid"></div>
+    </section>
+
+    <!-- ANA SAYFA REKLAM ALANI (728x90 Leaderboard) -->
+    <section class="my-4" id="homeLeaderboardAd"></section>
+
+    <!-- EFSANE SERİLER & KLASİKLER -->
+    <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="section-title mb-0"><i class="fas fa-crown"></i> Efsane Seriler & Flash Klasikler</h3>
+            <a href="kategori.html?siralama=populer" class="text-muted small">Tümünü Gör <i class="fas fa-chevron-right ms-1"></i></a>
+        </div>
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3" id="classicGamesGrid"></div>
+    </section>
+
+    <!-- POPÜLER HTML5 OYUNLAR -->
+    <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="section-title mb-0"><i class="fas fa-fire"></i> Popüler HTML5 Oyunlar</h3>
+            <a href="kategori.html" class="text-muted small">Tümünü Gör <i class="fas fa-chevron-right ms-1"></i></a>
+        </div>
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3" id="popularGamesGrid"></div>
+    </section>
+
+    <!-- YENİ EKLENENLER -->
+    <section class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="section-title mb-0"><i class="fas fa-bolt"></i> Öne Çıkan Yeniler</h3>
+            <a href="kategori.html?siralama=yeni" class="text-muted small">Tümünü Gör <i class="fas fa-chevron-right ms-1"></i></a>
+        </div>
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3" id="newGamesGrid"></div>
+    </section>
+</main>
+
+<div id="siteFooterMount"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/ads-config.js"></script>
+<script src="assets/js/games-data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+function temizleSonOynanan() {
+    localStorage.removeItem('gekkotari_recent');
+    document.getElementById('recentSection').style.display = 'none';
+    showToast('info', 'Son oynananlar geçmişi temizlendi.');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderHeader('index.html');
+    renderFooter();
+    renderAdSlot('homeLeaderboardAd', 'home_leaderboard');
+
+    const games = getGames().filter(g => String(g.durum) !== '0');
+    const categories = getCategories();
+    const sliders = getSliders();
+
+    // 1. Slider
+    const sliderSec = document.getElementById('sliderSection');
+    if (sliders.length > 0) {
+        const indicators = sliders.map((s, i) =>
+            `<button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="${i}" ${i === 0 ? 'class="active"' : ''}></button>`
+        ).join('');
+        const slides = sliders.map((s, i) => `
+            <div class="carousel-item h-100 ${i === 0 ? 'active' : ''}">
+                <div class="hero-slide h-100" style="background: radial-gradient(circle at 82% 25%, rgba(46,229,122,0.18), var(--bg-dark) 58%, var(--bg-darker) 100%);">
+                    <div class="hero-content">
+                        <span class="badge bg-success mb-2"><i class="fas fa-star me-1"></i>ÖNE ÇIKAN</span>
+                        <h2>${escapeHtml(s.baslik)}</h2>
+                        <p>${escapeHtml(s.aciklama)}</p>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <a href="${escapeHtml(s.link || 'kategori.html')}" class="btn btn-primary-custom px-4">
+                                <i class="fas fa-play me-2"></i>Keşfet
+                            </a>
+                            <button onclick="rastgeleOyunAc()" class="btn btn-outline-light px-3">
+                                <i class="fas fa-dice me-2"></i>Şansımı Dene
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
+        `).join('');
 
-        <section>
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3 class="text-white"><i class="fas fa-fire" style="color: var(--primary-color);"></i> Popüler Oyunlar</h3>
-                <a href="kategori.html?tur=Aksiyon" class="text-secondary text-decoration-none">Tümünü Gör ></a>
+        sliderSec.innerHTML = `
+            <div id="heroCarousel" class="carousel slide h-100" data-bs-ride="carousel" data-bs-interval="5500">
+                <div class="carousel-indicators">${indicators}</div>
+                <div class="carousel-inner h-100">${slides}</div>
+                ${sliders.length > 1 ? `
+                <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>` : ''}
             </div>
+        `;
+    }
 
-            <div class="row">
-                <article class="col-6 col-md-4 col-lg-2">
-                    <div class="game-card h-100">
-                        <img src="https://via.placeholder.com/200x140/2ecc71/000?text=Snake+Game" class="game-thumb" alt="Snake">
-                        <div class="game-info">
-                            <h4 class="game-title text-success">Yılan Oyunu</h4>
-                            <span class="game-category">Klasik</span>
-                            
-                            <div class="d-grid gap-2 mt-2">
-                                <a href="oyun.html?ad=Yılan Oyunu" class="btn btn-sm btn-success"><i class="fas fa-play"></i> Oyna</a>
-                                <button onclick="kutuphaneyeEkle('Yılan Oyunu', 'Snake+Game', 'Klasik')" class="btn btn-sm btn-outline-light">
-                                    <i class="fas fa-plus"></i> Ekle
-                                </button>
-                            </div>
-                        </div>
+    // 2. Günün Oyunu Kartı
+    const daily = getDailyGame(games);
+    const dailyEl = document.getElementById('dailySpotlightMount');
+    if (daily && dailyEl) {
+        const hasImg = daily.gorsel && daily.gorsel.startsWith('http');
+        dailyEl.innerHTML = `
+            <div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-success"><i class="fas fa-calendar-day me-1"></i>GÜNÜN OYUNU</span>
+                    <span class="small fw-bold" style="color:var(--warning);"><i class="fas fa-star me-1"></i>${Number(daily.puan || 4.8).toFixed(1)}</span>
+                </div>
+                <div class="d-flex gap-3 align-items-center mb-3">
+                    <div style="width:92px;height:68px;border-radius:10px;overflow:hidden;flex-shrink:0;background:var(--bg-darker);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;">
+                        ${hasImg
+                            ? `<img src="${escapeHtml(daily.gorsel)}" alt="${escapeHtml(daily.oyun_adi)}" style="width:100%;height:100%;object-fit:cover;">`
+                            : `<i class="${escapeHtml(getGameIcon(daily))} fa-2x" style="color:var(--primary);"></i>`}
                     </div>
-                </article>
-
-                <article class="col-6 col-md-4 col-lg-2">
-                    <div class="game-card h-100">
-                        <img src="https://via.placeholder.com/200x140/e74c3c/fff?text=War+Tank" class="game-thumb" alt="Game">
-                        <div class="game-info">
-                            <h4 class="game-title">War Tank 3D</h4>
-                            <span class="game-category">Aksiyon</span>
-                             <div class="d-grid gap-2 mt-2">
-                                <a href="oyun.html?ad=War Tank 3D" class="btn btn-sm btn-success"><i class="fas fa-play"></i> Oyna</a>
-                                <button onclick="kutuphaneyeEkle('War Tank 3D', 'War+Tank', 'Aksiyon')" class="btn btn-sm btn-outline-light">
-                                    <i class="fas fa-plus"></i> Ekle
-                                </button>
-                            </div>
-                        </div>
+                    <div class="overflow-hidden">
+                        <h5 class="mb-1 text-white fw-bold text-truncate">${escapeHtml(daily.oyun_adi)}</h5>
+                        <div class="small text-muted">${escapeHtml(daily.kategori_adi)}</div>
                     </div>
-                </article>
-                
-                <article class="col-6 col-md-4 col-lg-2">
-                    <div class="game-card h-100">
-                        <img src="https://via.placeholder.com/200x140/3498db/fff?text=City+Build" class="game-thumb" alt="Game">
-                        <div class="game-info">
-                            <h4 class="game-title">City Builder</h4>
-                            <span class="game-category">Simülasyon</span>
-                             <div class="d-grid gap-2 mt-2">
-                                <a href="oyun.html?ad=City Builder" class="btn btn-sm btn-success"><i class="fas fa-play"></i> Oyna</a>
-                                <button onclick="kutuphaneyeEkle('City Builder', 'City+Build', 'Simülasyon')" class="btn btn-sm btn-outline-light">
-                                    <i class="fas fa-plus"></i> Ekle
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="col-6 col-md-4 col-lg-2">
-                    <div class="game-card h-100">
-                        <img src="https://via.placeholder.com/200x140/9b59b6/fff?text=Mage+Hero" class="game-thumb" alt="Game">
-                        <div class="game-info">
-                            <h4 class="game-title">Mage Hero</h4>
-                            <span class="game-category">RPG</span>
-                             <div class="d-grid gap-2 mt-2">
-                                <a href="oyun.html?ad=Mage Hero" class="btn btn-sm btn-success"><i class="fas fa-play"></i> Oyna</a>
-                                <button onclick="kutuphaneyeEkle('Mage Hero', 'Mage+Hero', 'RPG')" class="btn btn-sm btn-outline-light">
-                                    <i class="fas fa-plus"></i> Ekle
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-                
-                <article class="col-6 col-md-4 col-lg-2">
-                    <div class="game-card h-100">
-                        <img src="https://via.placeholder.com/200x140/2ecc71/fff?text=Zombie" class="game-thumb" alt="Game">
-                        <div class="game-info">
-                            <h4 class="game-title">Zombie Defense</h4>
-                            <span class="game-category">Strateji</span>
-                             <div class="d-grid gap-2 mt-2">
-                                <a href="oyun.html?ad=Zombie Defense" class="btn btn-sm btn-success"><i class="fas fa-play"></i> Oyna</a>
-                                <button onclick="kutuphaneyeEkle('Zombie Defense', 'Zombie', 'Strateji')" class="btn btn-sm btn-outline-light">
-                                    <i class="fas fa-plus"></i> Ekle
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </article>
+                </div>
+                <p class="small text-muted mb-3" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+                    ${escapeHtml(daily.aciklama || 'Bugünün öne çıkan doğrulanmış oyununu hemen dene!')}
+                </p>
             </div>
-        </section>
+            <a href="oyun.html?id=${daily.id}" class="btn btn-primary-custom w-100">
+                <i class="fas fa-play me-2"></i>Bugünün Oyununu Oyna
+            </a>
+        `;
+    }
 
-    </main>
+    // 3. Hızlı Mod Çipleri & Kategoriler
+    const quickModes = [
+        { key: '2 Kişilik', icon: 'fas fa-user-friends', label: '2 Kişilik Kapışma' },
+        { key: 'Hızlı', icon: 'fas fa-stopwatch', label: '5 Dk Molalık' },
+        { key: 'Zeka', icon: 'fas fa-brain', label: 'Zeka & Bulmaca' },
+        { key: 'Flash', icon: 'fas fa-bolt', label: 'Flash Efsaneler' },
+        { key: 'Mobil Uyumlu', icon: 'fas fa-mobile-alt', label: 'Telefondan Oyna' }
+    ];
+    document.getElementById('quickModesBar').innerHTML =
+        `<span class="small text-muted fw-semibold me-1"><i class="fas fa-sliders-h me-1" style="color:var(--primary);"></i>Modlar:</span>` +
+        quickModes.map(m => `<a href="kategori.html?mod=${encodeURIComponent(m.key)}" class="mode-chip"><i class="${m.icon}"></i>${m.label}</a>`).join('');
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 Gekkotari Oyun Portalı.</p>
-        </div>
-    </footer>
+    const catArea = document.getElementById('categoryBadgesArea');
+    catArea.innerHTML = `<a href="kategori.html" class="filter-btn active"><i class="fas fa-th me-1"></i>Tümü <span class="badge bg-dark ms-1">${games.length}</span></a>` +
+        categories.map(kat => {
+            const count = games.filter(g => g.kategori_adi === kat.kategori_adi).length;
+            if (!count) return '';
+            return `<a href="kategori.html?tur=${encodeURIComponent(kat.kategori_adi)}" class="filter-btn">
+                <i class="${escapeHtml(kat.ikon)} me-1"></i>
+                ${escapeHtml(kat.kategori_adi)}
+                <span class="badge bg-dark ms-1">${count}</span>
+            </a>`;
+        }).join('');
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    // 4. Son Oynadıkların
+    const recents = getRecentGames(5);
+    if (recents.length > 0) {
+        document.getElementById('recentSection').style.display = 'block';
+        document.getElementById('recentGamesGrid').innerHTML = recents.map(g => renderGameCard(g, 'col')).join('');
+    }
 
-    <script>
-        $(document).ready(function(){
-            var aktifKullanici = JSON.parse(localStorage.getItem("aktifOturum"));
+    // 5. Efsane Seriler & Flash Klasikler (ID >= 51)
+    const classics = games
+        .filter(g => parseInt(g.id, 10) >= 51)
+        .sort((a, b) => (parseInt(b.oynama_sayisi, 10) || 0) - (parseInt(a.oynama_sayisi, 10) || 0))
+        .slice(0, 15);
+    document.getElementById('classicGamesGrid').innerHTML = classics.map(g => renderGameCard(g, 'col')).join('');
 
-            if (aktifKullanici) {
-                var adminMenusu = "";
-                if(aktifKullanici.rol === "admin" || aktifKullanici.email === "admin@gekkotari.com") {
-                    adminMenusu = `
-                        <li><a class="dropdown-item text-warning fw-bold" href="admin.html">
-                            <i class="fas fa-lock me-2"></i> Yönetici Paneli
-                        </a></li>
-                        <li><hr class="dropdown-divider border-secondary"></li>
-                    `;
-                }
+    // 6. Popüler HTML5 Oyunlar (ID <= 50)
+    const popularHtml5 = games
+        .filter(g => parseInt(g.id, 10) <= 50)
+        .sort((a, b) => (parseInt(b.oynama_sayisi, 10) || 0) - (parseInt(a.oynama_sayisi, 10) || 0))
+        .slice(0, 10);
+    document.getElementById('popularGamesGrid').innerHTML = popularHtml5.map(g => renderGameCard(g, 'col')).join('');
 
-                var htmlIcerik = `
-                    <div class="dropdown">
-                        <button class="btn btn-dark border-secondary dropdown-toggle d-flex align-items-center gap-2" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user-circle text-success fs-5"></i> 
-                            <span>${aktifKullanici.kadi}</span>
-                        </button>
-                        
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark shadow" aria-labelledby="userMenu" style="position: absolute; z-index: 9999;">
-                            ${adminMenusu}
-                            <li><a class="dropdown-item" href="kutuphane.html"><i class="fas fa-gamepad me-2 text-success"></i> Kütüphanem</a></li>
-                            <li><hr class="dropdown-divider border-secondary"></li>
-                            <li><a class="dropdown-item text-danger" href="#" id="cikisYap"><i class="fas fa-sign-out-alt me-2"></i> Çıkış Yap</a></li>
-                        </ul>
-                    </div>
-                `;
-                $("#userArea").html(htmlIcerik);
-            }
-
-            $(document).on("click", "#cikisYap", function(e){
-                e.preventDefault(); 
-                localStorage.removeItem("aktifOturum"); 
-                window.location.reload(); 
-            });
-        });
-
-        // --- ANA SAYFADAN KÜTÜPHANEYE EKLEME ÖZELLİĞİ ---
-        function kutuphaneyeEkle(ad, resim, tur) {
-            // 1. Giriş kontrolü
-            var aktifOturumStr = localStorage.getItem("aktifOturum");
-            if (!aktifOturumStr) {
-                alert("Oyun eklemek için önce giriş yapmalısın!");
-                window.location.href = "giris.html";
-                return;
-            }
-
-            var aktifKullanici = JSON.parse(aktifOturumStr);
-            var ozelAnahtar = "kutuphane_" + aktifKullanici.kadi;
-            
-            // 2. Kütüphaneyi al
-            var kutuphane = JSON.parse(localStorage.getItem(ozelAnahtar)) || [];
-
-            // 3. Oyun zaten var mı?
-            var varMi = kutuphane.find(o => o.ad === ad);
-            if (varMi) {
-                alert("Bu oyun zaten kütüphanende mevcut!");
-                return;
-            }
-
-            // 4. Ekle ve Kaydet
-            kutuphane.push({ ad: ad, resim: resim, tur: tur });
-            localStorage.setItem(ozelAnahtar, JSON.stringify(kutuphane));
-
-            alert("Oyun kütüphanenize eklendi!");
-        }
-    </script>
+    // 7. Yeni Eklenenler
+    const newest = [...games]
+        .sort((a, b) => parseInt(b.id, 10) - parseInt(a.id, 10))
+        .slice(0, 10);
+    document.getElementById('newGamesGrid').innerHTML = newest.map(g => renderGameCard(g, 'col')).join('');
+});
+</script>
 </body>
 </html>

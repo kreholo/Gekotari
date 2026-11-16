@@ -2,213 +2,368 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Yönetici Paneli - Gekkotari</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yönetim Paneli - Gekkotari</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <style>
-        body { background-color: #1a1d20; color: #ddd; }
-        .sidebar { background-color: #212529; min-height: 100vh; border-right: 1px solid #495057; position: fixed; width: 250px; }
-        .content { margin-left: 250px; padding: 20px; }
-        .nav-link { color: #adb5bd; margin-bottom: 5px; cursor: pointer; border-radius: 5px; }
-        .nav-link:hover { background-color: #343a40; color: white; }
-        .nav-link.active { background-color: #50F589; color: #000; font-weight: bold; }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
 </head>
 <body>
 
-<div class="sidebar p-3">
-    <h3 class="text-success mb-4 px-2"><i class="fas fa-gamepad"></i> Panel</h3>
-    <ul class="nav flex-column">
-        <li class="nav-item"><a class="nav-link active"><i class="fas fa-list me-2"></i> Oyun Yönetimi</a></li>
-        <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-arrow-left me-2"></i> Siteye Dön</a></li>
-        <li class="nav-item mt-5"><a class="nav-link text-danger" onclick="cikisYap()"><i class="fas fa-sign-out-alt me-2"></i> Çıkış</a></li>
-    </ul>
-</div>
+<button class="sidebar-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('show')">
+    <i class="fas fa-bars"></i>
+</button>
 
-<div class="content">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Bulut Oyun Listesi (Firebase)</h2>
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#oyunEkleModal">
-            <i class="fas fa-plus"></i> Yeni Oyun Ekle
-        </button>
-    </div>
-    <div class="card bg-dark border-secondary">
-        <div class="card-body p-0">
-            <table class="table table-dark table-hover mb-0">
+<div class="admin-wrapper">
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-gamepad fa-2x" style="color:var(--primary);"></i>
+            <div>
+                <h4>GEKKOTARİ</h4>
+                <small>Yönetim Paneli v2.0</small>
+            </div>
+        </div>
+        <div class="sidebar-user">
+            <div class="sidebar-user-avatar">A</div>
+            <div class="sidebar-user-info">
+                <strong id="adminUserName">Site Yöneticisi</strong>
+                <small>Süper Yönetici</small>
+            </div>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="sidebar-menu-title">ANA MENÜ</li>
+            <li><a href="admin.html" class="active"><i class="fas fa-gamepad"></i> Oyun Yönetimi</a></li>
+            <li><a href="index.html"><i class="fas fa-globe"></i> Siteyi Görüntüle</a></li>
+            <li class="sidebar-menu-title">ARAÇLAR</li>
+            <li><button onclick="varsayilanOyunlariYukle()"><i class="fas fa-sync-alt text-info"></i> Varsayılanları Yükle</button></li>
+            <li><button onclick="logoutUser()"><i class="fas fa-sign-out-alt text-danger"></i> Çıkış Yap</button></li>
+        </ul>
+    </aside>
+
+    <!-- CONTENT -->
+    <div class="admin-content">
+        <div class="admin-header">
+            <h1 class="admin-page-title">
+                <i class="fas fa-chart-pie"></i> Dashboard & Oyun Yönetimi
+                <small class="text-muted fs-6 ms-2" id="totalGamesCountLabel"></small>
+            </h1>
+            <div class="d-flex gap-2 flex-wrap">
+                <div class="export-buttons">
+                    <button onclick="csvIndir()" class="btn btn-export btn-outline-success">
+                        <i class="fas fa-file-csv me-1"></i> CSV İndir
+                    </button>
+                    <button onclick="pdfIndir()" class="btn btn-export btn-outline-danger">
+                        <i class="fas fa-file-pdf me-1"></i> PDF (Baskı)
+                    </button>
+                </div>
+                <button class="btn btn-admin btn-admin-success" data-bs-toggle="modal" data-bs-target="#oyunEkleModal">
+                    <i class="fas fa-plus me-1"></i> Yeni Oyun Ekle
+                </button>
+            </div>
+        </div>
+
+        <!-- İSTATİSTİK KARTLARI -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3 col-6">
+                <div class="stat-card primary">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="stat-value" id="statOyun">0</div>
+                            <div class="stat-label">Aktif Oyunlar</div>
+                        </div>
+                        <div class="stat-icon primary"><i class="fas fa-gamepad"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card warning">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="stat-value" id="statKategori">10</div>
+                            <div class="stat-label">Kategoriler</div>
+                        </div>
+                        <div class="stat-icon warning"><i class="fas fa-th-list"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card info">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="stat-value" id="statOynama">0</div>
+                            <div class="stat-label">Toplam Oynama</div>
+                        </div>
+                        <div class="stat-icon info"><i class="fas fa-play-circle"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card primary">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="stat-value" id="statKullanici">1</div>
+                            <div class="stat-label">Kayıtlı Kullanıcı</div>
+                        </div>
+                        <div class="stat-icon primary"><i class="fas fa-users"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FİLTRE BAR -->
+        <div class="category-filter-bar mb-3">
+            <input type="text" id="adminSearch" class="form-control form-control-sm" style="width:240px;" placeholder="Oyun ara..." oninput="renderAdminTable()">
+            <select id="adminCatFilter" class="form-select form-select-sm" style="width:180px;" onchange="renderAdminTable()">
+                <option value="">Tüm Kategoriler</option>
+            </select>
+        </div>
+
+        <!-- OYUN TABLOSU -->
+        <div class="admin-table-card mb-4" style="overflow-x:auto;">
+            <table class="admin-table" id="oyunTablosu">
                 <thead>
                     <tr>
-                        <th>Görsel</th>
+                        <th>ID</th>
                         <th>Oyun Adı</th>
+                        <th>Kategori</th>
                         <th>Tür</th>
-                        <th>Kaynak</th>
-                        <th class="text-end">İşlem</th>
+                        <th>Etiket</th>
+                        <th>Puan</th>
+                        <th>Oynama</th>
+                        <th class="table-actions">İşlem</th>
                     </tr>
                 </thead>
-                <tbody id="adminOyunListesi">
-                    <tr><td colspan="5" class="text-center text-muted">Veriler yükleniyor...</td></tr>
-                </tbody>
+                <tbody id="adminTableBody"></tbody>
             </table>
+        </div>
+
+        <!-- GELEN ÖNERİ & SORUN BİLDİRİMLERİ -->
+        <div class="admin-table-card p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0 text-white"><i class="fas fa-inbox me-2" style="color:var(--primary);"></i>Gelen İstekler & Sorun Bildirimleri <small class="text-muted ms-1" id="feedbackCountLabel"></small></h5>
+                <button onclick="bildirimleriTemizle()" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash me-1"></i>Temizle</button>
+            </div>
+            <div id="adminFeedbackList" class="small text-muted">Henüz bildirim yok.</div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="oyunEkleModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content bg-dark text-white border-secondary">
-            <div class="modal-header border-secondary">
-                <h5 class="modal-title">Yeni Oyun Ekle</h5>
+<!-- YENİ OYUN EKLE MODALI -->
+<div class="modal fade" id="oyunEkleModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-plus-circle me-2" style="color:var(--primary);"></i>Yeni Oyun Ekle</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
-                <form id="oyunEkleForm">
-                    <div class="mb-3">
-                        <label class="form-label">Oyun Adı</label>
-                        <input type="text" id="yeniAd" class="form-control bg-secondary text-white border-0" required>
+            <form id="addGameForm">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Oyun Adı *</label>
+                            <input type="text" id="add_adi" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Kategori *</label>
+                            <select id="add_kategori" class="form-select" required></select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Açıklama</label>
+                            <textarea id="add_aciklama" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Oyun Linki (.swf veya HTML5 Embed URL) *</label>
+                            <input type="text" id="add_link" class="form-control" placeholder="https://..." required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Görsel URL (Opsiyonel)</label>
+                            <input type="text" id="add_gorsel" class="form-control" placeholder="https://...">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Etiket</label>
+                            <input type="text" id="add_etiket" class="form-control" value="Yeni">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Puan (1-5)</label>
+                            <input type="number" id="add_puan" class="form-control" step="0.1" min="1" max="5" value="4.8">
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Kategori</label>
-                        <select id="yeniKategori" class="form-select bg-secondary text-white border-0">
-                            <option value="Aksiyon">Aksiyon</option>
-                            <option value="Macera">Macera</option>
-                            <option value="Strateji">Strateji</option>
-                            <option value="RPG">RPG</option>
-                            <option value="Spor">Spor</option>
-                            <option value="Yarış">Yarış</option>
-                            <option value="Korku">Korku</option>
-                            <option value="Klasik">Klasik</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-warning">Oyun Linki (Embed URL)</label>
-                        <input type="text" id="yeniLink" class="form-control bg-secondary text-white border-0" placeholder="Link yoksa 'yerel' yazın">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Resim Anahtar Kelimesi</label>
-                        <input type="text" id="yeniResim" class="form-control bg-secondary text-white border-0" placeholder="Örn: Fireboy, Snake">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Etiket</label>
-                        <input type="text" id="yeniEtiket" class="form-control bg-secondary text-white border-0" value="Yeni">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer border-secondary">
-                <button type="button" onclick="oyunKaydet()" class="btn btn-success">Kaydet</button>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-admin btn-admin-success"><i class="fas fa-save me-1"></i>Kaydet</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/ads-config.js"></script>
+<script src="assets/js/games-data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+function renderAdminTable() {
+    const games = getGames();
+    const categories = getCategories();
+    const q = (document.getElementById('adminSearch').value || '').toLowerCase();
+    const cat = document.getElementById('adminCatFilter').value;
 
-<script type="module">
-  // 1. Firebase Kütüphaneleri
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    document.getElementById('statOyun').innerText = games.length;
+    document.getElementById('statKategori').innerText = categories.length;
+    const totalPlays = games.reduce((acc, g) => acc + (parseInt(g.oynama_sayisi, 10) || 0), 0);
+    document.getElementById('statOynama').innerText = formatNumber(totalPlays);
+    document.getElementById('statKullanici').innerText = getUsers().length;
+    document.getElementById('totalGamesCountLabel').innerText = `(${games.length} oyun)`;
 
-  // 2. SENİN ANAHTARLARIN (Ekledim)
-  const firebaseConfig = {
-      apiKey: "AIzaSyDGprox9gi-aYNI6jeh0sj52C9M5zxEtzc",
-      authDomain: "gekkotari.firebaseapp.com",
-      projectId: "gekkotari",
-      storageBucket: "gekkotari.firebasestorage.app",
-      messagingSenderId: "313683103714",
-      appId: "1:313683103714:web:050b8947af000d26a833bb",
-      measurementId: "G-8K9Y0SQQ5C"
-  };
+    const filtered = games.filter(g => {
+        if (cat && g.kategori_adi !== cat) return false;
+        if (q && !(g.oyun_adi || '').toLowerCase().includes(q)) return false;
+        return true;
+    });
 
-  // 3. Başlatma
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+    const tbody = document.getElementById('adminTableBody');
+    tbody.innerHTML = filtered.map(g => {
+        const isSwf = (g.oyun_linki || '').toLowerCase().endsWith('.swf');
+        const typeBadge = isSwf
+            ? '<span class="badge bg-info text-dark">SWF (Ruffle)</span>'
+            : '<span class="badge bg-warning text-dark">HTML5</span>';
 
-  // --- OYUN KAYDETME ---
-  window.oyunKaydet = async function() {
-      const ad = document.getElementById("yeniAd").value;
-      const tur = document.getElementById("yeniKategori").value;
-      const resim = document.getElementById("yeniResim").value;
-      const etiket = document.getElementById("yeniEtiket").value;
-      const link = document.getElementById("yeniLink").value || "yerel";
+        return `
+        <tr>
+            <td>#${g.id}</td>
+            <td class="text-white fw-bold">
+                <a href="oyun.html?id=${g.id}" class="text-white text-decoration-none">${escapeHtml(g.oyun_adi)}</a>
+            </td>
+            <td><span class="badge bg-secondary">${escapeHtml(g.kategori_adi)}</span></td>
+            <td>${typeBadge}</td>
+            <td>${escapeHtml(g.etiket || '-')}</td>
+            <td><i class="fas fa-star text-warning me-1"></i>${Number(g.puan || 4.8).toFixed(1)}</td>
+            <td>${formatNumber(g.oynama_sayisi)}</td>
+            <td class="table-actions">
+                <a href="oyun.html?id=${g.id}" class="btn btn-admin btn-admin-info btn-sm me-1" title="Test Et / Oyna">
+                    <i class="fas fa-play"></i>
+                </a>
+                <button onclick="oyunSilAdmin(${g.id})" class="btn btn-admin btn-admin-danger btn-sm" title="Sil">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        </tr>`;
+    }).join('');
+}
 
-      if(!ad) return alert("İsim yazmalısın!");
+function oyunSilAdmin(id) {
+    if (!confirm('Bu oyunu silmek istediğinize emin misiniz?')) return;
+    let games = getGames();
+    games = games.filter(g => String(g.id) !== String(id));
+    saveGames(games);
+    showToast('info', 'Oyun silindi.');
+    renderAdminTable();
+}
 
-      try {
-          await addDoc(collection(db, "oyunlar"), {
-              ad: ad, tur: tur, resim: resim, etiket: etiket, link: link
-          });
-          alert("Oyun Google Buluta Kaydedildi!");
-          
-          const modalEl = document.getElementById('oyunEkleModal');
-          const modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-          modalInstance.hide();
+function varsayilanOyunlariYukle() {
+    if (!confirm('Tüm oyun listesi varsayılan 93 doğrulanmış oyuna sıfırlansın mı?')) return;
+    localStorage.removeItem('gekkotari_version');
+    initGekkotariStore();
+    showToast('success', 'Varsayılan 93 oyun başarıyla yüklendi!');
+    renderAdminTable();
+}
 
-          listeyiYenile(); 
-      } catch (e) {
-          console.error("Hata:", e);
-          alert("Hata oluştu: " + e.message);
-      }
-  }
+function renderFeedbackInbox() {
+    let list = [];
+    try { list = JSON.parse(localStorage.getItem('gekkotari_feedback') || '[]'); } catch (e) {}
+    const lbl = document.getElementById('feedbackCountLabel');
+    const box = document.getElementById('adminFeedbackList');
+    if (lbl) lbl.innerText = `(${list.length})`;
+    if (!box) return;
+    if (!list.length) {
+        box.innerHTML = '<div class="text-muted py-2">Henüz gelen oyun isteği veya sorun bildirimi yok.</div>';
+        return;
+    }
+    box.innerHTML = list.map(fb => `
+        <div class="p-2 mb-2 rounded" style="background:rgba(255,255,255,0.03);border:1px solid var(--border-color);">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="badge bg-success">${escapeHtml(fb.tur)}</span>
+                <span class="text-muted">${escapeHtml(fb.tarih)} • ${escapeHtml(fb.iletisim)}</span>
+            </div>
+            <div class="fw-bold text-white">${escapeHtml(fb.konu)}</div>
+            <div class="text-muted">${escapeHtml(fb.mesaj)}</div>
+        </div>
+    `).join('');
+}
 
-  // --- LİSTELEME ---
-  window.listeyiYenile = async function() {
-      const tablo = document.getElementById("adminOyunListesi");
-      
-      try {
-          const querySnapshot = await getDocs(collection(db, "oyunlar"));
-          tablo.innerHTML = ""; 
-          
-          if(querySnapshot.empty) {
-              tablo.innerHTML = "<tr><td colspan='5' class='text-center'>Henüz oyun eklenmemiş.</td></tr>";
-              return;
-          }
+function bildirimleriTemizle() {
+    if (!confirm('Kayıtlı bildirimler temizlensin mi?')) return;
+    localStorage.removeItem('gekkotari_feedback');
+    renderFeedbackInbox();
+    showToast('info', 'Bildirim listesi temizlendi.');
+}
 
-          querySnapshot.forEach((doc) => {
-              const oyun = doc.data();
-              const id = doc.id; 
-              let linkGoster = oyun.link === "yerel" ? "<span class='badge bg-info'>Yerel</span>" : "<span class='badge bg-warning text-dark'>Web</span>";
+function csvIndir() {
+    const games = getGames();
+    let csv = 'ID,Oyun Adi,Kategori,Tur,Puan,Oynama Sayisi\n';
+    games.forEach(g => {
+        csv += `${g.id},"${(g.oyun_adi || '').replace(/"/g, '""')}",${g.kategori_adi},${g.oyun_tipi},${g.puan},${g.oynama_sayisi}\n`;
+    });
+    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'gekkotari_oyunlar.csv';
+    a.click();
+}
 
-              tablo.innerHTML += `
-                  <tr>
-                      <td><img src="https://via.placeholder.com/40x40/2c3e50/50F589?text=${oyun.resim}" class="rounded"></td>
-                      <td>${oyun.ad}</td>
-                      <td><span class="badge bg-secondary">${oyun.tur}</span></td>
-                      <td>${linkGoster}</td>
-                      <td class="text-end">
-                          <button onclick="oyunSil('${id}')" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i> Sil</button>
-                      </td>
-                  </tr>`;
-          });
-      } catch(e) {
-          console.error(e);
-          tablo.innerHTML = "<tr><td colspan='5' class='text-danger'>Veri çekilemedi. Konsola bak.</td></tr>";
-      }
-  }
+function pdfIndir() {
+    window.print();
+}
 
-  // --- SİLME ---
-  window.oyunSil = async function(id) {
-      if(confirm("Silmek istediğine emin misin?")) {
-          await deleteDoc(doc(db, "oyunlar", id));
-          listeyiYenile();
-      }
-  }
+document.addEventListener('DOMContentLoaded', () => {
+    const categories = getCategories();
+    const filterSel = document.getElementById('adminCatFilter');
+    const addSel = document.getElementById('add_kategori');
+    categories.forEach(k => {
+        filterSel.innerHTML += `<option value="${escapeHtml(k.kategori_adi)}">${escapeHtml(k.kategori_adi)}</option>`;
+        addSel.innerHTML += `<option value="${escapeHtml(k.kategori_adi)}">${escapeHtml(k.kategori_adi)}</option>`;
+    });
 
-  // --- ÇIKIŞ ---
-  window.cikisYap = function() {
-      localStorage.removeItem("aktifOturum");
-      window.location.href = "index.html";
-  }
+    document.getElementById('addGameForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const games = getGames();
+        const katAdi = document.getElementById('add_kategori').value;
+        const katObj = categories.find(k => k.kategori_adi === katAdi) || categories[0];
+        const maxId = games.reduce((m, g) => Math.max(m, parseInt(g.id, 10) || 0), 100);
 
-  // Sayfa Açılınca Çalıştır
-  document.addEventListener('DOMContentLoaded', () => {
-      // Giriş Kontrolü
-      const aktif = JSON.parse(localStorage.getItem("aktifOturum"));
-      if (!aktif || aktif.email !== "admin@gekkotari.com") {
-          window.location.href = "index.html";
-          return;
-      }
-      listeyiYenile();
-  });
+        const newGame = {
+            id: String(maxId + 1),
+            oyun_adi: document.getElementById('add_adi').value.trim(),
+            aciklama: document.getElementById('add_aciklama').value.trim(),
+            kategori_id: katObj.id,
+            kategori_adi: katObj.kategori_adi,
+            ikon: katObj.ikon,
+            renk: katObj.renk,
+            gorsel: document.getElementById('add_gorsel').value.trim() || 'default_game.png',
+            oyun_linki: document.getElementById('add_link').value.trim(),
+            oyun_tipi: 'web',
+            etiket: document.getElementById('add_etiket').value.trim() || 'Yeni',
+            puan: document.getElementById('add_puan').value || '4.8',
+            oynama_sayisi: '100',
+            durum: '1'
+        };
+
+        games.unshift(newGame);
+        saveGames(games);
+        bootstrap.Modal.getInstance(document.getElementById('oyunEkleModal')).hide();
+        document.getElementById('addGameForm').reset();
+        showToast('success', 'Yeni oyun eklendi!');
+        renderAdminTable();
+    });
+
+    renderAdminTable();
+    renderFeedbackInbox();
+});
 </script>
-
 </body>
 </html>
