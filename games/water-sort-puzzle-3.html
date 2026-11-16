@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Water Sort Puzzle 3 - Gekkotari</title>
+<style>
+  :root {
+    --bg: #0b1120;
+    --panel: #131c31;
+    --border: rgba(255,255,255,0.12);
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --accent: #2ee57a;
+    --tube-w: clamp(32px, 8vw, 48px);
+    --tube-h: clamp(92px, 28vh, 152px);
+  }
+  * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; padding: 4px; width: 100%; height: 100%;
+    background: radial-gradient(circle at top, #172544 0%, var(--bg) 78%);
+    color: var(--text);
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .shell {
+    width: min(99vw, 760px); height: min(99vh, 620px);
+    background: rgba(19, 28, 49, 0.92);
+    border: 1px solid var(--border); border-radius: 14px;
+    padding: 8px 12px; display: flex; flex-direction: column; justify-content: space-between;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.48); position: relative;
+  }
+  .hud {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 5px;
+    border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px;
+  }
+  .title-area { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .brand { font-weight: 800; font-size: 0.92rem; color: var(--accent); letter-spacing: 0.2px; }
+  .lvl-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+    border-radius: 999px; padding: 2px 8px; font-weight: 700; font-size: 0.78rem;
+  }
+  .actions { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+  button, select {
+    font-family: inherit; font-weight: 600; font-size: 0.75rem;
+    background: #1b2847; color: var(--text); border: 1px solid var(--border);
+    border-radius: 8px; padding: 4px 8px; cursor: pointer;
+    transition: transform 0.1s, background 0.15s, border-color 0.15s, opacity 0.15s;
+  }
+  button:hover:not(:disabled), select:hover { background: #263861; border-color: rgba(255,255,255,0.28); }
+  button:active:not(:disabled) { transform: scale(0.96); }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-accent { background: linear-gradient(135deg, #2ee57a, #16a34a); color: #052211; border: none; font-weight: 800; }
+  .btn-accent:hover:not(:disabled) { background: linear-gradient(135deg, #4ade80, #22c55e); }
+  .stage {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 8px 4px; overflow: hidden; min-height: 0;
+  }
+  .tubes-grid {
+    display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: center;
+    gap: 10px 12px; max-width: 680px; width: 100%;
+  }
+  .tubes-grid.two-row {
+    gap: 8px 10px;
+    --tube-w: clamp(32px, 7.5vw, 44px);
+    --tube-h: clamp(68px, 19vh, 126px);
+  }
+  .tubes-grid.two-row .tube { padding: 8px 2.5px 3px 2.5px; }
+  .tubes-grid.two-row .tube-badge { height: 12px; font-size: 0.65rem; }
+  .tube-wrap {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    cursor: pointer; transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .tube-wrap.selected { transform: translateY(-14px); }
+  .tube {
+    width: var(--tube-w); height: var(--tube-h);
+    border: 2.5px solid rgba(226, 232, 240, 0.55); border-top: 2px solid rgba(226, 232, 240, 0.78);
+    border-radius: 6px 6px 24px 24px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 35%, rgba(255,255,255,0.06) 100%);
+    padding: 12px 3px 4px 3px;
+    display: flex; flex-direction: column-reverse; gap: 1px;
+    position: relative; overflow: hidden;
+    box-shadow: inset 0 0 10px rgba(255,255,255,0.05), 0 8px 18px rgba(0,0,0,0.35);
+    transition: border-color 0.18s, box-shadow 0.18s;
+  }
+  .tube::before {
+    content: ""; position: absolute; top: 0; left: 5px; width: 5px; height: 92%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.02));
+    border-radius: 4px; pointer-events: none; z-index: 3;
+  }
+  .tube-wrap.selected .tube {
+    border-color: #facc15;
+    box-shadow: 0 0 0 2px rgba(250,204,21,0.35), 0 14px 24px rgba(0,0,0,0.5);
+  }
+  .tube-wrap.solved .tube {
+    border-color: var(--accent);
+    box-shadow: 0 0 14px rgba(46,229,122,0.35), inset 0 0 8px rgba(46,229,122,0.18);
+  }
+  .seg {
+    width: 100%; height: 24%; border-radius: 3px;
+    position: relative; transition: transform 0.16s ease, opacity 0.16s ease;
+    box-shadow: inset 0 2px 4px rgba(255,255,255,0.26), inset 0 -2px 4px rgba(0,0,0,0.22);
+  }
+  .seg:first-child { border-radius: 3px 3px 18px 18px; }
+  .tube-badge {
+    height: 16px; font-size: 0.72rem; font-weight: 800; color: var(--accent);
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .tube-wrap.solved .tube-badge { opacity: 1; }
+  .status-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 0.78rem; color: var(--muted); padding-top: 6px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+  }
+  .msg { color: #fde047; font-weight: 600; }
+  .win-modal {
+    position: absolute; inset: 0; background: rgba(7, 11, 22, 0.86); backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center; border-radius: 16px; z-index: 10;
+  }
+  .win-modal.show { display: flex; }
+  .win-card {
+    background: #16213e; border: 1px solid rgba(46,229,122,0.45); border-radius: 16px;
+    padding: 22px 26px; text-align: center; max-width: 320px; width: 90%;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  }
+  .win-card h2 { margin: 0 0 6px; font-size: 1.35rem; color: var(--accent); }
+  .win-card p { margin: 0 0 16px; color: var(--muted); font-size: 0.9rem; }
+  @media (max-height: 480px) {
+    :root { --tube-w: 40px; --tube-h: 122px; }
+    .tubes-grid { gap: 10px 12px; }
+  }
+  @media (max-width: 520px) {
+    :root { --tube-w: 42px; --tube-h: 130px; }
+    .tubes-grid { gap: 14px 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="hud">
+    <div class="title-area">
+      <span class="brand">💧 Water Sort Puzzle 3</span>
+      <span class="lvl-pill">
+        Seviye
+        <select id="levelSelect" aria-label="Seviye seç"></select>
+      </span>
+      <span id="movesPill" class="lvl-pill">Hamle: 0</span>
+    </div>
+    <div class="actions">
+      <button id="undoBtn" type="button">↩ Geri Al</button>
+      <button id="extraBtn" type="button">+1 Şişe</button>
+      <button id="resetBtn" type="button">↻ Yenile</button>
+      <button id="soundBtn" type="button">🔊 Ses</button>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div id="tubesGrid" class="tubes-grid"></div>
+  </div>
+
+  <div class="status-bar">
+    <span id="statusMsg" class="msg">Aynı renk sıvıları tek şişede topla!</span>
+    <span>En İyi: Seviye <strong id="bestLevelEl">1</strong></span>
+  </div>
+
+  <div id="winModal" class="win-modal">
+    <div class="win-card">
+      <h2>Harika! Seviye Tamam</h2>
+      <p id="winDesc">Tüm renkler başarıyla ayrıldı.</p>
+      <button id="nextLevelBtn" type="button" class="btn-accent" style="width:100%; padding:10px 14px; font-size:0.95rem;">Sonraki Seviye ▶</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const PALETTE = [
+    'linear-gradient(180deg, #f87171, #dc2626)', // Kırmızı
+    'linear-gradient(180deg, #60a5fa, #2563eb)', // Mavi
+    'linear-gradient(180deg, #4ade80, #16a34a)', // Yeşil
+    'linear-gradient(180deg, #fde047, #eab308)', // Sarı
+    'linear-gradient(180deg, #c084fc, #9333ea)', // Mor
+    'linear-gradient(180deg, #fb923c, #ea580c)', // Turuncu
+    'linear-gradient(180deg, #22d3ee, #0891b2)', // Turkuaz
+    'linear-gradient(180deg, #f472b6, #db2777)', // Pembe
+    'linear-gradient(180deg, #a3e635, #65a30d)', // Limon
+    'linear-gradient(180deg, #818cf8, #4f46e5)'  // Çivit
+  ];
+  const CAP = 4;
+  const MAX_SELECT_LEVEL = 60;
+  let currentLevel = 1;
+  let bestLevel = 1;
+  try {
+    bestLevel = Math.max(1, parseInt(localStorage.getItem('gekkotari_ws3_best') || '1', 10) || 1);
+  } catch (e) {}
+  currentLevel = bestLevel;
+
+  let tubes = [];
+  let initialTubes = [];
+  let history = [];
+  let selectedIdx = -1;
+  let extraAdded = false;
+  let moves = 0;
+  let soundOn = true;
+  let audioCtx = null;
+
+  const gridEl = document.getElementById('tubesGrid');
+  const levelSel = document.getElementById('levelSelect');
+  const movesEl = document.getElementById('movesPill');
+  const statusEl = document.getElementById('statusMsg');
+  const bestEl = document.getElementById('bestLevelEl');
+  const undoBtn = document.getElementById('undoBtn');
+  const extraBtn = document.getElementById('extraBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const soundBtn = document.getElementById('soundBtn');
+  const winModal = document.getElementById('winModal');
+  const winDesc = document.getElementById('winDesc');
+  const nextBtn = document.getElementById('nextLevelBtn');
+
+  function playTone(freq, dur, type = 'sine', vol = 0.08) {
+    if (!soundOn) return;
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = type;
+      o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      g.gain.setValueAtTime(vol, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(); o.stop(audioCtx.currentTime + dur);
+    } catch (e) {}
+  }
+
+  function makeRng(seed) {
+    let s = (seed >>> 0) || 1;
+    return () => {
+      s += 0x6D2B79F5;
+      let t = Math.imul(s ^ (s >>> 15), 1 | s);
+      t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function isTubeSolved(t) {
+    return t.length === CAP && t.every(c => c === t[0]);
+  }
+
+  function isWin(state) {
+    return state.every(t => t.length === 0 || isTubeSolved(t));
+  }
+
+  function canPour(src, dst) {
+    if (!src.length || dst.length >= CAP) return false;
+    if (dst.length === 0) return true;
+    return src[src.length - 1] === dst[dst.length - 1];
+  }
+
+  function countTopRun(t) {
+    if (!t.length) return 0;
+    const top = t[t.length - 1];
+    let n = 0;
+    for (let i = t.length - 1; i >= 0 && t[i] === top; i--) n++;
+    return n;
+  }
+
+  function isSolvable(startState) {
+    const seen = new Set();
+    let visited = 0;
+    const stack = [startState.map(t => t.slice())];
+    while (stack.length && visited < 2200) {
+      const cur = stack.pop();
+      if (isWin(cur)) return true;
+      const key = cur.map(t => t.join(',')).sort().join('|');
+      if (seen.has(key)) continue;
+      seen.add(key);
+      visited++;
+      for (let i = 0; i < cur.length; i++) {
+        const s = cur[i];
+        if (!s.length || isTubeSolved(s)) continue;
+        const singleColor = s.every(c => c === s[0]);
+        let usedEmpty = false;
+        for (let j = 0; j < cur.length; j++) {
+          if (i === j) continue;
+          const d = cur[j];
+          if (d.length === 0) {
+            if (singleColor || usedEmpty) continue;
+            usedEmpty = true;
+          }
+          if (!canPour(s, d)) continue;
+          const next = cur.map(t => t.slice());
+          const top = next[i][next[i].length - 1];
+          while (next[i].length && next[i][next[i].length - 1] === top && next[j].length < CAP) {
+            next[j].push(next[i].pop());
+          }
+          stack.push(next);
+        }
+      }
+    }
+    return false;
+  }
+
+  function colorCountForLevel(lvl) {
+    if (lvl === 1) return 2;
+    if (lvl === 2) return 3;
+    if (lvl <= 5) return 4;
+    if (lvl <= 10) return 5;
+    if (lvl <= 18) return 6;
+    if (lvl <= 28) return 7;
+    if (lvl <= 42) return 8;
+    if (lvl <= 55) return 9;
+    return 10;
+  }
+
+  function generateLevel(lvl) {
+    const colors = colorCountForLevel(lvl);
+    const emptyCount = lvl === 1 ? 1 : 2;
+    const rng = makeRng(lvl * 7919 + 424242);
+
+    for (let attempt = 0; attempt < 30; attempt++) {
+      const pool = [];
+      for (let c = 0; c < colors; c++) {
+        for (let k = 0; k < CAP; k++) pool.push(c);
+      }
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(rng() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      const deal = [];
+      for (let i = 0; i < colors; i++) {
+        deal.push(pool.slice(i * CAP, (i + 1) * CAP));
+      }
+      for (let e = 0; e < emptyCount; e++) deal.push([]);
+      if (deal.some(t => isTubeSolved(t))) continue;
+      if (isSolvable(deal)) return deal;
+    }
+
+    // Deterministic fallback always solvable
+    const fallback = [];
+    for (let i = 0; i < colors; i++) fallback.push([]);
+    for (let layer = 0; layer < CAP; layer++) {
+      for (let i = 0; i < colors; i++) {
+        fallback[i].push((i + layer) % colors);
+      }
+    }
+    for (let e = 0; e < emptyCount; e++) fallback.push([]);
+    return fallback;
+  }
+
+  function populateSelect() {
+    const maxOpt = Math.max(MAX_SELECT_LEVEL, currentLevel + 5, bestLevel + 5);
+    levelSel.innerHTML = '';
+    for (let i = 1; i <= maxOpt; i++) {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = i;
+      if (i === currentLevel) opt.selected = true;
+      levelSel.appendChild(opt);
+    }
+    bestEl.textContent = bestLevel;
+  }
+
+  function loadLevel(lvl) {
+    currentLevel = Math.max(1, lvl);
+    initialTubes = generateLevel(currentLevel);
+    tubes = initialTubes.map(t => t.slice());
+    history = [];
+    selectedIdx = -1;
+    extraAdded = false;
+    moves = 0;
+    winModal.classList.remove('show');
+    extraBtn.disabled = false;
+    statusEl.textContent = 'Şişeye tıkla, aynı renkteki diğer şişeye dök.';
+    populateSelect();
+    render();
+  }
+
+  function render() {
+    movesEl.textContent = `Hamle: ${moves}`;
+    undoBtn.disabled = history.length === 0;
+    gridEl.innerHTML = '';
+
+    // Dynamically adjust layout when > 5 tubes so 2 rows fit cleanly even in compact iframes
+    const wide = tubes.length > 9;
+    gridEl.classList.toggle('two-row', tubes.length > 5);
+    gridEl.style.maxWidth = wide ? '520px' : '640px';
+
+    tubes.forEach((t, idx) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'tube-wrap'
+        + (selectedIdx === idx ? ' selected' : '')
+        + (isTubeSolved(t) ? ' solved' : '');
+      wrap.onclick = () => onTubeClick(idx);
+
+      const badge = document.createElement('div');
+      badge.className = 'tube-badge';
+      badge.textContent = '✓';
+
+      const bottle = document.createElement('div');
+      bottle.className = 'tube';
+      t.forEach(c => {
+        const seg = document.createElement('div');
+        seg.className = 'seg';
+        seg.style.background = PALETTE[c % PALETTE.length];
+        bottle.appendChild(seg);
+      });
+
+      wrap.appendChild(badge);
+      wrap.appendChild(bottle);
+      gridEl.appendChild(wrap);
+    });
+  }
+
+  function onTubeClick(idx) {
+    if (winModal.classList.contains('show')) return;
+    if (selectedIdx === -1) {
+      if (!tubes[idx].length || isTubeSolved(tubes[idx])) return;
+      selectedIdx = idx;
+      playTone(460, 0.06);
+      render();
+      return;
+    }
+
+    if (selectedIdx === idx) {
+      selectedIdx = -1;
+      playTone(330, 0.05);
+      render();
+      return;
+    }
+
+    const src = tubes[selectedIdx];
+    const dst = tubes[idx];
+    if (!canPour(src, dst)) {
+      if (tubes[idx].length && !isTubeSolved(tubes[idx])) {
+        selectedIdx = idx;
+        playTone(460, 0.06);
+      } else {
+        selectedIdx = -1;
+        statusEl.textContent = 'Yalnızca aynı rengin üzerine veya boş şişeye dökebilirsin.';
+        playTone(210, 0.08, 'triangle');
+      }
+      render();
+      return;
+    }
+
+    history.push(tubes.map(t => t.slice()));
+    const top = src[src.length - 1];
+    let poured = 0;
+    while (src.length && src[src.length - 1] === top && dst.length < CAP) {
+      dst.push(src.pop());
+      poured++;
+    }
+    moves++;
+    selectedIdx = -1;
+    statusEl.textContent = isTubeSolved(dst)
+      ? 'Harika! Bir şişe tamamen ayrıldı.'
+      : `${poured} katman aktarıldı.`;
+    playTone(isTubeSolved(dst) ? 680 : 540, isTubeSolved(dst) ? 0.16 : 0.09);
+    render();
+
+    if (isWin(tubes)) {
+      if (currentLevel >= bestLevel) {
+        bestLevel = currentLevel + 1;
+        try { localStorage.setItem('gekkotari_ws3_best', String(bestLevel)); } catch (e) {}
+      }
+      winDesc.textContent = `Seviye ${currentLevel}, ${moves} hamlede tamamlandı.`;
+      playTone(587, 0.12);
+      setTimeout(() => playTone(880, 0.22), 110);
+      winModal.classList.add('show');
+    }
+  }
+
+  undoBtn.onclick = () => {
+    if (!history.length) return;
+    tubes = history.pop();
+    selectedIdx = -1;
+    playTone(360, 0.07);
+    render();
+  };
+
+  extraBtn.onclick = () => {
+    if (extraAdded) return;
+    history.push(tubes.map(t => t.slice()));
+    tubes.push([]);
+    extraAdded = true;
+    extraBtn.disabled = true;
+    statusEl.textContent = '1 adet boş şişe eklendi!';
+    playTone(620, 0.1);
+    render();
+  };
+
+  resetBtn.onclick = () => {
+    tubes = initialTubes.map(t => t.slice());
+    if (extraAdded) tubes.push([]);
+    history = [];
+    selectedIdx = -1;
+    moves = 0;
+    winModal.classList.remove('show');
+    playTone(300, 0.08);
+    render();
+  };
+
+  soundBtn.onclick = () => {
+    soundOn = !soundOn;
+    soundBtn.textContent = soundOn ? '🔊 Ses' : '🔇 Sessiz';
+  };
+
+  levelSel.onchange = () => loadLevel(parseInt(levelSel.value, 10) || 1);
+  nextBtn.onclick = () => loadLevel(currentLevel + 1);
+
+  loadLevel(currentLevel);
+})();
+</script>
+</body>
+</html>

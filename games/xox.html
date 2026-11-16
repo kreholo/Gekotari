@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>XOX (Tic Tac Toe) - Gekkotari</title>
+<style>
+  :root {
+    --bg: #0b1120;
+    --panel: #131c31;
+    --cell: #1c2845;
+    --cell-hover: #25365c;
+    --x: #2ee57a;
+    --o: #38bdf8;
+    --win: #facc15;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --border: rgba(255,255,255,0.1);
+  }
+  * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; padding: 6px; width: 100%; height: 100%;
+    background: radial-gradient(circle at top, #172544 0%, var(--bg) 78%);
+    color: var(--text);
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .shell {
+    width: min(97vw, 460px); max-height: 98vh;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+    padding: 8px 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.48);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 5px; }
+  .brand { font-weight: 800; font-size: 0.95rem; color: var(--x); }
+  .controls { display: flex; gap: 5px; flex-wrap: wrap; }
+  select, button {
+    font-family: inherit; font-weight: 600; font-size: 0.76rem; border-radius: 8px;
+    border: 1px solid var(--border); background: #1a2540; color: var(--text);
+    padding: 4px 8px; cursor: pointer;
+  }
+  button:hover, select:hover { background: #243356; }
+  .btn-new { background: linear-gradient(135deg, #2ee57a, #16a34a); color: #052211; border: none; font-weight: 800; }
+  .scores { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .sc-card {
+    background: rgba(255,255,255,0.04); border: 2px solid transparent; border-radius: 9px;
+    padding: 4px 8px; text-align: center; transition: 0.18s;
+  }
+  .sc-card.act-x { border-color: var(--x); background: rgba(46,229,122,0.1); }
+  .sc-card.act-o { border-color: var(--o); background: rgba(56,189,248,0.1); }
+  .sc-lbl { font-size: 0.7rem; color: var(--muted); font-weight: 600; }
+  .sc-val { font-size: 1.05rem; font-weight: 800; }
+  .status { text-align: center; font-size: 0.8rem; font-weight: 700; color: var(--win); min-height: 18px; }
+  .board-wrap { display: flex; justify-content: center; }
+  .board {
+    display: grid; gap: 5px; width: min(100%, 48vh, 236px); aspect-ratio: 1 / 1;
+  }
+  .cell {
+    background: var(--cell); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 2.3rem; cursor: pointer; transition: 0.12s;
+  }
+  .cell:hover:not(.filled) { background: var(--cell-hover); transform: translateY(-1px); }
+  .cell.filled { cursor: default; }
+  .cell.vx { color: var(--x); text-shadow: 0 0 12px rgba(46,229,122,0.35); }
+  .cell.vo { color: var(--o); text-shadow: 0 0 12px rgba(56,189,248,0.35); }
+  .cell.win { background: rgba(250,204,21,0.18); box-shadow: inset 0 0 0 2px var(--win); }
+  .foot { text-align: center; font-size: 0.74rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="top">
+    <div class="brand">✕○ XOX • Gekkotari</div>
+    <div class="controls">
+      <select id="modeSel" aria-label="Mod seç">
+        <option value="hard">Bot (Zor)</option>
+        <option value="easy">Bot (Kolay)</option>
+        <option value="2p">2 Oyuncu</option>
+      </select>
+      <select id="sizeSel" aria-label="Boyut seç">
+        <option value="3">3×3 Klasik</option>
+        <option value="4">4×4 Usta (4'lü)</option>
+      </select>
+      <button id="newBtn" class="btn-new" type="button">Yeni Tur</button>
+    </div>
+  </div>
+
+  <div class="scores">
+    <div id="boxX" class="sc-card act-x"><div class="sc-lbl" id="lblX">Sen (X)</div><div class="sc-val" style="color:var(--x);" id="scX">0</div></div>
+    <div class="sc-card"><div class="sc-lbl">Berabere</div><div class="sc-val" id="scD">0</div></div>
+    <div id="boxO" class="sc-card"><div class="sc-lbl" id="lblO">Bot (O)</div><div class="sc-val" style="color:var(--o);" id="scO">0</div></div>
+  </div>
+
+  <div id="statusEl" class="status">Sıra sende (X)</div>
+
+  <div class="board-wrap">
+    <div id="boardEl" class="board"></div>
+  </div>
+
+  <div class="foot" id="footHint">3 sembolü yatay, dikey veya çapraz sırala!</div>
+</div>
+
+<script>
+(() => {
+  let size = 3;
+  let mode = 'hard';
+  let board = [];
+  let turn = 'X';
+  let gameOver = false;
+  let winCells = [];
+  let scores = { X: 0, O: 0, D: 0 };
+  let botTimer = null;
+
+  const boardEl = document.getElementById('boardEl');
+  const modeSel = document.getElementById('modeSel');
+  const sizeSel = document.getElementById('sizeSel');
+  const statusEl = document.getElementById('statusEl');
+  const lblX = document.getElementById('lblX');
+  const lblO = document.getElementById('lblO');
+  const scX = document.getElementById('scX');
+  const scO = document.getElementById('scO');
+  const scD = document.getElementById('scD');
+  const boxX = document.getElementById('boxX');
+  const boxO = document.getElementById('boxO');
+  const footHint = document.getElementById('footHint');
+
+  function getLines(n) {
+    const lines = [];
+    for (let r = 0; r < n; r++) {
+      const row = [], col = [];
+      for (let c = 0; c < n; c++) { row.push(r * n + c); col.push(c * n + r); }
+      lines.push(row, col);
+    }
+    const d1 = [], d2 = [];
+    for (let i = 0; i < n; i++) { d1.push(i * n + i); d2.push(i * n + (n - 1 - i)); }
+    lines.push(d1, d2);
+    return lines;
+  }
+
+  function checkWinner(b, n) {
+    for (const line of getLines(n)) {
+      const first = b[line[0]];
+      if (first && line.every(i => b[i] === first)) return { winner: first, line };
+    }
+    if (b.every(Boolean)) return { winner: 'D', line: [] };
+    return null;
+  }
+
+  function resetRound() {
+    if (botTimer) { clearTimeout(botTimer); botTimer = null; }
+    board = Array(size * size).fill('');
+    turn = 'X';
+    gameOver = false;
+    winCells = [];
+    lblX.textContent = mode === '2p' ? 'Oyuncu 1 (X)' : 'Sen (X)';
+    lblO.textContent = mode === '2p' ? 'Oyuncu 2 (O)' : 'Bot (O)';
+    footHint.textContent = `${size} sembolü yatay, dikey veya çapraz sırala!`;
+    updateStatus();
+    render();
+  }
+
+  function updateStatus(res) {
+    boxX.classList.toggle('act-x', !gameOver && turn === 'X');
+    boxO.classList.toggle('act-o', !gameOver && turn === 'O');
+    if (!res) {
+      statusEl.textContent = mode === '2p'
+        ? `Sıra ${turn === 'X' ? '1. Oyuncuda (X)' : '2. Oyuncuda (O)'}`
+        : (turn === 'X' ? 'Sıra sende (X)' : 'Bot düşünüyor...');
+      return;
+    }
+    if (res.winner === 'D') statusEl.textContent = 'Berabere bitti!';
+    else if (mode === '2p') statusEl.textContent = `${res.winner === 'X' ? '1. Oyuncu (X)' : '2. Oyuncu (O)'} kazandı!`;
+    else statusEl.textContent = res.winner === 'X' ? 'Tebrikler, kazandın!' : 'Bot kazandı!';
+  }
+
+  function render() {
+    boardEl.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+    boardEl.innerHTML = '';
+    const winSet = new Set(winCells);
+    board.forEach((v, idx) => {
+      const cell = document.createElement('div');
+      cell.className = 'cell' + (v ? ` filled v${v.toLowerCase()}` : '') + (winSet.has(idx) ? ' win' : '');
+      cell.style.fontSize = size === 4 ? '1.75rem' : '2.3rem';
+      cell.textContent = v;
+      cell.onclick = () => makeMove(idx);
+      boardEl.appendChild(cell);
+    });
+    scX.textContent = scores.X;
+    scO.textContent = scores.O;
+    scD.textContent = scores.D;
+  }
+
+  function makeMove(idx, fromBot = false) {
+    if (gameOver || board[idx]) return;
+    if (mode !== '2p' && turn === 'O' && !fromBot) return;
+
+    board[idx] = turn;
+    const res = checkWinner(board, size);
+    if (res) {
+      gameOver = true;
+      winCells = res.line;
+      if (res.winner === 'X') scores.X++;
+      else if (res.winner === 'O') scores.O++;
+      else scores.D++;
+      updateStatus(res);
+      render();
+      return;
+    }
+
+    turn = turn === 'X' ? 'O' : 'X';
+    updateStatus();
+    render();
+    if (mode !== '2p' && turn === 'O') {
+      botTimer = setTimeout(botMove, 220);
+    }
+  }
+
+  function minimax3(b, isMax, depth) {
+    const res = checkWinner(b, 3);
+    if (res) {
+      if (res.winner === 'O') return 10 - depth;
+      if (res.winner === 'X') return depth - 10;
+      return 0;
+    }
+    let best = isMax ? -99 : 99;
+    for (let i = 0; i < 9; i++) {
+      if (b[i]) continue;
+      b[i] = isMax ? 'O' : 'X';
+      const val = minimax3(b, !isMax, depth + 1);
+      b[i] = '';
+      best = isMax ? Math.max(best, val) : Math.min(best, val);
+    }
+    return best;
+  }
+
+  function findTactical4(b, player) {
+    for (let i = 0; i < b.length; i++) {
+      if (b[i]) continue;
+      b[i] = player;
+      const win = checkWinner(b, 4);
+      b[i] = '';
+      if (win && win.winner === player) return i;
+    }
+    return -1;
+  }
+
+  function botMove() {
+    const empty = [];
+    board.forEach((v, i) => { if (!v) empty.push(i); });
+    if (!empty.length || gameOver) return;
+
+    let pick = empty[Math.floor(Math.random() * empty.length)];
+    if (mode === 'hard') {
+      if (size === 3) {
+        let bestScore = -999;
+        for (const i of empty) {
+          board[i] = 'O';
+          const sc = minimax3(board, false, 0);
+          board[i] = '';
+          if (sc > bestScore) { bestScore = sc; pick = i; }
+        }
+      } else {
+        const winIdx = findTactical4(board, 'O');
+        const blkIdx = findTactical4(board, 'X');
+        if (winIdx !== -1) pick = winIdx;
+        else if (blkIdx !== -1) pick = blkIdx;
+        else {
+          const centers = [5, 6, 9, 10].filter(i => !board[i]);
+          if (centers.length) pick = centers[Math.floor(Math.random() * centers.length)];
+        }
+      }
+    }
+    makeMove(pick, true);
+  }
+
+  modeSel.onchange = () => { mode = modeSel.value; resetRound(); };
+  sizeSel.onchange = () => { size = parseInt(sizeSel.value, 10) || 3; resetRound(); };
+  document.getElementById('newBtn').onclick = resetRound;
+
+  resetRound();
+})();
+</script>
+</body>
+</html>

@@ -1024,7 +1024,7 @@ body.cinema-mode .game-stage-card {
     .hero-content { padding: 18px; }
     .hero-content h2 { font-size: 1.25rem; }
     .hero-content p { font-size: 0.86rem; margin-bottom: 12px; }
-    .game-player-box { height: 52vh; min-height: 300px; }
+    .game-player-box { height: 60vh; min-height: 390px; }
     .ad-slot-leaderboard { min-height: 60px; padding: 6px 10px; }
     .page-content { padding: 20px; }
     .auth-container { margin: 24px 12px; padding: 24px; }
