@@ -187,8 +187,8 @@
                             <input type="text" id="add_etiket" class="form-control" value="Yeni">
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Puan (1-5)</label>
-                            <input type="number" id="add_puan" class="form-control" step="0.1" min="1" max="5" value="4.8">
+                            <label class="form-label">Puan (Opsiyonel, 1-5)</label>
+                            <input type="number" id="add_puan" class="form-control" step="0.1" min="0" max="5" value="0">
                         </div>
                     </div>
                 </div>
@@ -241,7 +241,7 @@ function renderAdminTable() {
             <td><span class="badge bg-secondary">${escapeHtml(g.kategori_adi)}</span></td>
             <td>${typeBadge}</td>
             <td>${escapeHtml(g.etiket || '-')}</td>
-            <td><i class="fas fa-star text-warning me-1"></i>${Number(g.puan || 4.8).toFixed(1)}</td>
+            <td><i class="fas fa-star text-warning me-1"></i>${Number(g.puan || 0) > 0 ? Number(g.puan).toFixed(1) : '-'}</td>
             <td>${formatNumber(g.oynama_sayisi)}</td>
             <td class="table-actions">
                 <a href="oyun.html?id=${g.id}" class="btn btn-admin btn-admin-info btn-sm me-1" title="Test Et / Oyna">
@@ -348,8 +348,9 @@ document.addEventListener('DOMContentLoaded', () => {
             oyun_linki: document.getElementById('add_link').value.trim(),
             oyun_tipi: 'web',
             etiket: document.getElementById('add_etiket').value.trim() || 'Yeni',
-            puan: document.getElementById('add_puan').value || '4.8',
-            oynama_sayisi: '100',
+            puan: document.getElementById('add_puan').value || '0',
+            puan_sayisi: Number(document.getElementById('add_puan').value || 0) > 0 ? '1' : '0',
+            oynama_sayisi: '0',
             durum: '1'
         };
 

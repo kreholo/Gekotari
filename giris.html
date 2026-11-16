@@ -30,7 +30,7 @@
                     <span class="input-group-text bg-dark border-secondary text-muted">
                         <i class="fas fa-envelope"></i>
                     </span>
-                    <input type="text" id="email" class="form-control custom-input" placeholder="admin veya admin@gekkotari.com" required>
+                    <input type="text" id="email" class="form-control custom-input" placeholder="Kullanıcı adı veya e-posta" required>
                 </div>
             </div>
 
@@ -51,12 +51,8 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary-custom w-100 py-2 mb-2">
+            <button type="submit" class="btn btn-primary-custom w-100 py-2">
                 <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
-            </button>
-
-            <button type="button" onclick="hizliAdminGirisi()" class="btn btn-outline-warning w-100 py-2 small">
-                <i class="fas fa-user-shield me-2"></i>Yönetici (Admin) Hızlı Giriş
             </button>
         </form>
 
@@ -79,12 +75,6 @@
 <script src="assets/js/games-data.js"></script>
 <script src="assets/js/common.js"></script>
 <script>
-function hizliAdminGirisi() {
-    document.getElementById('email').value = 'admin';
-    document.getElementById('sifre').value = 'Admin123';
-    document.getElementById('girisFormu').requestSubmit();
-}
-
 document.addEventListener('DOMContentLoaded', () => {
     renderHeader('giris.html');
     renderFooter();
@@ -93,22 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const girilen = document.getElementById('email').value.trim();
         const sifre = document.getElementById('sifre').value.trim();
-
-        // Check default admin or registered users
-        if ((girilen.toLowerCase() === 'admin' || girilen.toLowerCase() === 'admin@gekkotari.com') &&
-            (sifre === 'Admin123' || sifre === 'admin123' || sifre === '123456')) {
-            const adminUser = {
-                id: 1,
-                ad_soyad: 'Site Yöneticisi',
-                kullanici_adi: 'admin',
-                email: 'admin@gekkotari.com',
-                rol_adi: 'super_admin'
-            };
-            setActiveUser(adminUser);
-            showToast('success', 'Hoş geldin, Site Yöneticisi! 🎮');
-            setTimeout(() => { window.location.href = 'index.html'; }, 600);
-            return;
-        }
 
         const users = getUsers();
         const found = users.find(u =>

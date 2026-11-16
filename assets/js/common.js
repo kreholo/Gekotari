@@ -3,7 +3,7 @@
  * 93 Doğrulanmış Oyun + Son Oynananlar + Günün Oyunu + Reklam Slotları + Geri Bildirim
  */
 
-const DATA_VERSION = 'gekkotari_v6_2026_11';
+const DATA_VERSION = 'gekkotari_v7_2026_11';
 
 function initGekkotariStore() {
     const currentVer = localStorage.getItem('gekkotari_version');
@@ -410,7 +410,7 @@ function renderGameCard(oyun, colClass = 'col') {
             <div class="game-thumb-wrapper">
                 ${posterHtml}
                 ${(is2P || oyun.etiket) ? `<span class="game-badge bg-${badgeColor}">${escapeHtml(is2P ? '2 Kişilik' : oyun.etiket)}</span>` : ''}
-                <span class="game-rating"><i class="fas fa-star"></i> ${Number(oyun.puan || 4.7).toFixed(1)}</span>
+                ${Number(oyun.puan || 0) > 0 ? `<span class="game-rating"><i class="fas fa-star"></i> ${Number(oyun.puan).toFixed(1)}</span>` : ''}
                 ${typePill}
             </div>
             <div class="game-info d-flex flex-column flex-grow-1">

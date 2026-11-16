@@ -1,4 +1,4 @@
-// Gekkotari Doğrulanmış Veri Dosyası (93 Oyun - v6)
+// Gekkotari Doğrulanmış Veri Dosyası (93 Oyun - v7)
 window.GEKKOTARI_DEFAULT_DATA = {
   "oyunlar": [
     {
@@ -10,8 +10,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/1ab4aa63ba214e85bda2c11aa5653ed8/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.0",
-      "oynama_sayisi": "1667",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:42",
@@ -24,7 +24,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Fruit Merge Arena oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Fruit Merge Arena oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "2",
@@ -35,8 +36,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/d12e86faf8f4439aa45389a10cec4592/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.6",
-      "oynama_sayisi": "7536",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:42",
@@ -49,7 +50,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Jump to the Mountain for the Brainrots oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Jump to the Mountain for the Brainrots oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "3",
@@ -60,8 +62,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/96990bc0c10949bab8d1d5c844eb5b7f/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "3.5",
-      "oynama_sayisi": "2679",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:42",
@@ -74,7 +76,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Mobile Phone Case Design & DIY oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Mobile Phone Case Design & DIY oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "4",
@@ -85,8 +88,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/55e0e53f26824f0f8f689ac52f9009d7/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.9",
-      "oynama_sayisi": "786",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:42",
@@ -99,7 +102,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka"
       ],
       "kontroller": "Fare / Dokunmatik Ekran",
-      "ipucu": "Theo Morini's Magical Resort oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Theo Morini's Magical Resort oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "5",
@@ -110,8 +114,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/ddc451045f974781b9d60b60f20c81d4/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "3.5",
-      "oynama_sayisi": "5893",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:42",
@@ -124,7 +128,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka"
       ],
       "kontroller": "Fare / Dokunmatik Ekran",
-      "ipucu": "Word Stars oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Word Stars oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "6",
@@ -135,8 +140,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/d26337f400ff49869928d9994646457b/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.6",
-      "oynama_sayisi": "7107",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:42",
@@ -149,7 +154,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka"
       ],
       "kontroller": "Fare / Dokunmatik Ekran",
-      "ipucu": "Tank Challenge oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Tank Challenge oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "7",
@@ -160,8 +166,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/4e0bcf98b67346bf94f5642e01ebd691/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.9",
-      "oynama_sayisi": "7857",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:42",
@@ -174,7 +180,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka"
       ],
       "kontroller": "Fare / Dokunmatik Ekran",
-      "ipucu": "The Noob Aventures oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "The Noob Aventures oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "8",
@@ -185,8 +192,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/f73be292c3d643d6a2488938dcc47007/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.7",
-      "oynama_sayisi": "7965",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -199,7 +206,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Goodeluxe oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Goodeluxe oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "9",
@@ -210,8 +218,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/43f45c8924824a1bbbb1c2bb6820d5ac/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "3.8",
-      "oynama_sayisi": "6253",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -223,7 +231,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Mobil Uyumlu"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Archers Ragdoll Physics oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Archers Ragdoll Physics oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "10",
@@ -234,8 +243,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/7ca746d71b7049df851999d2c0d554c9/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "3.9",
-      "oynama_sayisi": "7367",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -248,7 +257,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "SuperPixelint oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "SuperPixelint oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "11",
@@ -259,8 +269,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/6d6556f0c714498fbe8e5b24941f57bf/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "3.6",
-      "oynama_sayisi": "8078",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -273,7 +283,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka"
       ],
       "kontroller": "Fare / Dokunmatik Ekran",
-      "ipucu": "Pixel Flow oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Pixel Flow oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "12",
@@ -284,8 +295,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/ebe613bf6d5b44ad8908c7a36a710b7b/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.7",
-      "oynama_sayisi": "8290",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -298,7 +309,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Smash Defense oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Smash Defense oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "13",
@@ -309,8 +321,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/75960014ad694866ac41e0919f0a5e73/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.7",
-      "oynama_sayisi": "7215",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -323,7 +335,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Merge Home Mania oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Merge Home Mania oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "14",
@@ -334,8 +347,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/21987ef4d4284d32b1bd2aef62f47782/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "3.5",
-      "oynama_sayisi": "1204",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -348,7 +361,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Jewel Link oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Jewel Link oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "15",
@@ -359,8 +373,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/f3ee6674b4ea4579aeefd54d7bf388f0/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.0",
-      "oynama_sayisi": "4378",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -373,7 +387,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Traffic Racing oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Traffic Racing oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "16",
@@ -384,8 +399,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/bba6ae893ed4493eb3553c93637db902/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.6",
-      "oynama_sayisi": "8276",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -398,7 +413,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka"
       ],
       "kontroller": "Fare / Dokunmatik Ekran",
-      "ipucu": "Water Sort Puzzle 3 oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Water Sort Puzzle 3 oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "17",
@@ -409,8 +425,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/5ebb9c7f2dce42369c22d2eab7c0e417/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "3.5",
-      "oynama_sayisi": "8245",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -422,7 +438,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Mobil Uyumlu"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Island Expander oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Island Expander oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "18",
@@ -433,8 +450,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/3b40d0fc3b744579874c0c67e28aa6b8/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "3.9",
-      "oynama_sayisi": "6396",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -446,7 +463,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Mobil Uyumlu"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Terra Craft World oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Terra Craft World oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "19",
@@ -457,8 +475,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/dfbdf129b7f442f692c36405137945ca/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.5",
-      "oynama_sayisi": "7247",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -471,7 +489,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Springle Puzzle oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Springle Puzzle oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "20",
@@ -482,8 +501,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/8625ea2a8244492980f16e192880f934/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "3.8",
-      "oynama_sayisi": "7045",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -496,7 +515,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Mahjong Lines oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Mahjong Lines oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "21",
@@ -507,8 +527,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/f078134f39634ca78dcd4a8479a314a2/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.7",
-      "oynama_sayisi": "3484",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -521,7 +541,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "67 Clicker oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "67 Clicker oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "22",
@@ -532,8 +553,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/c323e23d0c7949c0b8ed4e1b55495f25/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.7",
-      "oynama_sayisi": "6283",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -545,7 +566,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Mobil Uyumlu"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Escape from the Portal oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Escape from the Portal oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "23",
@@ -556,8 +578,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/4888156f33814739a696e11b32556159/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.5",
-      "oynama_sayisi": "966",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -570,7 +592,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Push.io oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Push.io oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "24",
@@ -581,8 +604,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/daefbd4f826a4494bf9128151235df50/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.9",
-      "oynama_sayisi": "5979",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -595,7 +618,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Bubble Sky oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Bubble Sky oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "25",
@@ -606,8 +630,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/5948fe24b0c6400092ac91535c240ae7/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "5.0",
-      "oynama_sayisi": "7000",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -620,7 +644,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka"
       ],
       "kontroller": "Fare / Dokunmatik Ekran",
-      "ipucu": "Hidden Objects Island oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Hidden Objects Island oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "26",
@@ -631,8 +656,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/f455a9cabb9248e4ab807672ee11f05f/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "5.0",
-      "oynama_sayisi": "7060",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -645,7 +670,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Brainrots Lava Survive Online oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Brainrots Lava Survive Online oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "27",
@@ -656,8 +682,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/1faf8bbe8906404ea218e44440ef1ab9/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.2",
-      "oynama_sayisi": "4301",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -670,7 +696,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Break a Lucky Egg Brainrots oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Break a Lucky Egg Brainrots oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "28",
@@ -681,8 +708,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/363948cd6f9e46708139db7e7732b913/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "3.8",
-      "oynama_sayisi": "326",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -695,7 +722,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka"
       ],
       "kontroller": "Fare / Dokunmatik Ekran",
-      "ipucu": "Arrow Escape: Master oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Arrow Escape: Master oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "29",
@@ -706,8 +734,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/e0250be9a0ff4355a9dccf3716128597/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.3",
-      "oynama_sayisi": "8727",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -720,7 +748,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Jump Master oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Jump Master oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "30",
@@ -731,8 +760,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/30741355ad454b8cae5d648cb5caa244/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.2",
-      "oynama_sayisi": "2658",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -745,7 +774,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Dice Puzzle oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Dice Puzzle oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "31",
@@ -756,8 +786,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/09ad35f48009407487ee1a4591ccd034/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.7",
-      "oynama_sayisi": "7106",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -770,7 +800,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Pixel Shoot oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Pixel Shoot oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "32",
@@ -781,8 +812,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/bdfba23a111a457cb9fe982d4b63d75d/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.8",
-      "oynama_sayisi": "7559",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -795,7 +826,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Mecha War oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Mecha War oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "33",
@@ -806,8 +838,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/b8cf1cc516e14f4b8e7cb3119cdfcec6/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.7",
-      "oynama_sayisi": "6475",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -820,7 +852,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Battle Racing Stars oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Battle Racing Stars oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "34",
@@ -831,8 +864,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/e2f88349ab4147138060e0ec8efc431b/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "3.6",
-      "oynama_sayisi": "9697",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -845,7 +878,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka"
       ],
       "kontroller": "Fare / Dokunmatik Ekran",
-      "ipucu": "Hidden Object: Street Of Secrets oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Hidden Object: Street Of Secrets oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "35",
@@ -856,8 +890,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/f79d8e4ae6b54120b45a4f3166f458c8/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "3.8",
-      "oynama_sayisi": "9061",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -870,7 +904,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka"
       ],
       "kontroller": "Fare / Dokunmatik Ekran",
-      "ipucu": "Savage Defenders oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Savage Defenders oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "36",
@@ -881,8 +916,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/d42224913b654f31b321996f49fcd5ad/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.8",
-      "oynama_sayisi": "6214",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -895,7 +930,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Grow a Garden 3D oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Grow a Garden 3D oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "37",
@@ -906,8 +942,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/9092aea23740452c987308b4bd9ad602/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "3.9",
-      "oynama_sayisi": "3887",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -919,7 +955,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Mobil Uyumlu"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Pixel Journey oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Pixel Journey oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "38",
@@ -930,8 +967,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/134acbfbd6d8440aa9b6e6de0be9e87e/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.2",
-      "oynama_sayisi": "794",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -944,7 +981,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Dragon Draw Joust oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Dragon Draw Joust oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "39",
@@ -955,8 +993,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/fbf9bd9c6d30424694270279fc1f3acf/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.9",
-      "oynama_sayisi": "2308",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -969,7 +1007,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Mahjong build farm oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Mahjong build farm oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "40",
@@ -980,8 +1019,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/5b5d6fb2a240493f8b6dd34cb798d612/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.5",
-      "oynama_sayisi": "9156",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -993,7 +1032,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Mobil Uyumlu"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Panda Dash Auto Shooting oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Panda Dash Auto Shooting oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "41",
@@ -1004,8 +1044,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/1fc5b3cb598b4d52802bb5003e4f1e79/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "5.0",
-      "oynama_sayisi": "8859",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -1017,7 +1057,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Mobil Uyumlu"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Office Knight 3D: Castle Defense oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Office Knight 3D: Castle Defense oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "42",
@@ -1028,8 +1069,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/76438cf40e0d4db29e84c9935cbd97fa/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.7",
-      "oynama_sayisi": "6823",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -1042,7 +1083,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Battle Arena oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Battle Arena oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "43",
@@ -1053,8 +1095,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/5e98552b05034337aa50307bde4bb93d/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.7",
-      "oynama_sayisi": "7540",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -1067,7 +1109,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka"
       ],
       "kontroller": "Fare / Dokunmatik Ekran",
-      "ipucu": "Twinkle Shooter oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Twinkle Shooter oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "44",
@@ -1078,8 +1121,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/908ed6a402314c1e8dc62b8103dd4adf/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "3.7",
-      "oynama_sayisi": "7231",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -1092,7 +1135,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Bublix: Bubble Hit oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Bublix: Bubble Hit oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "45",
@@ -1103,8 +1147,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/a571ac94d1ed4b2e84a3d604856d81e6/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.4",
-      "oynama_sayisi": "3536",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -1117,7 +1161,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Revoxel 3D - Voxel RPG Shooter oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Revoxel 3D - Voxel RPG Shooter oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "46",
@@ -1128,8 +1173,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/dfbca7a8ccc64e5da34fe06be70c497f/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.2",
-      "oynama_sayisi": "5986",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -1141,7 +1186,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Mobil Uyumlu"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Break Beat oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Break Beat oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "47",
@@ -1152,8 +1198,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/f3f2340b6fd74c5c8ef4eaaa88781746/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.2",
-      "oynama_sayisi": "9324",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -1166,7 +1212,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Clash & Run oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Clash & Run oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "48",
@@ -1177,8 +1224,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/de35402342e2480f824b75e44f7ac5ba/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.1",
-      "oynama_sayisi": "8657",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -1191,7 +1238,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka"
       ],
       "kontroller": "Fare / Dokunmatik Ekran",
-      "ipucu": "Hard Puzzle oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Hard Puzzle oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "49",
@@ -1202,8 +1250,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/d50d0bb0164f460891748b01ff084b0b/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "5.0",
-      "oynama_sayisi": "5315",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -1216,7 +1264,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "World Soccer oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "World Soccer oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "50",
@@ -1227,8 +1276,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/cdf4057010434b89b509008587b9bca8/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "3.7",
-      "oynama_sayisi": "602",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:16:43",
@@ -1241,7 +1290,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka"
       ],
       "kontroller": "Fare / Dokunmatik Ekran",
-      "ipucu": "Word Solitaire oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Word Solitaire oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "51",
@@ -1252,8 +1302,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/a55c9cc9c21e4fc683c8c6857f3d0c75/index.html",
       "oyun_tipi": "web",
       "etiket": "2 Kişilik",
-      "puan": "4.9",
-      "oynama_sayisi": "100010",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:25:06",
@@ -1269,7 +1319,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka",
         "Mobil Uyumlu",
         "Klavye"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "52",
@@ -1280,8 +1331,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/383ad09b92c7446b9113cccc29630517/index.html",
       "oyun_tipi": "web",
       "etiket": "2 Kişilik",
-      "puan": "4.9",
-      "oynama_sayisi": "100000",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:25:06",
@@ -1297,7 +1348,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka",
         "Mobil Uyumlu",
         "Klavye"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "53",
@@ -1308,8 +1360,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/f3a6e1ac0a77412289cbac47658b2b68/index.html",
       "oyun_tipi": "web",
       "etiket": "2 Kişilik",
-      "puan": "4.9",
-      "oynama_sayisi": "100005",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:25:06",
@@ -1325,7 +1377,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka",
         "Mobil Uyumlu",
         "Klavye"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "54",
@@ -1336,8 +1389,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/3790681b69584409b7f681a8e400102d/index.html",
       "oyun_tipi": "web",
       "etiket": "2 Kişilik",
-      "puan": "4.9",
-      "oynama_sayisi": "100000",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:25:06",
@@ -1353,7 +1406,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka",
         "Mobil Uyumlu",
         "Klavye"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "55",
@@ -1364,8 +1418,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/d4a3629101574bc39bd8f9d1888ca58e/index.html",
       "oyun_tipi": "web",
       "etiket": "2 Kişilik",
-      "puan": "4.9",
-      "oynama_sayisi": "100000",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:25:06",
@@ -1381,7 +1435,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka",
         "Mobil Uyumlu",
         "Klavye"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "56",
@@ -1392,8 +1447,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/762c932b4db74c6da0c1d101b2da8be6/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.8",
-      "oynama_sayisi": "100009",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:25:06",
@@ -1408,7 +1463,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı",
         "Klavye",
         "Mobil Uyumlu"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "57",
@@ -1419,8 +1475,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/f120262ab72743039fbce88c1f370df8/index.html",
       "oyun_tipi": "web",
       "etiket": "Efsane",
-      "puan": "4.8",
-      "oynama_sayisi": "100004",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-04 04:25:06",
@@ -1435,7 +1491,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı",
         "Klavye",
         "Mobil Uyumlu"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "58",
@@ -1446,8 +1503,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://archive.org/download/flash_age_of_war/age_of_war.swf",
       "oyun_tipi": "web",
       "etiket": "Efsane",
-      "puan": "4.8",
-      "oynama_sayisi": "47819",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:04:21",
@@ -1460,7 +1517,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Klavye"
       ],
       "kontroller": "Fare ile Asker, Taret & Çağ Atlama Kontrolü",
-      "ipucu": "Başlangıçta ucuz menzilli askerlerle XP biriktirip en kısa sürede sonraki çağa geçmeye odaklan."
+      "ipucu": "Başlangıçta ucuz menzilli askerlerle XP biriktirip en kısa sürede sonraki çağa geçmeye odaklan.",
+      "puan_sayisi": "0"
     },
     {
       "id": "59",
@@ -1471,8 +1529,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/f2057140b7004a65a81cd18eb1845b96/index.html",
       "oyun_tipi": "web",
       "etiket": "Strateji",
-      "puan": "4.7",
-      "oynama_sayisi": "49558",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:04:21",
@@ -1486,7 +1544,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "modlar": [
         "Mobil Uyumlu",
         "Hızlı"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "60",
@@ -1497,8 +1556,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/a32fcff2c655493eae609fab7f02220b/index.html",
       "oyun_tipi": "web",
       "etiket": "Efsane",
-      "puan": "4.9",
-      "oynama_sayisi": "46644",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:04:21",
@@ -1513,7 +1572,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Klavye",
         "Mobil Uyumlu",
         "Hızlı"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "63",
@@ -1524,8 +1584,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/34d6aae0257d4e4c8068cbdfc11a8758/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.8",
-      "oynama_sayisi": "20798",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:04:21",
@@ -1540,7 +1600,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Klavye",
         "Zeka",
         "Mobil Uyumlu"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "64",
@@ -1551,8 +1612,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/d282013140bd440e8a0c85fdfc06651e/index.html",
       "oyun_tipi": "web",
       "etiket": "Nişan",
-      "puan": "4.8",
-      "oynama_sayisi": "45195",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:04:21",
@@ -1565,7 +1626,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Strike Zone oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Strike Zone oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "65",
@@ -1576,8 +1638,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/1377b99c10284c229423118a941af3b1/index.html",
       "oyun_tipi": "web",
       "etiket": "Efsane",
-      "puan": "4.9",
-      "oynama_sayisi": "17431",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:04:21",
@@ -1592,7 +1654,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı",
         "Klavye",
         "Mobil Uyumlu"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "69",
@@ -1603,8 +1666,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/fa4b3d5da1e7427087e0013f99d9d99a/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.7",
-      "oynama_sayisi": "45938",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -1618,7 +1681,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "modlar": [
         "Hızlı",
         "Mobil Uyumlu"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "70",
@@ -1629,8 +1693,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://archive.org/download/bartender-the-right-mix/bartender-the-right-mix.swf",
       "oyun_tipi": "web",
       "etiket": "Komik",
-      "puan": "4.8",
-      "oynama_sayisi": "31217",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -1643,7 +1707,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Klavye"
       ],
       "kontroller": "Fare ile Şişe Seç, Dök, Çalkala & Servis Et",
-      "ipucu": "Karışımı çok fazla çalkalamadan buz ve limon dengelemesi yapmak yüksek skor getirir."
+      "ipucu": "Karışımı çok fazla çalkalamadan buz ve limon dengelemesi yapmak yüksek skor getirir.",
+      "puan_sayisi": "0"
     },
     {
       "id": "71",
@@ -1654,8 +1719,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://archive.org/download/fancypants_201911/FPAWorld1.swf",
       "oyun_tipi": "web",
       "etiket": "Platform",
-      "puan": "4.8",
-      "oynama_sayisi": "48405",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -1668,7 +1733,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Klavye"
       ],
       "kontroller": "Hareket: Ok Tuşları • Zıplama: S • Eğilme: Aşağı",
-      "ipucu": "Yokuş aşağı inerken Aşağı tuşuyla kayarsan düşmanları ezerek geçebilirsin!"
+      "ipucu": "Yokuş aşağı inerken Aşağı tuşuyla kayarsan düşmanları ezerek geçebilirsin!",
+      "puan_sayisi": "0"
     },
     {
       "id": "72",
@@ -1679,8 +1745,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/043d401426d845ae990cb2583fe1ebff/index.html",
       "oyun_tipi": "web",
       "etiket": "Klasik",
-      "puan": "4.8",
-      "oynama_sayisi": "18797",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -1695,7 +1761,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka",
         "Mobil Uyumlu",
         "Hızlı"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "73",
@@ -1706,8 +1773,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/3604299cbb8d47a58a226516dcd384f5/index.html",
       "oyun_tipi": "web",
       "etiket": "Arcade",
-      "puan": "4.8",
-      "oynama_sayisi": "36645",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -1720,7 +1787,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran",
-      "ipucu": "NEON JACKPOT oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "NEON JACKPOT oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "74",
@@ -1731,8 +1799,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/f7250748dac648ec94b2802c4b6f0f61/index.html",
       "oyun_tipi": "web",
       "etiket": "Bulmaca",
-      "puan": "4.8",
-      "oynama_sayisi": "16650",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -1747,7 +1815,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka",
         "Mobil Uyumlu",
         "Hızlı"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "75",
@@ -1758,8 +1827,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://archive.org/download/ben-10-blockade-blitz-swf/Ben%2010%20-%20Blockade%20Blitz.swf",
       "oyun_tipi": "web",
       "etiket": "Cartoon Network",
-      "puan": "4.8",
-      "oynama_sayisi": "17846",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -1772,7 +1841,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Klavye"
       ],
       "kontroller": "Nişan: Fare • Ateş: Sol Tık • Uzaylı Değiştir: 1-2-3 / Boşluk",
-      "ipucu": "Farklı blok türlerini tek atışta kırmak için uygun uzaylı formuna hızlıca geç."
+      "ipucu": "Farklı blok türlerini tek atışta kırmak için uygun uzaylı formuna hızlıca geç.",
+      "puan_sayisi": "0"
     },
     {
       "id": "76",
@@ -1783,8 +1853,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/29b9fcaa76894af8975062ac31a64394/index.html",
       "oyun_tipi": "web",
       "etiket": "Zeka",
-      "puan": "4.7",
-      "oynama_sayisi": "9038",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -1799,7 +1869,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka",
         "Mobil Uyumlu",
         "Hızlı"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "77",
@@ -1810,8 +1881,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://archive.org/download/bad-ice-cream/Bad-Ice-Cream.swf",
       "oyun_tipi": "web",
       "etiket": "2 Kişilik",
-      "puan": "4.8",
-      "oynama_sayisi": "12128",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -1825,7 +1896,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "2 Kişilik",
         "Klasik",
         "Klavye"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "78",
@@ -1836,8 +1908,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://archive.org/download/tasty-planet/Tasty_Planet.swf",
       "oyun_tipi": "web",
       "etiket": "Yeme",
-      "puan": "4.8",
-      "oynama_sayisi": "25358",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -1850,7 +1922,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Klavye"
       ],
       "kontroller": "Hareket: Ok Tuşları veya WASD",
-      "ipucu": "Kendinden küçük her şeyi yiyerek büyü; harita büyüdükçe yeni devasa hedeflerin kilidi açılır."
+      "ipucu": "Kendinden küçük her şeyi yiyerek büyü; harita büyüdükçe yeni devasa hedeflerin kilidi açılır.",
+      "puan_sayisi": "0"
     },
     {
       "id": "79",
@@ -1861,8 +1934,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/95e93b7f6d58440f8e7ae60d072f9fa3/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.8",
-      "oynama_sayisi": "49772",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -1876,7 +1949,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "modlar": [
         "Hızlı",
         "Mobil Uyumlu"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "80",
@@ -1887,8 +1961,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/715bfa195dd64b179c9a9f6d36c99534/index.html",
       "oyun_tipi": "web",
       "etiket": "Popüler",
-      "puan": "4.9",
-      "oynama_sayisi": "14663",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -1902,7 +1976,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "modlar": [
         "Hızlı",
         "Mobil Uyumlu"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "81",
@@ -1913,8 +1988,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/18d28481ea514f3c838f9a5a355fb0f7/index.html",
       "oyun_tipi": "web",
       "etiket": "Efsane",
-      "puan": "4.9",
-      "oynama_sayisi": "36622",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -1929,7 +2004,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka",
         "Klavye",
         "Mobil Uyumlu"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "82",
@@ -1940,8 +2016,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/d78c70e8c96449e98dfcc4f49a692b0d/index.html",
       "oyun_tipi": "web",
       "etiket": "Yeni",
-      "puan": "4.8",
-      "oynama_sayisi": "7143",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -1954,7 +2030,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Bogwarden's Hook oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Bogwarden's Hook oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "83",
@@ -1965,8 +2042,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/e8440c5421d340edbfd31eeb590b6510/index.html",
       "oyun_tipi": "web",
       "etiket": "Bulmaca",
-      "puan": "4.8",
-      "oynama_sayisi": "15610",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -1979,7 +2056,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka"
       ],
       "kontroller": "Fare / Dokunmatik Ekran",
-      "ipucu": "Robot Panic oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Robot Panic oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "84",
@@ -1990,8 +2068,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://archive.org/download/raft-wars/raft-wars.swf",
       "oyun_tipi": "web",
       "etiket": "Nişan",
-      "puan": "4.8",
-      "oynama_sayisi": "41528",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -2004,7 +2082,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Klavye"
       ],
       "kontroller": "Nişan & Güç: Fare ile Ayarla ve Sol Tıkla Ateş Et",
-      "ipucu": "Kaptanları ve TNT fıçılarını hedef almak düşman salını çok daha çabuk düşürür."
+      "ipucu": "Kaptanları ve TNT fıçılarını hedef almak düşman salını çok daha çabuk düşürür.",
+      "puan_sayisi": "0"
     },
     {
       "id": "85",
@@ -2015,8 +2094,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/e34e9456cfa840aeb36871a9d0577f3f/index.html",
       "oyun_tipi": "web",
       "etiket": "Bulmaca",
-      "puan": "4.8",
-      "oynama_sayisi": "33300",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -2029,7 +2108,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka"
       ],
       "kontroller": "Fare / Dokunmatik Ekran",
-      "ipucu": "Pop Arrow oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Pop Arrow oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "86",
@@ -2040,8 +2120,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/9aefc9ef4a7f4d5d8062cfb563cc658c/index.html",
       "oyun_tipi": "web",
       "etiket": "Klasik",
-      "puan": "4.8",
-      "oynama_sayisi": "31886",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -2055,7 +2135,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "modlar": [
         "Zeka",
         "Mobil Uyumlu"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "87",
@@ -2066,8 +2147,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/ccd5a818857a486e97d89eca69617add/index.html",
       "oyun_tipi": "web",
       "etiket": "Yeni",
-      "puan": "4.7",
-      "oynama_sayisi": "8135",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -2081,7 +2162,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "modlar": [
         "Hızlı",
         "Mobil Uyumlu"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "88",
@@ -2092,8 +2174,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/f804d079d19f44d3b951ead4588e974a/index.html",
       "oyun_tipi": "web",
       "etiket": "Efsane",
-      "puan": "4.9",
-      "oynama_sayisi": "26898",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -2108,7 +2190,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Hızlı",
         "Klavye",
         "Mobil Uyumlu"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "89",
@@ -2119,8 +2202,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/cf26da5cda504b739b6154dc83db247f/index.html",
       "oyun_tipi": "web",
       "etiket": "Gizem",
-      "puan": "4.8",
-      "oynama_sayisi": "39430",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -2132,7 +2215,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Mobil Uyumlu"
       ],
       "kontroller": "Fare / Dokunmatik Ekran veya Klavye (WASD / Oklar)",
-      "ipucu": "Night Checkpoint oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin."
+      "ipucu": "Night Checkpoint oyununu Tam Ekran veya Sinema Modu açarak kesintisiz ve odaklanmış şekilde oynayabilirsin.",
+      "puan_sayisi": "0"
     },
     {
       "id": "90",
@@ -2143,8 +2227,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/fd659a85ea0848c997c016e033b26799/index.html",
       "oyun_tipi": "web",
       "etiket": "Efsane",
-      "puan": "4.9",
-      "oynama_sayisi": "13833",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -2158,7 +2242,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "modlar": [
         "Zeka",
         "Mobil Uyumlu"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "91",
@@ -2169,8 +2254,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/22891cab98224f80a4405f7f0e53c8c1/index.html",
       "oyun_tipi": "web",
       "etiket": "Klasik",
-      "puan": "4.9",
-      "oynama_sayisi": "17714",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -2184,7 +2269,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "modlar": [
         "Zeka",
         "Mobil Uyumlu"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "92",
@@ -2195,8 +2281,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/d449af47fa5e4983b9f7b5fcab26a1b8/index.html",
       "oyun_tipi": "web",
       "etiket": "Efsane",
-      "puan": "4.8",
-      "oynama_sayisi": "49430",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -2209,7 +2295,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "seri": "",
       "modlar": [
         "Mobil Uyumlu"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "93",
@@ -2220,8 +2307,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://archive.org/download/the-skull-kid-flash-game/63747_skullkid.swf",
       "oyun_tipi": "web",
       "etiket": "Vahşi",
-      "puan": "4.8",
-      "oynama_sayisi": "43686",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -2234,7 +2321,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Klavye"
       ],
       "kontroller": "Hareket: Ok Tuşları • Testere/Saldırı: A / S",
-      "ipucu": "Büyük patronlara yaklaşmadan önce koridorlardaki düşmanları temizleyip canını koru."
+      "ipucu": "Büyük patronlara yaklaşmadan önce koridorlardaki düşmanları temizleyip canını koru.",
+      "puan_sayisi": "0"
     },
     {
       "id": "94",
@@ -2245,8 +2333,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/2481802388a8421eb67c25a0d4dee395/index.html",
       "oyun_tipi": "web",
       "etiket": "Strateji",
-      "puan": "4.7",
-      "oynama_sayisi": "43610",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -2261,7 +2349,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Zeka",
         "Mobil Uyumlu",
         "Hızlı"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "96",
@@ -2272,8 +2361,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/9ccc30ca939f40b89db4c69e121609b5/index.html",
       "oyun_tipi": "web",
       "etiket": "Zeka",
-      "puan": "4.8",
-      "oynama_sayisi": "9497",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -2287,7 +2376,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "modlar": [
         "Zeka",
         "Mobil Uyumlu"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "97",
@@ -2298,8 +2388,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/726521baaae040248612ddd17d60fdad/index.html",
       "oyun_tipi": "web",
       "etiket": "Savaş",
-      "puan": "4.8",
-      "oynama_sayisi": "27619",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -2313,7 +2403,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "modlar": [
         "Zeka",
         "Mobil Uyumlu"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "98",
@@ -2324,8 +2415,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://html5.gamedistribution.com/rvvASMiM/dd108118c3aa426e88fe2f7baebfd72b/index.html",
       "oyun_tipi": "web",
       "etiket": "Klasik",
-      "puan": "4.9",
-      "oynama_sayisi": "45266",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -2339,7 +2430,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "modlar": [
         "Hızlı",
         "Mobil Uyumlu"
-      ]
+      ],
+      "puan_sayisi": "0"
     },
     {
       "id": "99",
@@ -2350,8 +2442,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
       "oyun_linki": "https://archive.org/download/strike-force-heroes-flash-game-series./598428_Strike_Force_Heroes_v1.2.1.swf",
       "oyun_tipi": "web",
       "etiket": "Savaş",
-      "puan": "4.8",
-      "oynama_sayisi": "45003",
+      "puan": "0",
+      "oynama_sayisi": "0",
       "durum": "1",
       "ekleyen_id": "1",
       "olusturma_tarihi": "2026-05-06 16:05:28",
@@ -2364,7 +2456,8 @@ window.GEKKOTARI_DEFAULT_DATA = {
         "Klavye"
       ],
       "kontroller": "Hareket: WASD • Nişan/Ateş: Fare • Silah Değiştir: Q / 1-2 • Killstreak: E",
-      "ipucu": "Öldüğünde farklı sınıf seçebilir (Medic, Assassin, Tank, Commando) ve seviye atlayınca yeni silahlar açabilirsin!"
+      "ipucu": "Öldüğünde farklı sınıf seçebilir (Medic, Assassin, Tank, Commando) ve seviye atlayınca yeni silahlar açabilirsin!",
+      "puan_sayisi": "0"
     }
   ],
   "kategoriler": [
