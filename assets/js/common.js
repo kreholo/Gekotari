@@ -389,7 +389,7 @@ function renderGameCard(oyun, colClass = 'col') {
     const posterHtml = hasImage
         ? `<div style="width:100%; height:100%; position:relative; background:linear-gradient(135deg, ${renk}55, var(--bg-darker)); display:flex; align-items:center; justify-content:center;">
                <img src="${escapeHtml(gorsel)}" alt="${escapeHtml(oyun.oyun_adi)}" loading="lazy" class="game-thumb"
-                    style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"
+                    style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;"
                     onerror="this.style.display='none';">
                <div class="d-flex flex-column align-items-center justify-content:center text-center p-2" style="z-index:0;">
                    <i class="${escapeHtml(ikon)} fa-2x mb-1" style="color:rgba(255,255,255,0.75);"></i>
