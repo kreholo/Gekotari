@@ -386,6 +386,16 @@ function ensureFeedbackModal() {
             } catch {}
         }
 
+        if (window.location.protocol !== 'file:') {
+            try {
+                await fetch('/api/notify-feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tur, konu, mesaj, iletisim, sayfa: window.location.href })
+                });
+            } catch {}
+        }
+
         bootstrap.Modal.getInstance(document.getElementById('gekkotariFeedbackModal')).hide();
         document.getElementById('gekkotariFeedbackForm').reset();
         showToast('success', 'Geri bildirimin veritabanına kaydedildi, teşekkürler!');

@@ -8,7 +8,7 @@
 window.GEKKOTARI_ADS = {
     enabled: true,
     showPlaceholderWhenEmpty: false,
-    vercelAnalytics: false,
+    vercelAnalytics: true,
     contactNote: 'Reklam & Sponsorluk: info@gekkotari.com',
     slots: {
         home_leaderboard: {

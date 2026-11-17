@@ -4,6 +4,7 @@ import path from 'node:path';
 import vm from 'node:vm';
 import { GET as handleGamePage } from '../api/game-page.js';
 import { GET as handleSwfProxy, isAllowedUpstreamUrl } from '../api/swf-proxy.js';
+import { POST as handleNotifyFeedback } from '../api/notify-feedback.js';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 
@@ -126,6 +127,22 @@ async function runTests() {
   const notFoundRes = await handleGamePage(new Request('https://gekkotari.com/oyun/olmayan-bir-oyun-xyz'));
   assert.equal(notFoundRes.status, 404, 'Unknown game slug must return HTTP 404');
   console.log('[PASS] SSR game page & 404 unit tests passed');
+
+  // 5. Unit tests for api/notify-feedback.js origin guard & unconfigured safe status
+  const badNotify = await handleNotifyFeedback(new Request('https://gekkotari.com/api/notify-feedback', {
+    method: 'POST',
+    headers: { origin: 'https://evil-spam.example', 'content-type': 'application/json' },
+    body: JSON.stringify({ konu: 'Test', mesaj: 'Deneme' }),
+  }));
+  assert.equal(badNotify.status, 403, 'Notify endpoint must reject foreign origin');
+
+  const validNotify = await handleNotifyFeedback(new Request('https://gekkotari.com/api/notify-feedback', {
+    method: 'POST',
+    headers: { origin: 'https://gekkotari.com', 'content-type': 'application/json' },
+    body: JSON.stringify({ tur: 'Oyun İste', konu: 'Test Oyunu', mesaj: 'Merhaba' }),
+  }));
+  assert.equal(validNotify.status, 202, 'Notify endpoint must return 202 safely when SMS/push env vars are unset');
+  console.log('[PASS] Feedback notify API origin guard & safe fallback unit tests passed');
 }
 
 runTests().catch((err) => {
