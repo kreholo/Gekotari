@@ -11,16 +11,15 @@
   </defs>
   <rect width="440" height="280" rx="18" fill="url(#g-pandemic-2-salgin-stratejisi)"/>
   <rect width="440" height="280" rx="18" fill="url(#r-pandemic-2-salgin-stratejisi)"/>
-  <path d="M0 44 H440 M0 88 H440 M0 132 H440 M0 176 H440 M0 220 H440" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
-  <text x="415" y="255" text-anchor="end" fill="#38bdf8" fill-opacity="0.16" font-family="Inter,Arial,sans-serif" font-size="112" font-weight="900">2</text>
+  <path d="M0 56 H440 M0 112 H440 M0 168 H440 M0 224 H440" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <text x="414" y="246" text-anchor="end" fill="#38bdf8" fill-opacity="0.18" font-family="Inter,Arial,sans-serif" font-size="110" font-weight="900">2</text>
   <g transform="translate(360,118)" stroke="#38bdf8" stroke-width="3" fill="#38bdf8" fill-opacity="0.12" opacity="0.45">
         <path d="M0-54 L46-36 V10 C46 42 20 62 0 70 C-20 62 -46 42 -46 10 V-36 Z"/>
         <path d="M0-32 V48 M-24 2 H24" fill="none"/>
       </g>
-  <rect x="28" y="26" width="205.4" height="28" rx="14" fill="#38bdf8" fill-opacity="0.18" stroke="#38bdf8" stroke-opacity="0.55" stroke-width="1.2"/>
-  <text x="41" y="45" fill="#38bdf8" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="11.5" font-weight="700" letter-spacing="0.7">STRATEJI • FLASH KLASİK</text>
-  <text x="28" y="132" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" letter-spacing="-0.4">Pandemic 2 (Salgın</text>
-  <text x="28" y="166" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" letter-spacing="-0.4">Stratejisi)</text>
-  <rect x="28" y="236" width="54" height="4" rx="2" fill="#38bdf8"/>
-  <text x="28" y="258" fill="#9ca3af" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12" font-weight="600">gekkotari.com • Ücretsiz Oyna</text>
+  <rect x="270" y="22" width="146" height="24" rx="12" fill="#38bdf8" fill-opacity="0.16" stroke="#38bdf8" stroke-opacity="0.5" stroke-width="1.2"/>
+  <text x="343" y="38" text-anchor="middle" fill="#38bdf8" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="10.5" font-weight="700" letter-spacing="0.6">STRATEJI • FLASH</text>
+  <text x="28" y="128" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" letter-spacing="-0.4">Pandemic 2 (Salgın</text>
+  <text x="28" y="162" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" letter-spacing="-0.4">Stratejisi)</text>
+  <rect x="28" y="210" width="52" height="4" rx="2" fill="#38bdf8"/>
 </svg>

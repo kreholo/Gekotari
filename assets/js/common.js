@@ -675,7 +675,8 @@ function registerServiceWorkerAndAnalytics() {
     const host = window.location.hostname;
     const isHostedProd = host === 'gekkotari.com' || host === 'www.gekkotari.com' || host === 'gekotari.vercel.app';
 
-    if (isHostedProd && !document.querySelector('script[src="/_vercel/insights/script.js"]')) {
+    const cfg = window.GEKKOTARI_ADS || {};
+    if (isHostedProd && cfg.vercelAnalytics === true && !document.querySelector('script[src="/_vercel/insights/script.js"]')) {
         const s = document.createElement('script');
         s.defer = true;
         s.src = '/_vercel/insights/script.js';

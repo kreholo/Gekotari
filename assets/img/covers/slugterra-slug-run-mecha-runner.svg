@@ -11,16 +11,15 @@
   </defs>
   <rect width="440" height="280" rx="18" fill="url(#g-slugterra-slug-run-mecha-runner)"/>
   <rect width="440" height="280" rx="18" fill="url(#r-slugterra-slug-run-mecha-runner)"/>
-  <path d="M0 44 H440 M0 88 H440 M0 132 H440 M0 176 H440 M0 220 H440" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <path d="M0 56 H440 M0 112 H440 M0 168 H440 M0 224 H440" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
   
   <g transform="translate(260,72)" fill="#f59e0b" opacity="0.22">
         <polygon points="0,120 65,18 130,120"/><polygon points="75,120 135,34 195,120" opacity="0.7"/>
         <circle cx="155" cy="18" r="14"/>
       </g>
-  <rect x="28" y="26" width="189.79999999999998" height="28" rx="14" fill="#f59e0b" fill-opacity="0.18" stroke="#f59e0b" stroke-opacity="0.55" stroke-width="1.2"/>
-  <text x="41" y="45" fill="#f59e0b" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="11.5" font-weight="700" letter-spacing="0.7">MACERA • FLASH KLASİK</text>
-  <text x="28" y="132" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" letter-spacing="-0.4">Slugterra: Slug Run</text>
-  <text x="28" y="166" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" letter-spacing="-0.4">(Mecha Runner)</text>
-  <rect x="28" y="236" width="54" height="4" rx="2" fill="#f59e0b"/>
-  <text x="28" y="258" fill="#9ca3af" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12" font-weight="600">gekkotari.com • Ücretsiz Oyna</text>
+  <rect x="286" y="22" width="130" height="24" rx="12" fill="#f59e0b" fill-opacity="0.16" stroke="#f59e0b" stroke-opacity="0.5" stroke-width="1.2"/>
+  <text x="351" y="38" text-anchor="middle" fill="#f59e0b" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="10.5" font-weight="700" letter-spacing="0.6">MACERA • FLASH</text>
+  <text x="28" y="128" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" letter-spacing="-0.4">Slugterra: Slug Run</text>
+  <text x="28" y="162" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" letter-spacing="-0.4">(Mecha Runner)</text>
+  <rect x="28" y="210" width="52" height="4" rx="2" fill="#f59e0b"/>
 </svg>

@@ -11,17 +11,16 @@
   </defs>
   <rect width="440" height="280" rx="18" fill="url(#g-2-kisilik-bilardo-2-player-billiards)"/>
   <rect width="440" height="280" rx="18" fill="url(#r-2-kisilik-bilardo-2-player-billiards)"/>
-  <path d="M0 44 H440 M0 88 H440 M0 132 H440 M0 176 H440 M0 220 H440" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
-  <text x="415" y="255" text-anchor="end" fill="#2ee57a" fill-opacity="0.16" font-family="Inter,Arial,sans-serif" font-size="112" font-weight="900">2</text>
+  <path d="M0 56 H440 M0 112 H440 M0 168 H440 M0 224 H440" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <text x="414" y="246" text-anchor="end" fill="#2ee57a" fill-opacity="0.18" font-family="Inter,Arial,sans-serif" font-size="110" font-weight="900">2</text>
   <g transform="translate(362,115)" stroke="#2ee57a" stroke-width="3" fill="#2ee57a" fill-opacity="0.14" opacity="0.42">
         <path d="M-32-42 H32 V-4 C32 20 14 34 0 38 C-14 34 -32 20 -32-4 Z"/>
         <path d="M-32-32 H-48 V-10 C-48 4 -36 12 -28 12 M32-32 H48 V-10 C48 4 36 12 28 12" fill="none"/>
         <path d="M0 38 V58 M-22 58 H22"/>
       </g>
-  <rect x="28" y="26" width="174.2" height="28" rx="14" fill="#2ee57a" fill-opacity="0.18" stroke="#2ee57a" stroke-opacity="0.55" stroke-width="1.2"/>
-  <text x="41" y="45" fill="#2ee57a" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="11.5" font-weight="700" letter-spacing="0.7">SPOR • FLASH KLASİK</text>
-  <text x="28" y="132" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" letter-spacing="-0.4">2 Kişilik Bilardo (2</text>
-  <text x="28" y="166" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" letter-spacing="-0.4">Player Billiards)</text>
-  <rect x="28" y="236" width="54" height="4" rx="2" fill="#2ee57a"/>
-  <text x="28" y="258" fill="#9ca3af" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12" font-weight="600">gekkotari.com • Ücretsiz Oyna</text>
+  <rect x="301" y="22" width="115" height="24" rx="12" fill="#2ee57a" fill-opacity="0.16" stroke="#2ee57a" stroke-opacity="0.5" stroke-width="1.2"/>
+  <text x="358.5" y="38" text-anchor="middle" fill="#2ee57a" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="10.5" font-weight="700" letter-spacing="0.6">SPOR • FLASH</text>
+  <text x="28" y="128" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" letter-spacing="-0.4">2 Kişilik Bilardo (2</text>
+  <text x="28" y="162" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" letter-spacing="-0.4">Player Billiards)</text>
+  <rect x="28" y="210" width="52" height="4" rx="2" fill="#2ee57a"/>
 </svg>
