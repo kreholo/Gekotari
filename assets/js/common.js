@@ -3,7 +3,7 @@
  * Hafif Bellek Veri Okuma + Supabase Canlı Senkronizasyon + Tek-Sekme Semantik Kartlar
  */
 
-const DATA_VERSION = 'gekkotari_v10_2026_11';
+const DATA_VERSION = 'gekkotari_v11_2026_11';
 
 function initGekkotariStore() {
     const currentVer = localStorage.getItem('gekkotari_version');

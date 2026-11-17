@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240">
+  <rect width="400" height="240" fill="#0d1527"/>
+  <g transform="translate(120,24)" font-family="system-ui,sans-serif" font-weight="900" font-size="22">
+    <rect x="0" y="0" width="48" height="48" rx="6" fill="#0f172a" stroke="#334155"/><text x="24" y="32" text-anchor="middle" fill="#60a5fa">1</text>
+    <rect x="54" y="0" width="48" height="48" rx="6" fill="#0f172a" stroke="#334155"/><text x="78" y="32" text-anchor="middle" fill="#4ade80">2</text>
+    <rect x="108" y="0" width="48" height="48" rx="6" fill="#1e293b" stroke="#475569"/>
+    <rect x="0" y="54" width="48" height="48" rx="6" fill="#1e293b" stroke="#facc15" stroke-width="2"/><polygon points="20,66 20,90 24,90 24,66" fill="#e2e8f0"/><polygon points="24,66 38,73 24,80" fill="#ef4444"/>
+    <rect x="54" y="54" width="48" height="48" rx="6" fill="#0f172a" stroke="#334155"/><text x="78" y="86" text-anchor="middle" fill="#f87171">3</text>
+    <rect x="108" y="54" width="48" height="48" rx="6" fill="#7f1d1d" stroke="#ef4444"/><circle cx="132" cy="78" r="12" fill="#090f1d"/><circle cx="128" cy="74" r="3" fill="#f87171"/>
+    <rect x="0" y="108" width="48" height="48" rx="6" fill="#1e293b" stroke="#475569"/>
+    <rect x="54" y="108" width="48" height="48" rx="6" fill="#1e293b" stroke="#475569"/>
+    <rect x="108" y="108" width="48" height="48" rx="6" fill="#0f172a" stroke="#334155"/><text x="132" y="140" text-anchor="middle" fill="#60a5fa">1</text>
+  </g>
+  <text x="200" y="216" text-anchor="middle" fill="#f8fafc" font-family="system-ui,sans-serif" font-weight="800" font-size="22">MAYIN TARLASI</text>
+</svg>

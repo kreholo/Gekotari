@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Mayın Tarlası - Gekkotari</title>
+<style>
+  :root { --bg:#0b1120; --panel:#131c31; --cell:#1e293b; --open:#0f172a; --acc:#2ee57a; --txt:#f8fafc; --mut:#94a3b8; --bd:rgba(255,255,255,0.12); }
+  * { box-sizing:border-box; user-select:none; -webkit-tap-highlight-color:transparent; }
+  html,body { margin:0; padding:4px; width:100%; height:100%; background:radial-gradient(circle at top,#172544 0%,var(--bg) 78%); color:var(--txt); font-family:system-ui,-apple-system,sans-serif; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .shell { width:min(98vw,540px); max-height:98vh; background:var(--panel); border:1px solid var(--bd); border-radius:14px; padding:8px 12px; display:flex; flex-direction:column; gap:7px; box-shadow:0 20px 50px rgba(0,0,0,0.48); }
+  .hud { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px; }
+  .brand { font-weight:800; font-size:0.95rem; color:var(--acc); }
+  .ctrls { display:flex; gap:5px; align-items:center; flex-wrap:wrap; }
+  select,button { font-family:inherit; font-weight:600; font-size:0.75rem; border-radius:8px; border:1px solid var(--bd); background:#1a2540; color:var(--txt); padding:4px 8px; cursor:pointer; }
+  .btn-go { background:linear-gradient(135deg,#2ee57a,#16a34a); color:#052211; border:none; font-weight:800; }
+  .btn-flag.on { background:#eab308; color:#0b1120; border-color:#facc15; }
+  .stats { display:flex; justify-content:space-between; font-size:0.8rem; font-weight:700; background:rgba(255,255,255,0.04); padding:5px 10px; border-radius:9px; }
+  .board-wrap { display:flex; justify-content:center; align-items:center; overflow:auto; }
+  .board { display:grid; gap:2px; background:#090f1d; padding:4px; border-radius:8px; border:1px solid var(--bd); }
+  .cell { width:var(--sz,26px); height:var(--sz,26px); background:var(--cell); border-radius:4px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:calc(var(--sz,26px)*0.54); cursor:pointer; border-top:2px solid rgba(255,255,255,0.14); border-left:2px solid rgba(255,255,255,0.1); }
+  .cell.open { background:var(--open); border:1px solid rgba(255,255,255,0.05); cursor:default; }
+  .cell.mine { background:#7f1d1d; }
+  .n1{color:#60a5fa}.n2{color:#4ade80}.n3{color:#f87171}.n4{color:#a78bfa}.n5{color:#fb923c}.n6{color:#22d3ee}.n7{color:#f472b6}.n8{color:#cbd5e1}
+  .foot { text-align:center; font-size:0.74rem; color:#fde047; font-weight:600; min-height:16px; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="hud">
+    <span class="brand">💣 Mayın Tarlası</span>
+    <div class="ctrls">
+      <select id="diffSel">
+        <option value="easy">Kolay (9×9)</option>
+        <option value="med">Orta (12×12)</option>
+      </select>
+      <button id="flagBtn" class="btn-flag" type="button">🚩 Bayrak: Kapalı</button>
+      <button id="newBtn" class="btn-go" type="button">↻ Yeni Oyun</button>
+    </div>
+  </div>
+  <div class="stats">
+    <span>🚩 Kalan Mayın: <strong id="minesEl">10</strong></span>
+    <span>⏱️ Süre: <strong id="timeEl">0</strong> sn</span>
+  </div>
+  <div class="board-wrap"><div id="board" class="board"></div></div>
+  <div id="statusEl" class="foot">İlk tıklama her zaman güvenlidir! Sağ tık veya Bayrak moduyla işaretle.</div>
+</div>
+<script>
+(() => {
+  let rows = 9, cols = 9, mineCount = 10;
+  let grid = [], openArr = [], flagArr = [];
+  let firstClick = true, over = false, flagMode = false, timer = null, secs = 0;
+
+  const boardEl = document.getElementById('board');
+  const diffSel = document.getElementById('diffSel');
+  const flagBtn = document.getElementById('flagBtn');
+  const minesEl = document.getElementById('minesEl');
+  const timeEl = document.getElementById('timeEl');
+  const statusEl = document.getElementById('statusEl');
+
+  function start() {
+    if (timer) { clearInterval(timer); timer = null; }
+    const d = diffSel.value;
+    rows = cols = d === 'med' ? 12 : 9;
+    mineCount = d === 'med' ? 22 : 10;
+    document.documentElement.style.setProperty('--sz', d === 'med' ? 'min(22px, 5.2vw, 3.8vh)' : 'min(29px, 7.6vw, 5.2vh)');
+    grid = Array.from({ length: rows }, () => Array(cols).fill(0));
+    openArr = Array.from({ length: rows }, () => Array(cols).fill(false));
+    flagArr = Array.from({ length: rows }, () => Array(cols).fill(false));
+    firstClick = true; over = false; secs = 0;
+    timeEl.textContent = '0';
+    statusEl.textContent = 'Güvenli bir kare açarak başla!';
+    render();
+  }
+
+  function placeMines(sr, sc) {
+    let placed = 0;
+    while (placed < mineCount) {
+      const r = Math.floor(Math.random() * rows), c = Math.floor(Math.random() * cols);
+      if ((Math.abs(r - sr) <= 1 && Math.abs(c - sc) <= 1) || grid[r][c] === -1) continue;
+      grid[r][c] = -1; placed++;
+    }
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      if (grid[r][c] === -1) continue;
+      let cnt = 0;
+      for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+        const nr = r + dr, nc = c + dc;
+        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] === -1) cnt++;
+      }
+      grid[r][c] = cnt;
+    }
+  }
+
+  function reveal(r, c) {
+    const stack = [[r, c]];
+    while (stack.length) {
+      const [cr, cc] = stack.pop();
+      if (cr < 0 || cr >= rows || cc < 0 || cc >= cols || openArr[cr][cc] || flagArr[cr][cc]) continue;
+      openArr[cr][cc] = true;
+      if (grid[cr][cc] === 0) {
+        for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+          if (dr || dc) stack.push([cr + dr, cc + dc]);
+        }
+      }
+    }
+  }
+
+  function checkWin() {
+    let closed = 0;
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) if (!openArr[r][c]) closed++;
+    if (closed === mineCount) {
+      over = true; clearInterval(timer);
+      statusEl.textContent = `🎉 Tebrikler! ${secs} saniyede tüm mayınları temizledin!`;
+    }
+  }
+
+  function onCell(r, c, isRight) {
+    if (over) return;
+    if (isRight || flagMode) {
+      if (openArr[r][c]) return;
+      flagArr[r][c] = !flagArr[r][c];
+      render(); return;
+    }
+    if (flagArr[r][c]) return;
+    if (firstClick) {
+      firstClick = false;
+      placeMines(r, c);
+      timer = setInterval(() => { secs++; timeEl.textContent = secs; }, 1000);
+    }
+    if (grid[r][c] === -1) {
+      over = true; clearInterval(timer);
+      for (let i = 0; i < rows; i++) for (let j = 0; j < cols; j++) if (grid[i][j] === -1) openArr[i][j] = true;
+      statusEl.textContent = '💥 Mayına bastın! Yeniden dene.';
+      render(); return;
+    }
+    reveal(r, c);
+    checkWin();
+    render();
+  }
+
+  function render() {
+    let flags = 0;
+    flagArr.forEach(row => row.forEach(f => { if (f) flags++; }));
+    minesEl.textContent = Math.max(0, mineCount - flags);
+    boardEl.style.gridTemplateColumns = `repeat(${cols}, auto)`;
+    boardEl.innerHTML = '';
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      const el = document.createElement('div');
+      const isOpen = openArr[r][c], val = grid[r][c];
+      el.className = 'cell' + (isOpen ? ' open' : '') + (isOpen && val === -1 ? ' mine' : '') + (isOpen && val > 0 ? ' n' + val : '');
+      if (isOpen) el.textContent = val === -1 ? '💣' : (val > 0 ? val : '');
+      else if (flagArr[r][c]) el.textContent = '🚩';
+      el.onclick = () => onCell(r, c, false);
+      el.oncontextmenu = (e) => { e.preventDefault(); onCell(r, c, true); };
+      boardEl.appendChild(el);
+    }
+  }
+
+  flagBtn.onclick = () => {
+    flagMode = !flagMode;
+    flagBtn.classList.toggle('on', flagMode);
+    flagBtn.textContent = flagMode ? '🚩 Bayrak: Açık' : '🚩 Bayrak: Kapalı';
+  };
+  diffSel.onchange = start;
+  document.getElementById('newBtn').onclick = start;
+  start();
+})();
+</script>
+</body>
+</html>

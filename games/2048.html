@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>2048 Klasik - Gekkotari</title>
+<style>
+  :root { --bg:#0b1120; --panel:#131c31; --bd:rgba(255,255,255,0.12); --acc:#2ee57a; --txt:#f8fafc; --mut:#94a3b8; }
+  * { box-sizing:border-box; user-select:none; -webkit-tap-highlight-color:transparent; }
+  html,body { margin:0; padding:4px; width:100%; height:100%; background:radial-gradient(circle at top,#172544 0%,var(--bg) 78%); color:var(--txt); font-family:system-ui,-apple-system,sans-serif; display:flex; align-items:center; justify-content:center; overflow:hidden; touch-action:none; }
+  .shell { width:min(97vw,420px); max-height:98vh; background:var(--panel); border:1px solid var(--bd); border-radius:14px; padding:10px 12px; display:flex; flex-direction:column; gap:8px; box-shadow:0 20px 50px rgba(0,0,0,0.48); }
+  .top { display:flex; justify-content:space-between; align-items:center; gap:6px; flex-wrap:wrap; }
+  .brand { font-weight:900; font-size:1.15rem; color:#facc15; }
+  .btns { display:flex; gap:5px; }
+  button { font-family:inherit; font-weight:700; font-size:0.76rem; border-radius:8px; border:1px solid var(--bd); background:#1a2540; color:var(--txt); padding:5px 9px; cursor:pointer; }
+  .btn-go { background:linear-gradient(135deg,#2ee57a,#16a34a); color:#052211; border:none; }
+  .scores { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .sc { background:rgba(255,255,255,0.04); border-radius:9px; padding:5px 10px; display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; }
+  .sc strong { font-size:1.05rem; color:var(--acc); }
+  .board-wrap { display:flex; justify-content:center; }
+  .board { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; width:min(100%,48vh,260px); aspect-ratio:1/1; background:#091020; padding:6px; border-radius:12px; border:1px solid var(--bd); }
+  .tile { border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:1.25rem; background:#1a2540; color:#f8fafc; transition:transform 0.08s; }
+  .t0{background:#162038;color:transparent}.t2{background:#e2e8f0;color:#0f172a}.t4{background:#fde68a;color:#0f172a}.t8{background:#fb923c;color:#fff}.t16{background:#f97316;color:#fff}.t32{background:#ef4444;color:#fff}.t64{background:#dc2626;color:#fff}.t128{background:#facc15;color:#0f172a;font-size:1.05rem}.t256{background:#eab308;color:#0f172a;font-size:1.05rem}.t512{background:#2ee57a;color:#052211;font-size:1.05rem}.t1024{background:#06b6d4;color:#052211;font-size:0.95rem}.t2048{background:#a855f7;color:#fff;font-size:0.95rem;box-shadow:0 0 14px #a855f7}
+  .foot { text-align:center; font-size:0.74rem; color:var(--mut); min-height:16px; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="top">
+    <span class="brand">2048 • Gekkotari</span>
+    <div class="btns">
+      <button id="undoBtn" type="button">↩ Geri Al</button>
+      <button id="newBtn" class="btn-go" type="button">↻ Yenile</button>
+    </div>
+  </div>
+  <div class="scores">
+    <div class="sc"><span>Skor</span><strong id="scoreEl">0</strong></div>
+    <div class="sc"><span>Rekor</span><strong id="bestEl">0</strong></div>
+  </div>
+  <div class="board-wrap"><div id="board" class="board"></div></div>
+  <div id="statusEl" class="foot">Ok tuşları, WASD veya parmağınla kaydırarak sayıları birleştir!</div>
+</div>
+<script>
+(() => {
+  let b = [], score = 0, best = 0, prev = null;
+  try { best = parseInt(localStorage.getItem('gekkotari_2048_best') || '0', 10) || 0; } catch (e) {}
+  const boardEl = document.getElementById('board'), scoreEl = document.getElementById('scoreEl'), bestEl = document.getElementById('bestEl'), statusEl = document.getElementById('statusEl');
+
+  function spawn() {
+    const emp = [];
+    for (let i = 0; i < 16; i++) if (!b[i]) emp.push(i);
+    if (emp.length) b[emp[Math.floor(Math.random() * emp.length)]] = Math.random() < 0.9 ? 2 : 4;
+  }
+
+  function start() {
+    b = Array(16).fill(0); score = 0; prev = null;
+    spawn(); spawn();
+    statusEl.textContent = '2048 karesine ulaşmaya çalış!';
+    render();
+  }
+
+  function slide(line) {
+    const arr = line.filter(Boolean);
+    let pts = 0;
+    for (let i = 0; i < arr.length - 1; i++) {
+      if (arr[i] === arr[i + 1]) { arr[i] *= 2; pts += arr[i]; arr.splice(i + 1, 1); }
+    }
+    while (arr.length < 4) arr.push(0);
+    return { arr, pts };
+  }
+
+  function move(dir) {
+    const snap = b.slice(), prevSc = score;
+    let moved = false;
+    for (let r = 0; r < 4; r++) {
+      const idxs = [];
+      for (let c = 0; c < 4; c++) {
+        if (dir === 'L') idxs.push(r * 4 + c);
+        if (dir === 'R') idxs.push(r * 4 + (3 - c));
+        if (dir === 'U') idxs.push(c * 4 + r);
+        if (dir === 'D') idxs.push((3 - c) * 4 + r);
+      }
+      const line = idxs.map(i => b[i]);
+      const { arr, pts } = slide(line);
+      score += pts;
+      idxs.forEach((gi, k) => { if (b[gi] !== arr[k]) moved = true; b[gi] = arr[k]; });
+    }
+    if (!moved) return;
+    prev = { b: snap, score: prevSc };
+    spawn();
+    if (score > best) { best = score; try { localStorage.setItem('gekkotari_2048_best', String(best)); } catch (e) {} }
+    if (b.includes(2048)) statusEl.textContent = '🎉 2048\'e ulaştın! Devam edip rekor kırabilirsin!';
+    else if (!canMove()) statusEl.textContent = 'Hamle kalmadı! Yenile butonuna bas.';
+    render();
+  }
+
+  function canMove() {
+    if (b.includes(0)) return true;
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) {
+      const v = b[r * 4 + c];
+      if ((c < 3 && b[r * 4 + c + 1] === v) || (r < 3 && b[(r + 1) * 4 + c] === v)) return true;
+    }
+    return false;
+  }
+
+  function render() {
+    scoreEl.textContent = score; bestEl.textContent = best;
+    boardEl.innerHTML = '';
+    b.forEach(v => {
+      const d = document.createElement('div');
+      d.className = 'tile t' + (v > 2048 ? 2048 : v);
+      d.textContent = v || '';
+      boardEl.appendChild(d);
+    });
+  }
+
+  window.addEventListener('keydown', e => {
+    const map = { ArrowLeft:'L', KeyA:'L', ArrowRight:'R', KeyD:'R', ArrowUp:'U', KeyW:'U', ArrowDown:'D', KeyS:'D' };
+    if (map[e.code]) { e.preventDefault(); move(map[e.code]); }
+  });
+  let sx = 0, sy = 0;
+  document.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
+    move(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'R' : 'L') : (dy > 0 ? 'D' : 'U'));
+  });
+  document.getElementById('undoBtn').onclick = () => { if (!prev) return; b = prev.b; score = prev.score; prev = null; render(); };
+  document.getElementById('newBtn').onclick = start;
+  start();
+})();
+</script>
+</body>
+</html>

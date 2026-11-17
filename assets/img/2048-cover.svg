@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240">
+  <rect width="400" height="240" fill="#0d1527"/>
+  <g transform="translate(115,24)" font-family="system-ui,sans-serif" font-weight="900">
+    <rect x="0" y="0" width="78" height="72" rx="10" fill="#fb923c"/><text x="39" y="47" text-anchor="middle" fill="#fff" font-size="30">8</text>
+    <rect x="86" y="0" width="84" height="72" rx="10" fill="#ef4444"/><text x="128" y="47" text-anchor="middle" fill="#fff" font-size="30">64</text>
+    <rect x="0" y="80" width="78" height="72" rx="10" fill="#2ee57a"/><text x="39" y="126" text-anchor="middle" fill="#052211" font-size="26">512</text>
+    <rect x="86" y="80" width="84" height="72" rx="10" fill="#a855f7"/><text x="128" y="125" text-anchor="middle" fill="#fff" font-size="26">2048</text>
+  </g>
+  <text x="200" y="214" text-anchor="middle" fill="#facc15" font-family="system-ui,sans-serif" font-weight="900" font-size="24">2048 KLASİK</text>
+</svg>

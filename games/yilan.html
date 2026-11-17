@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Klasik Yılan Neon - Gekkotari</title>
+<style>
+  :root { --bg:#0b1120; --panel:#131c31; --bd:rgba(255,255,255,0.12); --acc:#2ee57a; --txt:#f8fafc; --mut:#94a3b8; }
+  * { box-sizing:border-box; user-select:none; -webkit-tap-highlight-color:transparent; }
+  html,body { margin:0; padding:4px; width:100%; height:100%; background:radial-gradient(circle at top,#172544 0%,var(--bg) 78%); color:var(--txt); font-family:system-ui,-apple-system,sans-serif; display:flex; align-items:center; justify-content:center; overflow:hidden; touch-action:none; }
+  .shell { width:min(97vw,430px); max-height:98vh; background:var(--panel); border:1px solid var(--bd); border-radius:14px; padding:8px 12px; display:flex; flex-direction:column; align-items:center; gap:6px; box-shadow:0 20px 50px rgba(0,0,0,0.48); }
+  .hud { width:100%; display:flex; justify-content:space-between; align-items:center; gap:6px; flex-wrap:wrap; }
+  .brand { font-weight:800; font-size:0.95rem; color:var(--acc); }
+  .stats { display:flex; gap:10px; font-size:0.8rem; font-weight:700; }
+  button,select { font-family:inherit; font-weight:700; font-size:0.74rem; border-radius:8px; border:1px solid var(--bd); background:#1a2540; color:var(--txt); padding:4px 8px; cursor:pointer; }
+  .btn-go { background:linear-gradient(135deg,#2ee57a,#16a34a); color:#052211; border:none; }
+  canvas { width:min(100%, 44vh, 250px); height:min(100%, 44vh, 250px); background:#070d19; border:2px solid #243356; border-radius:10px; }
+  .dpad { display:grid; grid-template-columns:repeat(3,36px); gap:3px; }
+  .dpad button { height:30px; padding:0; font-size:0.9rem; }
+  .foot { font-size:0.72rem; color:var(--mut); text-align:center; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="hud">
+    <span class="brand">🐍 Neon Yılan</span>
+    <div class="stats"><span>Skor: <strong id="sc">0</strong></span><span>Rekor: <strong id="hi">0</strong></span></div>
+    <div style="display:flex;gap:4px;">
+      <select id="spd"><option value="125">Normal</option><option value="85">Hızlı</option></select>
+      <button id="rstBtn" class="btn-go" type="button">↻ Başla</button>
+    </div>
+  </div>
+  <canvas id="cv" width="320" height="320"></canvas>
+  <div class="dpad">
+    <div></div><button type="button" data-d="0,-1">▲</button><div></div>
+    <button type="button" data-d="-1,0">◀</button><button type="button" data-d="0,1">▼</button><button type="button" data-d="1,0">▶</button>
+  </div>
+  <div class="foot" id="msg">WASD / Ok tuşları veya butonlarla yönlendir!</div>
+</div>
+<script>
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const N = 16, S = cv.width / N;
+let snake, food, vx, vy, nvx, nvy, score, best = 0, loop = null, dead = false;
+try { best = parseInt(localStorage.getItem('gekkotari_snake_hi') || '0', 10) || 0; } catch (e) {}
+document.getElementById('hi').textContent = best;
+
+function spawnFood() {
+  do {
+    food = { x: Math.floor(Math.random() * N), y: Math.floor(Math.random() * N) };
+  } while (snake.some(s => s.x === food.x && s.y === food.y));
+}
+
+function reset() {
+  if (loop) clearInterval(loop);
+  snake = [{ x: 8, y: 8 }, { x: 7, y: 8 }, { x: 6, y: 8 }];
+  vx = nvx = 1; vy = nvy = 0; score = 0; dead = false;
+  document.getElementById('sc').textContent = '0';
+  document.getElementById('msg').textContent = 'Elmaları topla, duvarlara ve kendine çarpma!';
+  spawnFood();
+  draw();
+  loop = setInterval(tick, parseInt(document.getElementById('spd').value, 10));
+}
+
+function setDir(dx, dy) {
+  if (dx === -vx && dy === -vy) return;
+  nvx = dx; nvy = dy;
+}
+document.querySelectorAll('.dpad button[data-d]').forEach(b => {
+  b.addEventListener('click', () => {
+    const [dx, dy] = b.getAttribute('data-d').split(',').map(Number);
+    setDir(dx, dy);
+  });
+});
+
+function tick() {
+  if (dead) return;
+  vx = nvx; vy = nvy;
+  const head = { x: snake[0].x + vx, y: snake[0].y + vy };
+  if (head.x < 0 || head.x >= N || head.y < 0 || head.y >= N || snake.some(s => s.x === head.x && s.y === head.y)) {
+    dead = true; clearInterval(loop);
+    document.getElementById('msg').textContent = `Oyun bitti! Skorun: ${score}. Tekrar başla!`;
+    return;
+  }
+  snake.unshift(head);
+  if (head.x === food.x && head.y === food.y) {
+    score += 10;
+    document.getElementById('sc').textContent = score;
+    if (score > best) { best = score; document.getElementById('hi').textContent = best; try { localStorage.setItem('gekkotari_snake_hi', String(best)); } catch (e) {} }
+    spawnFood();
+  } else snake.pop();
+  draw();
+}
+
+function draw() {
+  ctx.fillStyle = '#070d19'; ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.fillStyle = '#ef4444';
+  ctx.beginPath(); ctx.arc(food.x * S + S / 2, food.y * S + S / 2, S * 0.38, 0, Math.PI * 2); ctx.fill();
+  snake.forEach((p, i) => {
+    ctx.fillStyle = i === 0 ? '#4ade80' : '#16a34a';
+    ctx.fillRect(p.x * S + 1.5, p.y * S + 1.5, S - 3, S - 3);
+  });
+}
+
+window.addEventListener('keydown', e => {
+  const m = { ArrowUp:[0,-1], KeyW:[0,-1], ArrowDown:[0,1], KeyS:[0,1], ArrowLeft:[-1,0], KeyA:[-1,0], ArrowRight:[1,0], KeyD:[1,0] };
+  if (m[e.code]) { e.preventDefault(); setDir(m[e.code][0], m[e.code][1]); }
+});
+let sx = 0, sy = 0;
+cv.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+cv.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+  if (Math.max(Math.abs(dx), Math.abs(dy)) < 20) return;
+  if (Math.abs(dx) > Math.abs(dy)) setDir(dx > 0 ? 1 : -1, 0); else setDir(0, dy > 0 ? 1 : -1);
+});
+document.getElementById('rstBtn').onclick = reset;
+document.getElementById('spd').onchange = reset;
+reset();
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240">
+  <rect width="400" height="240" fill="#091020"/>
+  <g transform="translate(132,20)">
+    <rect x="24" y="10" width="28" height="28" rx="4" fill="#a855f7"/>
+    <rect x="0" y="38" width="28" height="28" rx="4" fill="#a855f7"/>
+    <rect x="28" y="38" width="28" height="28" rx="4" fill="#a855f7"/>
+    <rect x="56" y="38" width="28" height="28" rx="4" fill="#a855f7"/>
+    <rect x="86" y="72" width="28" height="28" rx="4" fill="#22d3ee"/>
+    <rect x="86" y="100" width="28" height="28" rx="4" fill="#22d3ee"/>
+    <rect x="86" y="128" width="28" height="28" rx="4" fill="#22d3ee"/>
+    <rect x="0" y="128" width="28" height="28" rx="4" fill="#facc15"/>
+    <rect x="28" y="128" width="28" height="28" rx="4" fill="#facc15"/>
+    <rect x="0" y="100" width="28" height="28" rx="4" fill="#facc15"/>
+    <rect x="28" y="100" width="28" height="28" rx="4" fill="#facc15"/>
+  </g>
+  <text x="200" y="214" text-anchor="middle" fill="#38bdf8" font-family="system-ui,sans-serif" font-weight="900" font-size="24">KLASİK TETRİS</text>
+</svg>

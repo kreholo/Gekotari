@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240">
+  <rect width="400" height="240" fill="#091020"/>
+  <g fill="#16a34a">
+    <rect x="76" y="100" width="28" height="28" rx="6"/>
+    <rect x="108" y="100" width="28" height="28" rx="6"/>
+    <rect x="140" y="100" width="28" height="28" rx="6"/>
+    <rect x="140" y="68" width="28" height="28" rx="6"/>
+    <rect x="172" y="68" width="28" height="28" rx="6"/>
+    <rect x="204" y="68" width="28" height="28" rx="6" fill="#4ade80"/>
+  </g>
+  <circle cx="295" cy="82" r="16" fill="#ef4444"/>
+  <text x="200" y="206" text-anchor="middle" fill="#4ade80" font-family="system-ui,sans-serif" font-weight="900" font-size="24">NEON YILAN (SNAKE)</text>
+</svg>
