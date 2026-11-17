@@ -6,26 +6,28 @@
     <meta name="description" content="Gekkotari — Ateş ve Su 1-6, Water Sort Puzzle 3, Çağlar Boyu Savaş 1-2, Papa's Pizzeria serisi, Bloons TD 1-3, Hobo, Stick War, Feodalizm, Jacksmith, Mayın Tarlası, 2048, Tetris ve 200 ücretsiz HTML5 & Flash oyunu kurulumsuz hemen oyna!">
     <meta name="keywords" content="flash oyunlar, html5 oyunlar, gekkotari, ateş ve su, water sort puzzle 3, çağlar boyu savaş, papa's pizzeria, bloons td, hobo oyunu, plazma burst, zombotron, stick war, earn to die, feodalizm, swords and sandals, jacksmith, mayın tarlası, 2048, tetris, yılan oyunu, sos oyunu, xox oyunu">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <link rel="canonical" href="https://gekotari.vercel.app/">
+    <link rel="canonical" href="https://gekkotari.com/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Gekkotari">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:title" content="Gekkotari — Ücretsiz Flash & HTML5 Oyun Portalı">
     <meta property="og:description" content="Kurulumsuz ve reklamsız 200 doğrulanmış Flash & HTML5 oyunu tek adreste oyna!">
-    <meta property="og:url" content="https://gekotari.vercel.app/">
-    <meta property="og:image" content="https://gekotari.vercel.app/assets/icon-192.svg">
+    <meta property="og:url" content="https://gekkotari.com/">
+    <meta property="og:image" content="https://gekkotari.com/assets/icon-512.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#2ee57a">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/svg+xml" href="assets/icon-192.svg">
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
     <link rel="preconnect" href="https://rltpodnczpcwnefovitz.supabase.co" crossorigin>
-    <link rel="preconnect" href="https://img.gamedistribution.com" crossorigin>
+    <link rel="preconnect" href="https://archive.org" crossorigin>
     <title>Gekkotari — Ücretsiz Flash & HTML5 Oyun Portalı</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css?v=11">
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Gekkotari","url":"https://gekotari.vercel.app/","potentialAction":{"@type":"SearchAction","target":"https://gekotari.vercel.app/kategori.html?arama={search_term_string}","query-input":"required name=search_term_string"}}</script>
+    <link rel="stylesheet" href="assets/css/style.css?v=12">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Gekkotari","url":"https://gekkotari.com/","potentialAction":{"@type":"SearchAction","target":"https://gekkotari.com/kategori.html?arama={search_term_string}","query-input":"required name=search_term_string"}}</script>
 </head>
 <body>
 
@@ -91,10 +93,10 @@
 <div id="siteFooterMount"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="assets/js/ads-config.js?v=9"></script>
-<script src="assets/js/supabase-sync.js?v=9"></script>
-<script src="assets/js/games-data.js?v=14"></script>
-<script src="assets/js/common.js?v=11"></script>
+<script src="assets/js/ads-config.js?v=10"></script>
+<script src="assets/js/supabase-sync.js?v=10"></script>
+<script src="assets/js/games-data.js?v=15"></script>
+<script src="assets/js/common.js?v=12"></script>
 <script>
 function temizleSonOynanan() {
     localStorage.removeItem('gekkotari_recent');
@@ -167,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div style="width:92px;height:68px;border-radius:10px;overflow:hidden;flex-shrink:0;background:var(--bg-darker);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;position:relative;">
                         <i class="${escapeHtml(getGameIcon(daily))} fa-2x" style="color:var(--primary);"></i>
                         ${hasImg
-                            ? `<img src="${escapeHtml(daily.gorsel)}" alt="${escapeHtml(daily.oyun_adi)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';">`
+                            ? `<img src="${escapeHtml(resolveAssetUrl(daily.gorsel))}" alt="${escapeHtml(daily.oyun_adi)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';">`
                             : ''}
                     </div>
                     <div class="overflow-hidden">
@@ -179,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${escapeHtml(daily.aciklama || 'Bugünün öne çıkan doğrulanmış oyununu hemen dene!')}
                 </p>
             </div>
-            <a href="oyun.html?id=${daily.id}" class="btn btn-primary-custom w-100">
+            <a href="${getGameUrl(daily)}" class="btn btn-primary-custom w-100">
                 <i class="fas fa-play me-2"></i>Bugünün Oyununu Oyna
             </a>
         `;
@@ -188,10 +190,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Hızlı Mod Çipleri & Kategoriler
     const quickModes = [
         { key: '2 Kişilik', icon: 'fas fa-user-friends', label: '2 Kişilik Kapışma' },
-        { key: 'Hızlı', icon: 'fas fa-stopwatch', label: '5 Dk Molalık' },
-        { key: 'Zeka', icon: 'fas fa-brain', label: 'Zeka & Bulmaca' },
+        { key: 'HTML5', icon: 'fab fa-html5', label: 'HTML5 Oyunlar' },
         { key: 'Flash', icon: 'fas fa-bolt', label: 'Flash Efsaneler' },
-        { key: 'Mobil Uyumlu', icon: 'fas fa-mobile-alt', label: 'Telefondan Oyna' }
+        { key: 'Mobil Uyumlu', icon: 'fas fa-mobile-alt', label: 'Telefondan Oyna' },
+        { key: 'Hızlı', icon: 'fas fa-stopwatch', label: '5 Dk Molalık' },
+        { key: 'Zeka', icon: 'fas fa-brain', label: 'Zeka & Bulmaca' }
     ];
     document.getElementById('quickModesBar').innerHTML =
         `<span class="small text-muted fw-semibold me-1"><i class="fas fa-sliders-h me-1" style="color:var(--primary);"></i>Modlar:</span>` +
@@ -216,21 +219,22 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('recentGamesGrid').innerHTML = recents.map(g => renderGameCard(g, 'col')).join('');
     }
 
-    // 5-7. Oyun Vitrinleri Render (ve Supabase canlı verisi gelince otomatik güncelleme)
+    // 5-7. Oyun Vitrinleri Render (ve Supabase canlı verisi + katalog güncellemeleri gelince otomatik yenileme)
     function renderHomeGrids() {
-        const classics = games
+        const currentGames = getGames().filter(g => String(g.durum) !== '0');
+        const classics = currentGames
             .filter(g => parseInt(g.id, 10) >= 51)
             .sort((a, b) => getGameLiveStat(b).plays - getGameLiveStat(a).plays || parseInt(a.id, 10) - parseInt(b.id, 10))
             .slice(0, 30);
         document.getElementById('classicGamesGrid').innerHTML = classics.map(g => renderGameCard(g, 'col')).join('');
 
-        const popularHtml5 = games
+        const popularHtml5 = currentGames
             .filter(g => parseInt(g.id, 10) <= 50)
             .sort((a, b) => getGameLiveStat(b).plays - getGameLiveStat(a).plays || parseInt(a.id, 10) - parseInt(b.id, 10))
             .slice(0, 10);
         document.getElementById('popularGamesGrid').innerHTML = popularHtml5.map(g => renderGameCard(g, 'col')).join('');
 
-        const newest = [...games]
+        const newest = [...currentGames]
             .sort((a, b) => parseInt(b.id, 10) - parseInt(a.id, 10))
             .slice(0, 15);
         document.getElementById('newGamesGrid').innerHTML = newest.map(g => renderGameCard(g, 'col')).join('');

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 280" width="440" height="280">
+  <defs>
+    <linearGradient id="g-snail-bob-2-dogum-gunu-hediyesi" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#071c15"/>
+      <stop offset="100%" stop-color="#0e3c2c"/>
+    </linearGradient>
+    <radialGradient id="r-snail-bob-2-dogum-gunu-hediyesi" cx="0.82" cy="0.28" r="0.65">
+      <stop offset="0%" stop-color="#34d399" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#34d399" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="440" height="280" rx="18" fill="url(#g-snail-bob-2-dogum-gunu-hediyesi)"/>
+  <rect width="440" height="280" rx="18" fill="url(#r-snail-bob-2-dogum-gunu-hediyesi)"/>
+  <path d="M0 44 H440 M0 88 H440 M0 132 H440 M0 176 H440 M0 220 H440" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <text x="415" y="255" text-anchor="end" fill="#10b981" fill-opacity="0.16" font-family="Inter,Arial,sans-serif" font-size="112" font-weight="900">2</text>
+  <g transform="translate(362,115)" stroke="#10b981" stroke-width="3" fill="#10b981" fill-opacity="0.12" opacity="0.4">
+        <rect x="-42" y="-42" width="38" height="38" rx="6"/><rect x="4" y="-42" width="38" height="38" rx="6"/>
+        <rect x="-42" y="4" width="38" height="38" rx="6"/><rect x="4" y="4" width="38" height="38" rx="6"/>
+      </g>
+  <rect x="28" y="26" width="197.6" height="28" rx="14" fill="#10b981" fill-opacity="0.18" stroke="#10b981" stroke-opacity="0.55" stroke-width="1.2"/>
+  <text x="41" y="45" fill="#10b981" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="11.5" font-weight="700" letter-spacing="0.7">BULMACA • FLASH KLASİK</text>
+  <text x="28" y="132" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" letter-spacing="-0.4">Snail Bob 2: Doğum</text>
+  <text x="28" y="166" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" letter-spacing="-0.4">Günü Hediyesi</text>
+  <rect x="28" y="236" width="54" height="4" rx="2" fill="#10b981"/>
+  <text x="28" y="258" fill="#9ca3af" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12" font-weight="600">gekkotari.com • Ücretsiz Oyna</text>
+</svg>

@@ -1029,3 +1029,203 @@ body.cinema-mode .game-stage-card {
     .page-content { padding: 20px; }
     .auth-container { margin: 24px 12px; padding: 24px; }
 }
+
+/* --- CANLI ARAMA ÖNERİ KUTUSU & MOBİL ARAMA --- */
+.search-wrapper {
+    position: relative;
+}
+
+.search-autocomplete {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: var(--bg-card);
+    border: 1px solid rgba(46, 229, 122, 0.35);
+    border-radius: var(--radius-md);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
+    z-index: 1080;
+    overflow: hidden;
+    display: none;
+}
+
+.search-autocomplete.open {
+    display: block;
+}
+
+.search-ac-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    color: var(--text-primary);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background 0.14s ease;
+}
+
+.search-ac-item:last-child {
+    border-bottom: none;
+}
+
+.search-ac-item:hover,
+.search-ac-item.active {
+    background: rgba(46, 229, 122, 0.14);
+    color: var(--primary-bright);
+}
+
+.search-ac-thumb {
+    width: 44px;
+    height: 32px;
+    border-radius: 6px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: var(--bg-darker);
+}
+
+.search-ac-footer {
+    display: block;
+    text-align: center;
+    padding: 8px 10px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--primary);
+    background: rgba(46, 229, 122, 0.08);
+    text-decoration: none;
+}
+
+/* --- BREADCRUMB & SERİ GEÇİŞ ŞERİDİ --- */
+.gekkotari-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.gekkotari-breadcrumb a {
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.gekkotari-breadcrumb a:hover {
+    color: var(--primary);
+}
+
+.series-nav-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    background: rgba(46, 229, 122, 0.06);
+    border-top: 1px solid var(--border-color);
+    font-size: 0.84rem;
+}
+
+/* --- SANAL OYUN KUMANDASI (MOBİL FLASH KONTROL) --- */
+.virtual-gamepad-panel {
+    background: #09100d;
+    border-top: 1px solid rgba(46, 229, 122, 0.28);
+    padding: 12px 16px;
+    display: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.virtual-gamepad-panel.show {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.vpad-dpad {
+    display: grid;
+    grid-template-columns: repeat(3, 46px);
+    grid-template-rows: repeat(2, 42px);
+    gap: 6px;
+}
+
+.vpad-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.vpad-btn {
+    border: 1px solid rgba(46, 229, 122, 0.4);
+    background: rgba(20, 35, 29, 0.92);
+    color: #e6fff2;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    min-width: 44px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    touch-action: none;
+    transition: transform 0.06s ease, background 0.08s ease;
+}
+
+.vpad-btn:active,
+.vpad-btn.pressed {
+    background: var(--primary);
+    color: #06130b;
+    transform: scale(0.95);
+}
+
+.vpad-btn-wide {
+    padding: 0 14px;
+}
+
+/* --- LİDERLİK TABLOSU & ÇEREZ ONAY BANDI --- */
+.leaderboard-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 18px 20px;
+}
+
+.lb-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    margin-bottom: 6px;
+    font-size: 0.86rem;
+}
+
+.lb-row:last-child {
+    margin-bottom: 0;
+}
+
+.cookie-consent-bar {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    max-width: 560px;
+    background: rgba(12, 20, 17, 0.97);
+    border: 1px solid rgba(46, 229, 122, 0.35);
+    border-radius: 14px;
+    padding: 14px 16px;
+    z-index: 1090;
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+}

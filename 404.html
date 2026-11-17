@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, follow">
+    <meta name="theme-color" content="#2ee57a">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+    <title>Sayfa Bulunamadı (404) - Gekkotari</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css?v=12">
+</head>
+<body>
+
+<div id="siteHeaderMount"></div>
+
+<main class="container-xl my-5">
+    <div class="page-content text-center py-5 mb-5">
+        <div class="mb-3">
+            <span class="badge bg-success px-3 py-2" style="font-size:0.9rem;">HATA 404</span>
+        </div>
+        <h1 class="display-4 fw-bold text-white mb-2">Aradığın Sayfa Bulunamadı</h1>
+        <p class="text-muted mx-auto mb-4" style="max-width:520px;">
+            Aradığın oyun bağlantısı taşınmış veya yanlış yazılmış olabilir. Doğrulanmış 200 oyuna göz atabilir ya da şansına rastgele bir oyun açabilirsin!
+        </p>
+        <div class="d-flex justify-content-center gap-2 flex-wrap mb-3">
+            <a href="/index.html" class="btn btn-primary-custom px-4">
+                <i class="fas fa-home me-2"></i>Ana Sayfa
+            </a>
+            <a href="/kategori.html" class="btn btn-outline-light px-4">
+                <i class="fas fa-th-large me-2"></i>Tüm Oyunlar
+            </a>
+            <button type="button" onclick="rastgeleOyunAc()" class="btn btn-outline-success px-4">
+                <i class="fas fa-dice me-2"></i>Rastgele Oyun Aç
+            </button>
+        </div>
+    </div>
+
+    <section>
+        <h3 class="section-title mb-3"><i class="fas fa-fire"></i> Öne Çıkan Oyunlar</h3>
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3" id="notFoundPopularGrid"></div>
+    </section>
+</main>
+
+<div id="siteFooterMount"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/js/ads-config.js?v=10"></script>
+<script src="/assets/js/supabase-sync.js?v=10"></script>
+<script src="/assets/js/games-data.js?v=15"></script>
+<script src="/assets/js/common.js?v=12"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    renderHeader('');
+    renderFooter();
+    const grid = document.getElementById('notFoundPopularGrid');
+    if (grid) {
+        const picks = getGames().slice(0, 10);
+        grid.innerHTML = picks.map(g => renderGameCard(g, 'col')).join('');
+    }
+    syncPortalLiveStats();
+});
+</script>
+</body>
+</html>

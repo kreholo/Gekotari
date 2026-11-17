@@ -1,13 +1,27 @@
 {
+  "id": "/",
   "name": "Gekkotari Oyun Portalı",
   "short_name": "Gekkotari",
-  "description": "Ücretsiz Flash ve HTML5 tarayıcı oyunları portalı — indirimsiz, kurulumsuz hemen oyna.",
-  "start_url": "/index.html",
+  "description": "Ücretsiz Flash ve HTML5 tarayıcı oyunları portalı — kurulumsuz hemen oyna.",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0b100e",
   "theme_color": "#2ee57a",
   "lang": "tr",
   "icons": [
+    {
+      "src": "/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
     {
       "src": "/assets/icon-192.svg",
       "sizes": "192x192",

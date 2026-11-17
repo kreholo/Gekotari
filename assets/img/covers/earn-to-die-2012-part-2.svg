@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 280" width="440" height="280">
+  <defs>
+    <linearGradient id="g-earn-to-die-2012-part-2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1f0e06"/>
+      <stop offset="100%" stop-color="#47210c"/>
+    </linearGradient>
+    <radialGradient id="r-earn-to-die-2012-part-2" cx="0.82" cy="0.28" r="0.65">
+      <stop offset="0%" stop-color="#fdba74" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#fdba74" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="440" height="280" rx="18" fill="url(#g-earn-to-die-2012-part-2)"/>
+  <rect width="440" height="280" rx="18" fill="url(#r-earn-to-die-2012-part-2)"/>
+  <path d="M0 44 H440 M0 88 H440 M0 132 H440 M0 176 H440 M0 220 H440" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <text x="415" y="255" text-anchor="end" fill="#fb923c" fill-opacity="0.16" font-family="Inter,Arial,sans-serif" font-size="112" font-weight="900">2</text>
+  <g stroke="#fb923c" stroke-width="3.5" stroke-linecap="round" opacity="0.35">
+        <line x1="250" y1="68" x2="425" y2="68"/><line x1="285" y1="96" x2="440" y2="96"/>
+        <line x1="265" y1="124" x2="410" y2="124"/><line x1="300" y1="152" x2="445" y2="152"/>
+      </g>
+  <rect x="28" y="26" width="182" height="28" rx="14" fill="#fb923c" fill-opacity="0.18" stroke="#fb923c" stroke-opacity="0.55" stroke-width="1.2"/>
+  <text x="41" y="45" fill="#fb923c" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="11.5" font-weight="700" letter-spacing="0.7">YARIŞ • FLASH KLASİK</text>
+  <text x="28" y="132" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" letter-spacing="-0.4">Earn to Die 2012: Part</text>
+  <text x="28" y="166" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" letter-spacing="-0.4">2</text>
+  <rect x="28" y="236" width="54" height="4" rx="2" fill="#fb923c"/>
+  <text x="28" y="258" fill="#9ca3af" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12" font-weight="600">gekkotari.com • Ücretsiz Oyna</text>
+</svg>

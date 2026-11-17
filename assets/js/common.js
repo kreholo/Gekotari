@@ -1,95 +1,37 @@
 /**
- * GEKKOTARİ - ORTAK SİSTEM VE VERİ YÖNETİMİ (Common JS v8)
- * Hafif Bellek Veri Okuma + Supabase Canlı Senkronizasyon + Tek-Sekme Semantik Kartlar
+ * GEKKOTARİ - ORTAK SİSTEM, TEMİZ URL, CANLI ARAMA, KÜTÜPHANE & PWA YÖNETİMİ (v15)
  */
 
-const DATA_VERSION = 'gekkotari_v11_2026_11';
+const DATA_VERSION = 'gekkotari_v15_2026_11';
+const SITE_ORIGIN = 'https://gekkotari.com';
 
 function initGekkotariStore() {
     const currentVer = localStorage.getItem('gekkotari_version');
     if (currentVer !== DATA_VERSION) {
-        // Eski şişkin localStorage kopyalarını temizle (RAM'deki GEKKOTARI_DEFAULT_DATA doğrudan kullanılır)
         localStorage.removeItem('gekkotari_games');
         localStorage.removeItem('gekkotari_categories');
         localStorage.removeItem('gekkotari_sliders');
         localStorage.removeItem('gekkotari_pages');
+        localStorage.removeItem('gekkotari_users');
         localStorage.setItem('gekkotari_version', DATA_VERSION);
-    }
-
-    if (!localStorage.getItem('gekkotari_users')) {
-        const defaultUsers = [
-            {
-                id: 1,
-                ad_soyad: 'Site Yöneticisi',
-                kullanici_adi: 'admin',
-                email: 'admin@gekkotari.com',
-                sifre: 'Admin123',
-                rol_adi: 'super_admin',
-                olusturma_tarihi: '2026-05-01 12:00:00'
-            }
-        ];
-        localStorage.setItem('gekkotari_users', JSON.stringify(defaultUsers));
     }
 }
 
 initGekkotariStore();
 
-function getGames() {
-    try {
-        const customRaw = localStorage.getItem('gekkotari_custom_games');
-        if (customRaw) return JSON.parse(customRaw);
-    } catch (e) {}
-    return (window.GEKKOTARI_DEFAULT_DATA && window.GEKKOTARI_DEFAULT_DATA.oyunlar) || [];
+function pageHref(relPath) {
+    if (typeof window !== 'undefined' && window.location.protocol === 'file:') {
+        return relPath;
+    }
+    return '/' + String(relPath || '').replace(/^\/+/, '');
 }
 
-function saveGames(games) {
-    try {
-        localStorage.setItem('gekkotari_custom_games', JSON.stringify(games));
-    } catch (e) {}
-}
-
-function getCategories() {
-    return (window.GEKKOTARI_DEFAULT_DATA && window.GEKKOTARI_DEFAULT_DATA.kategoriler) || [];
-}
-
-function getSliders() {
-    return (window.GEKKOTARI_DEFAULT_DATA && window.GEKKOTARI_DEFAULT_DATA.slider) || [];
-}
-
-function getPages() {
-    return (window.GEKKOTARI_DEFAULT_DATA && window.GEKKOTARI_DEFAULT_DATA.sayfalar) || [];
-}
-
-function getUsers() {
-    try {
-        const raw = localStorage.getItem('gekkotari_users');
-        if (raw) return JSON.parse(raw);
-    } catch (e) {}
-    return [];
-}
-
-function saveUsers(users) {
-    localStorage.setItem('gekkotari_users', JSON.stringify(users));
-}
-
-function getActiveUser() {
-    try {
-        const raw = localStorage.getItem('aktifOturum');
-        if (raw) return JSON.parse(raw);
-    } catch (e) {}
-    return null;
-}
-
-function setActiveUser(user) {
-    localStorage.setItem('aktifOturum', JSON.stringify(user));
-}
-
-function logoutUser() {
-    localStorage.removeItem('aktifOturum');
-    showToast('info', 'Başarıyla çıkış yapıldı.');
-    setTimeout(() => {
-        window.location.href = 'index.html';
-    }, 450);
+function resolveAssetUrl(assetPath) {
+    const p = String(assetPath || '');
+    if (!p || p.startsWith('http://') || p.startsWith('https://') || p.startsWith('data:')) {
+        return p;
+    }
+    return pageHref(p);
 }
 
 function normalizeTr(str) {
@@ -105,6 +47,81 @@ function normalizeTr(str) {
         .replace(/ö/g, 'o')
         .replace(/ç/g, 'c')
         .replace(/['’`]/g, '');
+}
+
+function slugifyGameTitle(str) {
+    return normalizeTr(str)
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .replace(/-{2,}/g, '-');
+}
+
+function getGameSlug(oyun) {
+    if (!oyun) return '';
+    if (oyun.slug) return oyun.slug;
+    const base = slugifyGameTitle(oyun.oyun_adi) || ('oyun-' + oyun.id);
+    return base.slice(0, 64).replace(/-+$/, '');
+}
+
+function getGameUrl(oyun) {
+    if (!oyun) return pageHref('kategori.html');
+    if (typeof window !== 'undefined' && window.location.protocol === 'file:') {
+        return 'oyun.html?id=' + oyun.id;
+    }
+    return '/oyun/' + getGameSlug(oyun);
+}
+
+function getGames() {
+    const baseGames = (window.GEKKOTARI_DEFAULT_DATA && window.GEKKOTARI_DEFAULT_DATA.oyunlar) || [];
+    const overrides = Array.isArray(window.GEKKOTARI_REMOTE_OVERRIDES) ? window.GEKKOTARI_REMOTE_OVERRIDES : [];
+    if (!overrides.length) return baseGames;
+
+    const map = new Map();
+    baseGames.forEach(g => map.set(String(g.id), g));
+    overrides.forEach(ov => {
+        const key = String(ov.game_id);
+        if (ov.action === 'hide') {
+            map.delete(key);
+        } else if (ov.action === 'upsert' && ov.payload) {
+            const existing = map.get(key) || {};
+            const merged = Object.assign({}, existing, ov.payload, { id: key });
+            if (!merged.slug) merged.slug = slugifyGameTitle(merged.oyun_adi) + '-' + key;
+            map.set(key, merged);
+        }
+    });
+    return Array.from(map.values());
+}
+
+function getCategories() {
+    return (window.GEKKOTARI_DEFAULT_DATA && window.GEKKOTARI_DEFAULT_DATA.kategoriler) || [];
+}
+
+function getSliders() {
+    return (window.GEKKOTARI_DEFAULT_DATA && window.GEKKOTARI_DEFAULT_DATA.slider) || [];
+}
+
+function getPages() {
+    return (window.GEKKOTARI_DEFAULT_DATA && window.GEKKOTARI_DEFAULT_DATA.sayfalar) || [];
+}
+
+function getActiveUser() {
+    try {
+        const raw = localStorage.getItem('aktifOturum');
+        if (raw) return JSON.parse(raw);
+    } catch {}
+    return null;
+}
+
+async function logoutUser() {
+    if (window.GekkotariDB && window.GekkotariDB.authSignOut) {
+        try { await window.GekkotariDB.authSignOut(); } catch {}
+    } else {
+        localStorage.removeItem('aktifOturum');
+    }
+    showToast('info', 'Başarıyla çıkış yapıldı.');
+    setTimeout(() => {
+        window.location.href = pageHref('index.html');
+    }, 400);
 }
 
 function escapeHtml(str) {
@@ -140,28 +157,34 @@ function showToast(tip, mesaj) {
     const ikon = ikonMap[tip] || 'fas fa-bell';
     const wrapper = document.createElement('div');
     wrapper.innerHTML = `
-        <div class="alert alert-${tip} alert-dismissible fade show d-flex align-items-center shadow-sm mb-2" role="alert" style="animation: slideDown 0.3s ease-out;">
+        <div class="alert alert-${tip} alert-dismissible fade show d-flex align-items-center shadow-sm mb-2" role="alert">
             <i class="${ikon} me-2 fs-5"></i>
-            <div>${mesaj}</div>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+            <div>${escapeHtml(mesaj)}</div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Kapat"></button>
         </div>
     `;
     container.appendChild(wrapper);
     setTimeout(() => {
         if (wrapper && wrapper.parentNode) wrapper.remove();
-    }, 3500);
+    }, 3600);
 }
 
-// --- SUPABASE CANLI İSTATİSTİK SENKRONİZASYONU ---
+// --- SUPABASE CANLI İSTATİSTİK & KATALOG SENKRONİZASYONU ---
 async function syncPortalLiveStats(onStatsReady) {
     if (!window.GekkotariDB) return null;
     try {
-        const stats = await window.GekkotariDB.fetchAllGameStats();
+        const [stats, overrides] = await Promise.all([
+            window.GekkotariDB.fetchAllGameStats(),
+            window.GekkotariDB.fetchCatalogOverrides().catch(() => [])
+        ]);
+        if (Array.isArray(overrides) && overrides.length) {
+            window.GEKKOTARI_REMOTE_OVERRIDES = overrides;
+        }
         window.GEKKOTARI_LIVE_STATS = stats;
         window.GekkotariDB.applyLiveStatsToDom(stats);
         if (typeof onStatsReady === 'function') onStatsReady(stats);
         return stats;
-    } catch (e) {
+    } catch {
         return null;
     }
 }
@@ -185,7 +208,7 @@ function recordRecentPlay(oyunId) {
         list = list.filter(x => String(x.id) !== idStr);
         list.unshift({ id: idStr, ts: Date.now() });
         localStorage.setItem('gekkotari_recent', JSON.stringify(list.slice(0, 12)));
-    } catch (e) {}
+    } catch {}
 }
 
 function getRecentGames(limit = 5) {
@@ -196,7 +219,7 @@ function getRecentGames(limit = 5) {
             .map(item => all.find(g => String(g.id) === String(item.id)))
             .filter(Boolean)
             .slice(0, limit);
-    } catch (e) {
+    } catch {
         return [];
     }
 }
@@ -241,7 +264,7 @@ function renderAdSlot(mountId, slotId) {
             <div class="${escapeHtml(slot.sizeClass)}">
                 <div class="ad-placeholder-inner">
                     <span class="ad-placeholder-badge">${escapeHtml(slot.label)}</span>
-                    <div>Gekkotari Destek & Sponsorluk Alanı</div>
+                    <div>Gekkotari Destek &amp; Sponsorluk Alanı</div>
                     <a href="#" onclick="openFeedbackModal('Oneri', ''); return false;" style="color:var(--primary);font-size:0.74rem;">
                         <i class="fas fa-bullhorn me-1"></i>Sponsorluk / İletişim
                     </a>
@@ -260,7 +283,7 @@ function ensureFeedbackModal() {
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title fw-bold">
-                        <i class="fas fa-paper-plane me-2" style="color:var(--primary);"></i>Öneri, Oyun İsteği & Bildirim
+                        <i class="fas fa-paper-plane me-2" style="color:var(--primary);"></i>Öneri, Oyun İsteği &amp; Bildirim
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
                 </div>
@@ -271,7 +294,7 @@ function ensureFeedbackModal() {
                             <select id="fbTur" class="form-select">
                                 <option value="Oyun İste">Yeni Oyun İste</option>
                                 <option value="Sorun Bildir">Açılmayan / Bozuk Oyun Bildir</option>
-                                <option value="Oneri">Site Önerisi & Telif/İletişim</option>
+                                <option value="Oneri">Site Önerisi &amp; Telif/İletişim</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -322,10 +345,17 @@ function ensureFeedbackModal() {
             const list = JSON.parse(localStorage.getItem('gekkotari_feedback') || '[]');
             list.unshift(entry);
             localStorage.setItem('gekkotari_feedback', JSON.stringify(list.slice(0, 100)));
-        } catch (err) {}
+        } catch {}
 
         if (window.GekkotariDB) {
-            try { await window.GekkotariDB.submitRemoteFeedback(entry); } catch (err) {}
+            try {
+                await window.GekkotariDB.submitRemoteFeedback(entry);
+            } catch (err) {
+                if (String(err && err.message || '').includes('RATE_LIMIT')) {
+                    showToast('warning', 'Çok sık bildirim gönderildi, lütfen biraz sonra tekrar dene.');
+                    return;
+                }
+            }
         }
 
         const fbCfg = window.GEKKOTARI_FEEDBACK_CONFIG || {};
@@ -338,7 +368,7 @@ function ensureFeedbackModal() {
                         content: `**[Gekkotari - ${tur}]**\n**Konu:** ${konu}\n**Gönderen:** ${iletisim}\n**Mesaj:** ${mesaj}\n**Sayfa:** ${window.location.href}`
                     })
                 });
-            } catch (err) {}
+            } catch {}
         }
 
         if (fbCfg.web3formsAccessKey) {
@@ -353,7 +383,7 @@ function ensureFeedbackModal() {
                         message: `${mesaj}\n\nSayfa: ${window.location.href}`
                     })
                 });
-            } catch (err) {}
+            } catch {}
         }
 
         bootstrap.Modal.getInstance(document.getElementById('gekkotariFeedbackModal')).hide();
@@ -405,14 +435,15 @@ function getCategoryColor(katAdi) {
 }
 
 function renderGameCard(oyun, colClass = 'col') {
-    const gorsel = oyun.gorsel || 'default_game.png';
+    const gorselRaw = oyun.gorsel || 'default_game.png';
+    const gorsel = resolveAssetUrl(gorselRaw);
     const renk = oyun.renk || getCategoryColor(oyun.kategori_adi);
     const ikon = getGameIcon(oyun);
-    const hasImage = gorsel && gorsel !== 'default_game.png' && (gorsel.startsWith('http') || gorsel.startsWith('assets/'));
+    const hasImage = gorselRaw && gorselRaw !== 'default_game.png' && (gorselRaw.startsWith('http') || gorselRaw.startsWith('assets/'));
     const isSwf = (oyun.oyun_linki || '').toLowerCase().endsWith('.swf');
     const is2P = Array.isArray(oyun.modlar) && oyun.modlar.includes('2 Kişilik');
     const stat = getGameLiveStat(oyun);
-    const gameUrl = `oyun.html?id=${oyun.id}`;
+    const gameUrl = getGameUrl(oyun);
 
     let badgeColor = 'info text-dark';
     if (is2P || oyun.etiket === '2 Kişilik') badgeColor = 'success';
@@ -463,7 +494,7 @@ function renderGameCard(oyun, colClass = 'col') {
                     <a href="${gameUrl}" class="btn btn-play flex-grow-1 text-center">
                         <i class="fas fa-play me-1"></i>Oyna
                     </a>
-                    <button type="button" onclick="kutuphaneyeEkle(${oyun.id})" class="btn btn-add-library-icon" title="Kütüphaneye Ekle">
+                    <button type="button" onclick="kutuphaneyeEkle(${oyun.id})" class="btn btn-add-library-icon" title="Kütüphaneye Ekle" aria-label="Kütüphaneye Ekle">
                         <i class="fas fa-bookmark"></i>
                     </button>
                 </div>
@@ -472,21 +503,20 @@ function renderGameCard(oyun, colClass = 'col') {
     </article>`;
 }
 
-// --- KÜTÜPHANE ---
+// --- KÜTÜPHANE (Misafir localStorage + Üye Supabase Eşitleme) ---
 function getKutuphaneKey() {
-    const user = getActiveUser();
-    return 'gekkotari_kutuphane_' + (user ? user.kullanici_adi : 'misafir');
+    return 'gekkotari_kutuphane';
 }
 
 function getKutuphane() {
     try {
         return JSON.parse(localStorage.getItem(getKutuphaneKey())) || [];
-    } catch (e) {
+    } catch {
         return [];
     }
 }
 
-function kutuphaneyeEkle(oyunId) {
+async function kutuphaneyeEkle(oyunId) {
     const list = getKutuphane();
     const idStr = String(oyunId);
     if (list.some(item => String(item.oyun_id) === idStr)) {
@@ -498,14 +528,24 @@ function kutuphaneyeEkle(oyunId) {
         ekleme_tarihi: new Date().toISOString()
     });
     localStorage.setItem(getKutuphaneKey(), JSON.stringify(list));
-    showToast('success', 'Oyun kütüphanene eklendi!');
+
+    const user = getActiveUser();
+    if (user && window.GekkotariDB && window.GekkotariDB.addToUserLibrary) {
+        try { await window.GekkotariDB.addToUserLibrary(idStr); } catch {}
+    }
+    showToast('success', user ? 'Oyun hesabının kütüphanesine kaydedildi!' : 'Oyun kütüphanene eklendi!');
 }
 
-function kutuphanedenKaldir(oyunId) {
+async function kutuphanedenKaldir(oyunId) {
     let list = getKutuphane();
     const idStr = String(oyunId);
     list = list.filter(item => String(item.oyun_id) !== idStr);
     localStorage.setItem(getKutuphaneKey(), JSON.stringify(list));
+
+    const user = getActiveUser();
+    if (user && window.GekkotariDB && window.GekkotariDB.removeFromUserLibrary) {
+        try { await window.GekkotariDB.removeFromUserLibrary(idStr); } catch {}
+    }
     showToast('info', 'Oyun kütüphaneden kaldırıldı.');
 }
 
@@ -513,7 +553,138 @@ function rastgeleOyunAc() {
     const games = getGames();
     if (!games.length) return;
     const randomGame = games[Math.floor(Math.random() * games.length)];
-    window.location.href = 'oyun.html?id=' + randomGame.id;
+    window.location.href = getGameUrl(randomGame);
+}
+
+// --- CANLI ARAMA AUTOCOMPLETE ---
+function attachSearchAutocomplete() {
+    document.querySelectorAll('.search-wrapper').forEach(wrapper => {
+        const input = wrapper.querySelector('input[name="arama"]');
+        const drop = wrapper.querySelector('.search-autocomplete');
+        if (!input || !drop || input.dataset.acBound) return;
+        input.dataset.acBound = '1';
+
+        let activeIdx = -1;
+
+        function closeDrop() {
+            drop.classList.remove('open');
+            drop.innerHTML = '';
+            activeIdx = -1;
+        }
+
+        function renderDrop(val) {
+            const raw = String(val || '').trim();
+            if (raw.length < 2) {
+                closeDrop();
+                return;
+            }
+            const q = normalizeTr(raw);
+            const tokens = q.split(/\s+/).filter(Boolean);
+            const matches = getGames().filter(g => {
+                const hay = normalizeTr([g.oyun_adi, g.kategori_adi, g.seri, g.anahtar_kelimeler].filter(Boolean).join(' '));
+                return tokens.every(t => hay.includes(t));
+            }).slice(0, 7);
+
+            if (!matches.length) {
+                drop.innerHTML = `<a href="${pageHref('kategori.html?arama=' + encodeURIComponent(raw))}" class="search-ac-footer">Sonuç bulunamadı • Yine de ara ("${escapeHtml(raw)}")</a>`;
+                drop.classList.add('open');
+                return;
+            }
+
+            drop.innerHTML = matches.map(g => {
+                const isSwf = (g.oyun_linki || '').toLowerCase().endsWith('.swf');
+                const imgUrl = g.gorsel && g.gorsel !== 'default_game.png'
+                    ? resolveAssetUrl(g.gorsel)
+                    : resolveAssetUrl('assets/icon-192.svg');
+                return `
+                    <a href="${getGameUrl(g)}" class="search-ac-item">
+                        <img src="${escapeHtml(imgUrl)}" alt="" class="search-ac-thumb" loading="lazy">
+                        <div class="flex-grow-1 overflow-hidden">
+                            <div class="fw-semibold text-truncate" style="font-size:0.86rem;">${escapeHtml(g.oyun_adi)}</div>
+                            <div class="text-muted" style="font-size:0.74rem;">${escapeHtml(g.kategori_adi)} • ${isSwf ? 'Flash' : 'HTML5'}</div>
+                        </div>
+                    </a>`;
+            }).join('') + `<a href="${pageHref('kategori.html?arama=' + encodeURIComponent(raw))}" class="search-ac-footer"><i class="fas fa-search me-1"></i>Tüm "${escapeHtml(raw)}" sonuçlarını gör</a>`;
+
+            activeIdx = -1;
+            drop.classList.add('open');
+        }
+
+        input.addEventListener('input', () => renderDrop(input.value));
+        input.addEventListener('focus', () => {
+            if (input.value.trim().length >= 2) renderDrop(input.value);
+        });
+        input.addEventListener('keydown', (e) => {
+            const items = drop.querySelectorAll('.search-ac-item');
+            if (!items.length) return;
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                activeIdx = (activeIdx + 1) % items.length;
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                activeIdx = (activeIdx - 1 + items.length) % items.length;
+            } else if (e.key === 'Enter' && activeIdx >= 0 && items[activeIdx]) {
+                e.preventDefault();
+                window.location.href = items[activeIdx].href;
+                return;
+            } else if (e.key === 'Escape') {
+                closeDrop();
+                return;
+            } else {
+                return;
+            }
+            items.forEach((el, idx) => el.classList.toggle('active', idx === activeIdx));
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!wrapper.contains(e.target)) closeDrop();
+        });
+    });
+}
+
+// --- ÇEREZ ONAYI, ANALİTİK & SERVICE WORKER ---
+function ensureCookieConsentBanner() {
+    try {
+        if (localStorage.getItem('gekkotari_cookie_consent')) return;
+    } catch {
+        return;
+    }
+    if (document.getElementById('cookieConsentBar')) return;
+    const bar = document.createElement('div');
+    bar.id = 'cookieConsentBar';
+    bar.className = 'cookie-consent-bar';
+    bar.innerHTML = `
+        <div class="small text-secondary" style="flex:1 1 280px;line-height:1.45;">
+            <strong class="text-white"><i class="fas fa-cookie-bite me-1" style="color:var(--primary);"></i>Çerez &amp; Depolama:</strong>
+            Oyun kayıtlarını ve site deneyimini korumak için tarayıcı depolaması kullanıyoruz.
+            <a href="${pageHref('sayfa.html?slug=gizlilik')}" class="text-decoration-underline ms-1" style="color:var(--primary);">Gizlilik Politikası</a>
+        </div>
+        <button type="button" id="acceptCookiesBtn" class="btn btn-primary-custom btn-sm px-3 flex-shrink-0">
+            Anladım
+        </button>
+    `;
+    document.body.appendChild(bar);
+    document.getElementById('acceptCookiesBtn').addEventListener('click', () => {
+        try { localStorage.setItem('gekkotari_cookie_consent', 'accepted'); } catch {}
+        bar.remove();
+    });
+}
+
+function registerServiceWorkerAndAnalytics() {
+    if (typeof window === 'undefined') return;
+    const host = window.location.hostname;
+    const isHostedProd = host === 'gekkotari.com' || host === 'www.gekkotari.com' || host === 'gekotari.vercel.app';
+
+    if (isHostedProd && !document.querySelector('script[src="/_vercel/insights/script.js"]')) {
+        const s = document.createElement('script');
+        s.defer = true;
+        s.src = '/_vercel/insights/script.js';
+        document.head.appendChild(s);
+    }
+
+    if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || host === 'localhost' || host === '127.0.0.1')) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
 }
 
 // --- HEADER & FOOTER ---
@@ -523,7 +694,7 @@ function renderHeader(activePage = 'index.html') {
 
     let userHtml = '';
     if (user) {
-        const isAdmin = ['super_admin', 'editor', 'moderator', 'admin'].includes(user.rol_adi) || user.email === 'admin@gekkotari.com';
+        const isAdmin = user.isAdmin === true || user.rol_adi === 'admin';
         userHtml = `
             <div class="dropdown user-dropdown d-inline-block">
                 <button class="btn btn-user-menu dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
@@ -543,14 +714,14 @@ function renderHeader(activePage = 'index.html') {
                     <li><hr class="dropdown-divider border-secondary"></li>
                     ${isAdmin ? `
                     <li>
-                        <a class="dropdown-item text-warning fw-bold" href="admin.html">
+                        <a class="dropdown-item text-warning fw-bold" href="${pageHref('admin.html')}">
                             <i class="fas fa-lock me-2"></i> Yönetim Paneli
                         </a>
                     </li>
                     <li><hr class="dropdown-divider border-secondary"></li>
                     ` : ''}
                     <li>
-                        <a class="dropdown-item" href="kutuphane.html">
+                        <a class="dropdown-item" href="${pageHref('kutuphane.html')}">
                             <i class="fas fa-bookmark me-2 text-success"></i> Kütüphanem
                         </a>
                     </li>
@@ -565,18 +736,20 @@ function renderHeader(activePage = 'index.html') {
         `;
     } else {
         userHtml = `
-            <a href="giris.html" class="btn btn-outline-light btn-sm me-2 btn-auth">
+            <a href="${pageHref('giris.html')}" class="btn btn-outline-light btn-sm me-2 btn-auth">
                 <i class="fas fa-sign-in-alt"></i> <span class="d-none d-sm-inline">Giriş</span>
             </a>
-            <a href="kayit.html" class="btn btn-primary-custom btn-sm btn-auth">
+            <a href="${pageHref('kayit.html')}" class="btn btn-primary-custom btn-sm btn-auth">
                 <i class="fas fa-user-plus"></i> <span class="d-none d-sm-inline">Kayıt Ol</span>
             </a>
         `;
     }
 
     const catDropdownItems = categories.map(k =>
-        `<li><a class="dropdown-item" href="kategori.html?tur=${encodeURIComponent(k.kategori_adi)}"><i class="${escapeHtml(k.ikon)} me-2"></i>${escapeHtml(k.kategori_adi)}</a></li>`
+        `<li><a class="dropdown-item" href="${pageHref('kategori.html?tur=' + encodeURIComponent(k.kategori_adi))}"><i class="${escapeHtml(k.ikon)} me-2"></i>${escapeHtml(k.kategori_adi)}</a></li>`
     ).join('');
+
+    const searchPlaceholder = `${getGames().length} doğrulanmış oyunda ara (Ateş ve Su, Stick War, Feodalizm...)`;
 
     const headerEl = document.getElementById('siteHeaderMount');
     if (!headerEl) return;
@@ -586,21 +759,31 @@ function renderHeader(activePage = 'index.html') {
         <div class="container-xl">
             <div class="row align-items-center g-2">
                 <div class="col-lg-3 col-md-4 col-6">
-                    <a class="brand-logo" href="index.html">
+                    <a class="brand-logo" href="${pageHref('index.html')}">
                         <i class="fas fa-gamepad"></i>
                         <span>Gekkotari</span>
                     </a>
                 </div>
                 <div class="col-lg-5 col-md-4 d-none d-md-block">
-                    <form class="search-form" action="kategori.html" method="GET">
+                    <form class="search-form" action="${pageHref('kategori.html')}" method="GET">
                         <div class="search-wrapper">
-                            <input type="text" name="arama" class="search-input" placeholder="${getGames().length} doğrulanmış oyunda ara (Papa's Pizzeria, Stick War, Feodalizm, Earn to Die...)" autocomplete="off">
+                            <input type="text" name="arama" class="search-input" placeholder="${escapeHtml(searchPlaceholder)}" autocomplete="off">
                             <button type="submit" class="search-btn" aria-label="Ara"><i class="fas fa-search"></i></button>
+                            <div class="search-autocomplete"></div>
                         </div>
                     </form>
                 </div>
                 <div class="col-lg-4 col-md-4 col-6 text-end" id="userArea">
                     ${userHtml}
+                </div>
+                <div class="col-12 d-md-none mt-2">
+                    <form class="search-form" action="${pageHref('kategori.html')}" method="GET">
+                        <div class="search-wrapper">
+                            <input type="text" name="arama" class="search-input" placeholder="Oyun ara (Stick War, Ateş ve Su...)" autocomplete="off">
+                            <button type="submit" class="search-btn" aria-label="Mobilde Ara"><i class="fas fa-search"></i></button>
+                            <div class="search-autocomplete"></div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -608,28 +791,28 @@ function renderHeader(activePage = 'index.html') {
 
     <nav class="navbar navbar-expand-lg site-nav sticky-top">
         <div class="container-xl">
-            <button class="navbar-toggler border-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler border-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Menüyü Aç">
                 <span class="navbar-toggler-icon" style="filter:invert(1);"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link ${activePage === 'index.html' ? 'active' : ''}" href="index.html">
+                        <a class="nav-link ${activePage === 'index.html' ? 'active' : ''}" href="${pageHref('index.html')}">
                             <i class="fas fa-home me-1"></i> Ana Sayfa
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage === 'kategori.html' ? 'active' : ''}" href="kategori.html">
+                        <a class="nav-link ${activePage === 'kategori.html' ? 'active' : ''}" href="${pageHref('kategori.html')}">
                             <i class="fas fa-th-large me-1"></i> Tüm Oyunlar
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="kategori.html?mod=${encodeURIComponent('2 Kişilik')}">
+                        <a class="nav-link" href="${pageHref('kategori.html?mod=' + encodeURIComponent('2 Kişilik'))}">
                             <i class="fas fa-user-friends me-1"></i> 2 Kişilik
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage === 'kutuphane.html' ? 'active' : ''}" href="kutuphane.html">
+                        <a class="nav-link ${activePage === 'kutuphane.html' ? 'active' : ''}" href="${pageHref('kutuphane.html')}">
                             <i class="fas fa-bookmark me-1"></i> Kütüphanem
                         </a>
                     </li>
@@ -658,6 +841,18 @@ function renderHeader(activePage = 'index.html') {
         </div>
     </nav>
     `;
+
+    attachSearchAutocomplete();
+    ensureCookieConsentBanner();
+    registerServiceWorkerAndAnalytics();
+
+    if (window.GekkotariDB && window.GekkotariDB.authRefreshCurrentUser && localStorage.getItem('gekkotari_sb_session_v1')) {
+        window.GekkotariDB.authRefreshCurrentUser().then((freshUser) => {
+            if (freshUser && window.GekkotariDB.syncLocalLibraryToCloud) {
+                window.GekkotariDB.syncLocalLibraryToCloud();
+            }
+        }).catch(() => {});
+    }
 }
 
 function renderFooter() {
@@ -670,7 +865,7 @@ function renderFooter() {
             <div class="row g-4">
                 <div class="col-lg-4 col-md-6">
                     <div class="footer-brand">
-                        <a href="index.html" class="brand-logo">
+                        <a href="${pageHref('index.html')}" class="brand-logo">
                             <i class="fas fa-gamepad"></i>
                             <span>Gekkotari</span>
                         </a>
@@ -680,26 +875,26 @@ function renderFooter() {
                 <div class="col-lg-2 col-md-6">
                     <h6 class="footer-title">Keşfet</h6>
                     <ul class="footer-links">
-                        <li><a href="index.html">Ana Sayfa</a></li>
-                        <li><a href="kategori.html">Tüm Oyunlar</a></li>
-                        <li><a href="kategori.html?mod=${encodeURIComponent('2 Kişilik')}">2 Kişilik Oyunlar</a></li>
-                        <li><a href="kutuphane.html">Kütüphanem</a></li>
+                        <li><a href="${pageHref('index.html')}">Ana Sayfa</a></li>
+                        <li><a href="${pageHref('kategori.html')}">Tüm Oyunlar</a></li>
+                        <li><a href="${pageHref('kategori.html?mod=' + encodeURIComponent('2 Kişilik'))}">2 Kişilik Oyunlar</a></li>
+                        <li><a href="${pageHref('kutuphane.html')}">Kütüphanem</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <h6 class="footer-title">Kurumsal & Yasal</h6>
+                    <h6 class="footer-title">Kurumsal &amp; Yasal</h6>
                     <ul class="footer-links">
-                        <li><a href="sayfa.html?slug=hakkimizda">Hakkımızda</a></li>
-                        <li><a href="sayfa.html?slug=gizlilik">Gizlilik & Çerez Politikası</a></li>
-                        <li><a href="sayfa.html?slug=kullanim-sartlari">Kullanım Şartları</a></li>
-                        <li><a href="sayfa.html?slug=telif-dmca">Telif Hakları / DMCA</a></li>
+                        <li><a href="${pageHref('sayfa.html?slug=hakkimizda')}">Hakkımızda</a></li>
+                        <li><a href="${pageHref('sayfa.html?slug=gizlilik')}">Gizlilik &amp; Çerez Politikası</a></li>
+                        <li><a href="${pageHref('sayfa.html?slug=kullanim-sartlari')}">Kullanım Şartları</a></li>
+                        <li><a href="${pageHref('sayfa.html?slug=telif-dmca')}">Telif Hakları / DMCA</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <h6 class="footer-title">Destek & İstek</h6>
+                    <h6 class="footer-title">Destek &amp; İstek</h6>
                     <ul class="footer-contact">
                         <li><i class="fas fa-envelope"></i> info@gekkotari.com</li>
-                        <li><i class="fas fa-map-marker-alt"></i> Türkiye • Web Oyun Portalı</li>
+                        <li><i class="fas fa-globe"></i> gekkotari.com • Web Oyun Portalı</li>
                     </ul>
                     <button onclick="openFeedbackModal('Oyun İste', '')" class="btn btn-sm btn-outline-success mt-1">
                         <i class="fas fa-paper-plane me-1"></i> Oyun İste / Sorun Bildir
@@ -709,7 +904,7 @@ function renderFooter() {
             <hr class="border-secondary my-4" style="opacity:0.25;">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <p class="text-muted small mb-0">© 2026 Gekkotari Oyun Portalı. Tüm oyun markaları ilgili yapımcılarına aittir.</p>
-                <a href="admin.html" class="text-muted small"><i class="fas fa-shield-alt me-1"></i>Yönetim</a>
+                <a href="${pageHref('admin.html')}" class="text-muted small"><i class="fas fa-shield-alt me-1"></i>Yönetim</a>
             </div>
         </div>
     </footer>

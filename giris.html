@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#2ee57a">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
     <title>Giriş Yap - Gekkotari</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css?v=11">
+    <link rel="stylesheet" href="assets/css/style.css?v=12">
 </head>
 <body>
 
@@ -20,17 +26,17 @@
                 <i class="fas fa-user"></i>
             </div>
             <h3>Tekrar Hoş Geldin</h3>
-            <p class="text-muted">Hesabınla giriş yap ve oynamaya başla</p>
+            <p class="text-muted">E-posta ve şifrenle giriş yap; kütüphanen tüm cihazlarında senkron kalsın</p>
         </div>
 
         <form id="girisFormu">
             <div class="mb-3">
-                <label class="form-label" for="email">Kullanıcı Adı veya E-posta</label>
+                <label class="form-label" for="email">E-posta Adresi</label>
                 <div class="input-group">
                     <span class="input-group-text bg-dark border-secondary text-muted">
                         <i class="fas fa-envelope"></i>
                     </span>
-                    <input type="text" id="email" class="form-control custom-input" placeholder="Kullanıcı adı veya e-posta" required>
+                    <input type="email" id="email" class="form-control custom-input" placeholder="ornek@email.com" required autocomplete="email">
                 </div>
             </div>
 
@@ -40,21 +46,25 @@
                     <span class="input-group-text bg-dark border-secondary text-muted">
                         <i class="fas fa-lock"></i>
                     </span>
-                    <input type="password" id="sifre" class="form-control custom-input" placeholder="••••••" required>
+                    <input type="password" id="sifre" class="form-control custom-input" placeholder="••••••" required autocomplete="current-password">
                 </div>
             </div>
 
-            <div class="d-flex justify-content-between mb-4">
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="rememberMe" checked>
-                    <label class="form-check-label small" for="rememberMe">Beni Hatırla</label>
-                </div>
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                <button type="button" id="forgotPwBtn" class="btn btn-link btn-sm p-0 text-decoration-none" style="color:var(--primary);">
+                    Şifremi Unuttum
+                </button>
+                <button type="button" id="resendConfirmBtn" class="btn btn-link btn-sm p-0 text-muted text-decoration-none">
+                    Onay Mailini Tekrar Gönder
+                </button>
             </div>
 
-            <button type="submit" class="btn btn-primary-custom w-100 py-2">
+            <button type="submit" id="loginSubmitBtn" class="btn btn-primary-custom w-100 py-2">
                 <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
             </button>
         </form>
+
+        <div id="authStatusAlert" class="alert alert-info mt-3 small" style="display:none;"></div>
 
         <div class="mt-4 text-center">
             <a href="kayit.html" class="text-decoration-none" style="color: var(--primary);">
@@ -71,32 +81,83 @@
 <div id="siteFooterMount"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="assets/js/ads-config.js?v=9"></script>
-<script src="assets/js/supabase-sync.js?v=9"></script>
-<script src="assets/js/games-data.js?v=14"></script>
-<script src="assets/js/common.js?v=11"></script>
+<script src="assets/js/ads-config.js?v=10"></script>
+<script src="assets/js/supabase-sync.js?v=10"></script>
+<script src="assets/js/games-data.js?v=15"></script>
+<script src="assets/js/common.js?v=12"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     renderHeader('giris.html');
     renderFooter();
 
-    document.getElementById('girisFormu').addEventListener('submit', (e) => {
+    const statusBox = document.getElementById('authStatusAlert');
+    const urlHash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    if (urlHash.get('type') === 'signup') {
+        statusBox.className = 'alert alert-success mt-3 small';
+        statusBox.textContent = 'E-posta adresin onaylandı! Şimdi giriş yapabilirsin.';
+        statusBox.style.display = 'block';
+    }
+
+    document.getElementById('girisFormu').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const girilen = document.getElementById('email').value.trim();
-        const sifre = document.getElementById('sifre').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const sifre = document.getElementById('sifre').value;
+        const btn = document.getElementById('loginSubmitBtn');
+        btn.disabled = true;
+        statusBox.style.display = 'none';
 
-        const users = getUsers();
-        const found = users.find(u =>
-            (u.email.toLowerCase() === girilen.toLowerCase() || u.kullanici_adi.toLowerCase() === girilen.toLowerCase()) &&
-            u.sifre === sifre
-        );
+        try {
+            const user = await window.GekkotariDB.authSignIn({ email, password: sifre });
+            showToast('success', 'Hoş geldin, ' + (user.ad_soyad || user.kullanici_adi) + '!');
+            const nextUrl = new URLSearchParams(window.location.search).get('next') || 'index.html';
+            setTimeout(() => {
+                window.location.href = user.isAdmin && nextUrl === 'admin.html' ? pageHref('admin.html') : pageHref(nextUrl);
+            }, 550);
+        } catch (err) {
+            const raw = String(err && err.message || '');
+            let msg = 'E-posta veya şifre hatalı.';
+            if (raw.toLowerCase().includes('email not confirmed')) {
+                msg = 'E-posta adresin henüz doğrulanmamış. Gelen kutunu kontrol et veya "Onay Mailini Tekrar Gönder" bağlantısını kullan.';
+            } else if (raw.toLowerCase().includes('rate')) {
+                msg = 'Çok fazla deneme yaptın, lütfen biraz bekleyip tekrar dene.';
+            }
+            statusBox.className = 'alert alert-danger mt-3 small';
+            statusBox.textContent = msg;
+            statusBox.style.display = 'block';
+        } finally {
+            btn.disabled = false;
+        }
+    });
 
-        if (found) {
-            setActiveUser(found);
-            showToast('success', 'Hoş geldin, ' + found.ad_soyad + '! 🎮');
-            setTimeout(() => { window.location.href = 'index.html'; }, 600);
-        } else {
-            showToast('danger', 'Kullanıcı adı/e-posta veya şifre hatalı!');
+    document.getElementById('forgotPwBtn').addEventListener('click', async () => {
+        const email = document.getElementById('email').value.trim();
+        if (!email) {
+            showToast('warning', 'Şifre sıfırlama için önce yukarıya e-posta adresini yaz.');
+            return;
+        }
+        try {
+            await window.GekkotariDB.authRecover(email);
+            statusBox.className = 'alert alert-info mt-3 small';
+            statusBox.textContent = 'Şifre sıfırlama bağlantısı e-posta adresine gönderildi (spam klasörünü de kontrol et).';
+            statusBox.style.display = 'block';
+        } catch {
+            showToast('danger', 'Sıfırlama maili şu an gönderilemedi.');
+        }
+    });
+
+    document.getElementById('resendConfirmBtn').addEventListener('click', async () => {
+        const email = document.getElementById('email').value.trim();
+        if (!email) {
+            showToast('warning', 'Onay maili için önce yukarıya e-posta adresini yaz.');
+            return;
+        }
+        try {
+            await window.GekkotariDB.authResendConfirm(email);
+            statusBox.className = 'alert alert-info mt-3 small';
+            statusBox.textContent = 'Doğrulama bağlantısı e-posta adresine yeniden gönderildi.';
+            statusBox.style.display = 'block';
+        } catch {
+            showToast('danger', 'Doğrulama maili şu an gönderilemedi.');
         }
     });
 });

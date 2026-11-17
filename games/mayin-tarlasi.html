@@ -110,7 +110,11 @@
     for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) if (!openArr[r][c]) closed++;
     if (closed === mineCount) {
       over = true; clearInterval(timer);
-      statusEl.textContent = `🎉 Tebrikler! ${secs} saniyede tüm mayınları temizledin!`;
+      const pts = Math.max(50, mineCount * 25 - secs * 2);
+      statusEl.textContent = `🎉 Tebrikler! ${secs} saniyede tüm mayınları temizledin! (${pts} puan)`;
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'gekkotari_score', gameId: 211, score: pts }, window.location.origin);
+      }
     }
   }
 

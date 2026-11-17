@@ -88,7 +88,11 @@ function pickCard(idx) {
       open = []; locked = false; matched++;
       if (matched === totalPairs) {
         clearInterval(timer);
-        document.getElementById('msg').textContent = `🎉 Tamamlandı! ${moves} hamle ve ${secs} saniye!`;
+        const pts = Math.max(50, totalPairs * 120 - moves * 10 - secs * 2);
+        document.getElementById('msg').textContent = `🎉 Tamamlandı! ${moves} hamle ve ${secs} saniye (${pts} puan)!`;
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: 'gekkotari_score', gameId: 215, score: pts }, window.location.origin);
+        }
       }
       render();
     } else {

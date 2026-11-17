@@ -1,6 +1,9 @@
 {
-  "name": "gekotari",
-  "version": "2.0.0",
+  "name": "gekkotari",
+  "version": "3.0.0",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "test": "node tests/verify-site.mjs"
+  }
 }

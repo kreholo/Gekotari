@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 280" width="440" height="280">
+  <defs>
+    <linearGradient id="g-murder-kral-suikasti" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#061a1a"/>
+      <stop offset="100%" stop-color="#0c3b38"/>
+    </linearGradient>
+    <radialGradient id="r-murder-kral-suikasti" cx="0.82" cy="0.28" r="0.65">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#2dd4bf" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="440" height="280" rx="18" fill="url(#g-murder-kral-suikasti)"/>
+  <rect width="440" height="280" rx="18" fill="url(#r-murder-kral-suikasti)"/>
+  <path d="M0 44 H440 M0 88 H440 M0 132 H440 M0 176 H440 M0 220 H440" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  
+  <g transform="translate(360,115)" stroke="#14b8a6" stroke-width="3" fill="#14b8a6" fill-opacity="0.14" opacity="0.4">
+        <polygon points="0,-54 14,-18 52,-16 22,8 32,46 0,24 -32,46 -22,8 -52,-16 -14,-18"/>
+      </g>
+  <rect x="28" y="26" width="189.79999999999998" height="28" rx="14" fill="#14b8a6" fill-opacity="0.18" stroke="#14b8a6" stroke-opacity="0.55" stroke-width="1.2"/>
+  <text x="41" y="45" fill="#14b8a6" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="11.5" font-weight="700" letter-spacing="0.7">KLASIK • FLASH KLASİK</text>
+  <text x="28" y="152" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" letter-spacing="-0.4">Murder (Kral Suikastı)</text>
+  <rect x="28" y="236" width="54" height="4" rx="2" fill="#14b8a6"/>
+  <text x="28" y="258" fill="#9ca3af" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12" font-weight="600">gekkotari.com • Ücretsiz Oyna</text>
+</svg>

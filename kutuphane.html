@@ -5,44 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#2ee57a">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/svg+xml" href="assets/icon-192.svg">
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
     <title>Kütüphanem - Gekkotari</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <meta name="robots" content="noindex, follow">
-    <link rel="stylesheet" href="assets/css/style.css?v=11">
+    <link rel="stylesheet" href="assets/css/style.css?v=12">
 </head>
 <body>
 
 <div id="siteHeaderMount"></div>
 
 <main class="container my-4">
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-        <h2 class="section-title" id="libTitle">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h2 class="section-title mb-0" id="libTitle">
             <i class="fas fa-layer-group"></i> Oyun Kütüphanem
         </h2>
-        <button id="clearAllBtn" onclick="hepsiniTemizle()" class="btn btn-sm btn-outline-danger" style="display:none;">
-            <i class="fas fa-trash-alt me-1"></i> Listeyi Tamamen Temizle
-        </button>
+        <div class="d-flex gap-2 flex-wrap">
+            <button type="button" onclick="kutuphaneDisaAktar()" class="btn btn-sm btn-outline-success">
+                <i class="fas fa-download me-1"></i> Yedeği İndir (JSON)
+            </button>
+            <button type="button" onclick="document.getElementById('importLibFile').click()" class="btn btn-sm btn-outline-light">
+                <i class="fas fa-upload me-1"></i> Yedekten Yükle
+            </button>
+            <input type="file" id="importLibFile" accept="application/json,.json" style="display:none;">
+            <button id="clearAllBtn" onclick="hepsiniTemizle()" class="btn btn-sm btn-outline-danger" style="display:none;">
+                <i class="fas fa-trash-alt me-1"></i> Listeyi Temizle
+            </button>
+        </div>
     </div>
 
+    <div id="cloudSyncHint" class="small text-muted mb-3"></div>
     <div class="row g-3" id="libraryContainer"></div>
 </main>
 
 <div id="siteFooterMount"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="assets/js/ads-config.js?v=9"></script>
-<script src="assets/js/supabase-sync.js?v=9"></script>
-<script src="assets/js/games-data.js?v=14"></script>
-<script src="assets/js/common.js?v=11"></script>
+<script src="assets/js/ads-config.js?v=10"></script>
+<script src="assets/js/supabase-sync.js?v=10"></script>
+<script src="assets/js/games-data.js?v=15"></script>
+<script src="assets/js/common.js?v=12"></script>
 <script>
 function renderLibrary() {
     const list = getKutuphane();
     const allGames = getGames();
     const container = document.getElementById('libraryContainer');
     const clearBtn = document.getElementById('clearAllBtn');
+    const hint = document.getElementById('cloudSyncHint');
+    const user = getActiveUser();
+
+    if (hint) {
+        hint.innerHTML = user
+            ? `<i class="fas fa-cloud-upload-alt text-success me-1"></i>Hesabınla (<strong>${escapeHtml(user.kullanici_adi)}</strong>) buluta eşitleniyor.`
+            : `<i class="fas fa-info-circle me-1"></i>Favorilerin bu tarayıcıda saklanıyor; cihazlar arası eşitlemek için <a href="${pageHref('giris.html')}" style="color:var(--primary);">giriş yapabilir</a> veya JSON yedeği indirebilirsin.`;
+    }
 
     document.getElementById('libTitle').innerHTML = `
         <i class="fas fa-layer-group"></i> Oyun Kütüphanem
@@ -73,6 +93,8 @@ function renderLibrary() {
         const tarih = item.ekleme_tarihi ? new Date(item.ekleme_tarihi).toLocaleDateString('tr-TR') : 'Bugün';
         const ikon = getGameIcon(oyun);
         const renk = oyun.renk || getCategoryColor(oyun.kategori_adi);
+        const gameUrl = getGameUrl(oyun);
+        const imgUrl = resolveAssetUrl(oyun.gorsel);
         return `
         <div class="col-12">
             <div class="library-card">
@@ -81,7 +103,7 @@ function renderLibrary() {
                         <div style="height:100px;position:relative;overflow:hidden;background:linear-gradient(135deg, ${renk}, var(--bg-card));display:flex;align-items:center;justify-content:center;border-radius:var(--radius-md) 0 0 var(--radius-md);">
                             <i class="${escapeHtml(ikon)} fa-2x" style="color:white;"></i>
                             ${oyun.gorsel && oyun.gorsel !== 'default_game.png' && (oyun.gorsel.startsWith('http') || oyun.gorsel.startsWith('assets/'))
-                                ? `<img src="${escapeHtml(oyun.gorsel)}" alt="${escapeHtml(oyun.oyun_adi)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';">`
+                                ? `<img src="${escapeHtml(imgUrl)}" alt="${escapeHtml(oyun.oyun_adi)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';">`
                                 : ''}
                         </div>
                     </div>
@@ -93,7 +115,7 @@ function renderLibrary() {
                         </div>
                     </div>
                     <div class="col-md-3 col-4 text-center p-3">
-                        <a href="oyun.html?id=${oyun.id}" class="btn btn-play btn-sm w-100 mb-2">
+                        <a href="${gameUrl}" class="btn btn-play btn-sm w-100 mb-2">
                             <i class="fas fa-play me-1"></i> Oyna
                         </a>
                         <button onclick="kaldirVeYenile(${oyun.id})" class="btn btn-outline-danger btn-sm w-100">
@@ -106,22 +128,75 @@ function renderLibrary() {
     }).join('');
 }
 
-function kaldirVeYenile(id) {
-    kutuphanedenKaldir(id);
+async function kaldirVeYenile(id) {
+    await kutuphanedenKaldir(id);
     renderLibrary();
 }
 
-function hepsiniTemizle() {
-    if (confirm('TÜM kütüphane temizlenecek. Emin misiniz?')) {
-        localStorage.removeItem(getKutuphaneKey());
-        showToast('info', 'Kütüphaneniz tamamen temizlendi.');
-        renderLibrary();
+async function hepsiniTemizle() {
+    if (!confirm('TÜM kütüphane temizlenecek. Emin misiniz?')) return;
+    const oldList = getKutuphane();
+    localStorage.removeItem(getKutuphaneKey());
+    if (getActiveUser() && window.GekkotariDB) {
+        for (const item of oldList) {
+            try { await window.GekkotariDB.removeFromUserLibrary(item.oyun_id); } catch {}
+        }
     }
+    showToast('info', 'Kütüphaneniz tamamen temizlendi.');
+    renderLibrary();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function kutuphaneDisaAktar() {
+    const payload = {
+        app: 'gekkotari',
+        exportedAt: new Date().toISOString(),
+        library: getKutuphane(),
+        recent: JSON.parse(localStorage.getItem('gekkotari_recent') || '[]')
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'gekkotari-kutuphane-yedek.json';
+    a.click();
+    showToast('success', 'Yedek JSON dosyası indirildi.');
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
     renderHeader('kutuphane.html');
     renderFooter();
+
+    document.getElementById('importLibFile').addEventListener('change', async (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        try {
+            const data = JSON.parse(await file.text());
+            if (!Array.isArray(data.library)) throw new Error('Geçersiz yedek formatı');
+            const current = getKutuphane();
+            const map = new Map(current.map(x => [String(x.oyun_id), x]));
+            data.library.forEach(item => {
+                if (item && item.oyun_id && !map.has(String(item.oyun_id))) {
+                    map.set(String(item.oyun_id), {
+                        oyun_id: String(item.oyun_id),
+                        ekleme_tarihi: item.ekleme_tarihi || new Date().toISOString()
+                    });
+                }
+            });
+            localStorage.setItem(getKutuphaneKey(), JSON.stringify(Array.from(map.values())));
+            if (getActiveUser() && window.GekkotariDB) {
+                await window.GekkotariDB.syncLocalLibraryToCloud();
+            }
+            renderLibrary();
+            showToast('success', 'Kütüphane yedeği başarıyla içeri aktarıldı!');
+        } catch {
+            showToast('danger', 'Yedek dosyası okunamadı.');
+        } finally {
+            e.target.value = '';
+        }
+    });
+
+    if (getActiveUser() && window.GekkotariDB) {
+        try { await window.GekkotariDB.syncLocalLibraryToCloud(); } catch {}
+    }
     renderLibrary();
 });
 </script>

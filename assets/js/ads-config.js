@@ -7,7 +7,7 @@
  */
 window.GEKKOTARI_ADS = {
     enabled: true,
-    showPlaceholderWhenEmpty: true,
+    showPlaceholderWhenEmpty: false,
     contactNote: 'Reklam & Sponsorluk: info@gekkotari.com',
     slots: {
         home_leaderboard: {

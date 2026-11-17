@@ -90,7 +90,12 @@
     spawn();
     if (score > best) { best = score; try { localStorage.setItem('gekkotari_2048_best', String(best)); } catch (e) {} }
     if (b.includes(2048)) statusEl.textContent = '🎉 2048\'e ulaştın! Devam edip rekor kırabilirsin!';
-    else if (!canMove()) statusEl.textContent = 'Hamle kalmadı! Yenile butonuna bas.';
+    else if (!canMove()) {
+      statusEl.textContent = 'Hamle kalmadı! Yenile butonuna bas.';
+      if (score > 0 && window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'gekkotari_score', gameId: 212, score }, window.location.origin);
+      }
+    }
     render();
   }
 

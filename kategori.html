@@ -6,22 +6,25 @@
     <meta name="description" content="Gekkotari oyun arşivi: 2 kişilik, Flash efsaneler, aksiyon, strateji, yarış ve bulmaca oyunlarını filtrele ve ücretsiz oyna.">
     <meta name="keywords" content="tüm flash oyunlar, 2 kişilik oyunlar, html5 oyunlar, aksiyon, strateji, rpg, bulmaca, yarış oyunları, gekkotari">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <link rel="canonical" id="canonicalLink" href="https://gekotari.vercel.app/kategori.html">
+    <link rel="canonical" id="canonicalLink" href="https://gekkotari.com/kategori.html">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Gekkotari">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:title" content="Tüm Oyunlar - Gekkotari">
     <meta property="og:description" content="200 doğrulanmış Flash ve HTML5 oyununu filtrele ve hemen oyna!">
+    <meta property="og:image" content="https://gekkotari.com/assets/icon-512.png">
     <meta name="theme-color" content="#2ee57a">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/svg+xml" href="assets/icon-192.svg">
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
     <link rel="preconnect" href="https://rltpodnczpcwnefovitz.supabase.co" crossorigin>
-    <link rel="preconnect" href="https://img.gamedistribution.com" crossorigin>
+    <link rel="preconnect" href="https://archive.org" crossorigin>
     <title>Tüm Oyunlar - Gekkotari</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css?v=11">
+    <link rel="stylesheet" href="assets/css/style.css?v=12">
 </head>
 <body>
 
@@ -66,10 +69,10 @@
 <div id="siteFooterMount"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="assets/js/ads-config.js?v=9"></script>
-<script src="assets/js/supabase-sync.js?v=9"></script>
-<script src="assets/js/games-data.js?v=14"></script>
-<script src="assets/js/common.js?v=11"></script>
+<script src="assets/js/ads-config.js?v=10"></script>
+<script src="assets/js/supabase-sync.js?v=10"></script>
+<script src="assets/js/games-data.js?v=15"></script>
+<script src="assets/js/common.js?v=12"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     renderHeader('kategori.html');
@@ -109,10 +112,14 @@ document.addEventListener('DOMContentLoaded', () => {
         let filtered = allGames.filter(g => {
             if (secilenTur && g.kategori_adi !== secilenTur) return false;
             if (secilenMod) {
+                const mods = Array.isArray(g.modlar) ? g.modlar : [];
                 if (secilenMod === 'Flash') {
                     if (!(g.oyun_linki || '').toLowerCase().endsWith('.swf')) return false;
+                } else if (secilenMod === 'HTML5') {
+                    if ((g.oyun_linki || '').toLowerCase().endsWith('.swf')) return false;
+                } else if (secilenMod === 'Mobil Uyumlu') {
+                    if (!mods.includes('Mobil Uyumlu') && !mods.includes('Mobil')) return false;
                 } else {
-                    const mods = Array.isArray(g.modlar) ? g.modlar : [];
                     if (!mods.includes(secilenMod)) return false;
                 }
             }
@@ -152,10 +159,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const modes = [
             { key: '', icon: 'fas fa-border-all', label: 'Hepsi' },
             { key: '2 Kişilik', icon: 'fas fa-user-friends', label: '2 Kişilik' },
-            { key: 'Hızlı', icon: 'fas fa-stopwatch', label: '5 Dk Molalık' },
-            { key: 'Zeka', icon: 'fas fa-brain', label: 'Zeka & Bulmaca' },
+            { key: 'HTML5', icon: 'fab fa-html5', label: 'HTML5 Oyunlar' },
             { key: 'Flash', icon: 'fas fa-bolt', label: 'Flash Klasik' },
-            { key: 'Mobil Uyumlu', icon: 'fas fa-mobile-alt', label: 'Mobil Uyumlu' }
+            { key: 'Mobil Uyumlu', icon: 'fas fa-mobile-alt', label: 'Mobil Uyumlu' },
+            { key: 'Hızlı', icon: 'fas fa-stopwatch', label: '5 Dk Molalık' },
+            { key: 'Zeka', icon: 'fas fa-brain', label: 'Zeka & Bulmaca' }
         ];
         document.getElementById('modeFilterBar').innerHTML =
             `<span class="small text-muted fw-semibold me-1">Oynanış Modu:</span>` +
@@ -196,13 +204,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pageItems.length > 0) {
             listEl.innerHTML = pageItems.map(g => renderGameCard(g, 'col')).join('');
         } else {
+            if (arama && arama.trim().length >= 2 && window.GekkotariDB && window.GekkotariDB.recordZeroSearch) {
+                window.GekkotariDB.recordZeroSearch(arama.trim());
+            }
             listEl.innerHTML = `
                 <div class="col-12" style="grid-column:1/-1;">
                     <div class="empty-state">
                         <i class="fas fa-search"></i>
                         <h4>Oyun Bulunamadı</h4>
-                        <p>Farklı bir kategori, mod veya arama terimi deneyin.</p>
-                        <a href="kategori.html" class="btn btn-primary-custom">Tüm Oyunları Göster</a>
+                        <p>Farklı bir kategori, mod veya arama terimi deneyin ya da eklenmesini isteyin!</p>
+                        <div class="d-flex justify-content-center gap-2 flex-wrap">
+                            <a href="kategori.html" class="btn btn-primary-custom">Tüm Oyunları Göster</a>
+                            <button type="button" onclick="openFeedbackModal('Oyun İste', ${JSON.stringify(arama || '')})" class="btn btn-outline-success">
+                                <i class="fas fa-plus-circle me-1"></i>Bu Oyunu İste
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;

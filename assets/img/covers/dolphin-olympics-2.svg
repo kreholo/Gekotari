@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 280" width="440" height="280">
+  <defs>
+    <linearGradient id="g-dolphin-olympics-2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#071f14"/>
+      <stop offset="100%" stop-color="#0e4229"/>
+    </linearGradient>
+    <radialGradient id="r-dolphin-olympics-2" cx="0.82" cy="0.28" r="0.65">
+      <stop offset="0%" stop-color="#4ade80" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#4ade80" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="440" height="280" rx="18" fill="url(#g-dolphin-olympics-2)"/>
+  <rect width="440" height="280" rx="18" fill="url(#r-dolphin-olympics-2)"/>
+  <path d="M0 44 H440 M0 88 H440 M0 132 H440 M0 176 H440 M0 220 H440" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <text x="415" y="255" text-anchor="end" fill="#2ee57a" fill-opacity="0.16" font-family="Inter,Arial,sans-serif" font-size="112" font-weight="900">2</text>
+  <g transform="translate(362,115)" stroke="#2ee57a" stroke-width="3" fill="#2ee57a" fill-opacity="0.14" opacity="0.42">
+        <path d="M-32-42 H32 V-4 C32 20 14 34 0 38 C-14 34 -32 20 -32-4 Z"/>
+        <path d="M-32-32 H-48 V-10 C-48 4 -36 12 -28 12 M32-32 H48 V-10 C48 4 36 12 28 12" fill="none"/>
+        <path d="M0 38 V58 M-22 58 H22"/>
+      </g>
+  <rect x="28" y="26" width="174.2" height="28" rx="14" fill="#2ee57a" fill-opacity="0.18" stroke="#2ee57a" stroke-opacity="0.55" stroke-width="1.2"/>
+  <text x="41" y="45" fill="#2ee57a" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="11.5" font-weight="700" letter-spacing="0.7">SPOR • FLASH KLASİK</text>
+  <text x="28" y="152" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" letter-spacing="-0.4">Dolphin Olympics 2</text>
+  <rect x="28" y="236" width="54" height="4" rx="2" fill="#2ee57a"/>
+  <text x="28" y="258" fill="#9ca3af" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12" font-weight="600">gekkotari.com • Ücretsiz Oyna</text>
+</svg>

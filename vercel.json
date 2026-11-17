@@ -2,7 +2,28 @@
     "cleanUrls": false,
     "headers": [
         {
-            "source": "/assets/(stub\\.swf|stub-as2\\.swf|stub\\.txt|icon-192\\.svg)",
+            "source": "/(.*)",
+            "headers": [
+                { "key": "X-Content-Type-Options", "value": "nosniff" },
+                { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+                { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
+                { "key": "X-Frame-Options", "value": "SAMEORIGIN" }
+            ]
+        },
+        {
+            "source": "/sw.js",
+            "headers": [
+                { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+            ]
+        },
+        {
+            "source": "/assets/(stub\\.swf|stub-as2\\.swf|stub\\.txt|icon-192\\.svg|icon-192\\.png|icon-512\\.png|apple-touch-icon\\.png|favicon-32\\.png)",
+            "headers": [
+                { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+            ]
+        },
+        {
+            "source": "/assets/img/(.*)",
             "headers": [
                 { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
             ]
@@ -15,6 +36,7 @@
         }
     ],
     "rewrites": [
+        { "source": "/oyun/(.*)", "destination": "/api/game-page?slug=$1" },
         { "source": "/index.php", "destination": "/index.html" },
         { "source": "/oyun.php", "destination": "/oyun.html" },
         { "source": "/kategori.php", "destination": "/kategori.html" },

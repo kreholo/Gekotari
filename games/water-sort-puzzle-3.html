@@ -464,6 +464,9 @@
         bestLevel = currentLevel + 1;
         try { localStorage.setItem('gekkotari_ws3_best', String(bestLevel)); } catch (e) {}
       }
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'gekkotari_score', gameId: 16, score: currentLevel }, window.location.origin);
+      }
       winDesc.textContent = `Seviye ${currentLevel}, ${moves} hamlede tamamlandı.`;
       playTone(587, 0.12);
       setTimeout(() => playTone(880, 0.22), 110);

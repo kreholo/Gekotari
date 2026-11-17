@@ -4,4 +4,4 @@ Disallow: /admin.html
 Disallow: /admin
 Disallow: /api/
 
-Sitemap: https://gekotari.vercel.app/sitemap.xml
+Sitemap: https://gekkotari.com/sitemap.xml

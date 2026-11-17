@@ -3,199 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>Yönetim Paneli - Gekkotari</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://rltpodnczpcwnefovitz.supabase.co" crossorigin>
-    <link rel="stylesheet" href="assets/css/style.css?v=11">
-    <link rel="stylesheet" href="assets/css/admin.css?v=9">
+    <link rel="stylesheet" href="/assets/css/style.css?v=12">
+    <link rel="stylesheet" href="/assets/css/admin.css?v=9">
 </head>
 <body>
 
-<button class="sidebar-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('show')">
-    <i class="fas fa-bars"></i>
-</button>
-
-<div class="admin-wrapper">
-    <!-- SIDEBAR -->
-    <aside class="admin-sidebar">
-        <div class="sidebar-brand">
-            <i class="fas fa-gamepad fa-2x" style="color:var(--primary);"></i>
-            <div>
-                <h4>GEKKOTARİ</h4>
-                <small>Yönetim Paneli v2.0</small>
-            </div>
+<!-- YÖNETİCİ GİRİŞ EKRANI (Yetkili Supabase Auth JWT gerektirir) -->
+<div id="adminGateScreen" class="container py-5" style="display:none;max-width:460px;">
+    <div class="auth-container mt-4">
+        <div class="text-center mb-4">
+            <div class="auth-icon"><i class="fas fa-shield-alt"></i></div>
+            <h3>Yönetim Paneli</h3>
+            <p class="text-muted small" id="adminGateSubtitle">Devam etmek için yönetici yetkili Supabase hesabınla giriş yap.</p>
         </div>
-        <div class="sidebar-user">
-            <div class="sidebar-user-avatar">A</div>
-            <div class="sidebar-user-info">
-                <strong id="adminUserName">Site Yöneticisi</strong>
-                <small>Süper Yönetici</small>
+        <form id="adminLoginForm">
+            <div class="mb-3">
+                <label class="form-label" for="adminEmail">Yönetici E-posta</label>
+                <input type="email" id="adminEmail" class="form-control custom-input" required placeholder="admin@...">
             </div>
-        </div>
-        <ul class="sidebar-menu">
-            <li class="sidebar-menu-title">ANA MENÜ</li>
-            <li><a href="admin.html" class="active"><i class="fas fa-gamepad"></i> Oyun Yönetimi</a></li>
-            <li><a href="index.html"><i class="fas fa-globe"></i> Siteyi Görüntüle</a></li>
-            <li class="sidebar-menu-title">ARAÇLAR</li>
-            <li><button onclick="varsayilanOyunlariYukle()"><i class="fas fa-sync-alt text-info"></i> Varsayılanları Yükle</button></li>
-            <li><button onclick="logoutUser()"><i class="fas fa-sign-out-alt text-danger"></i> Çıkış Yap</button></li>
-        </ul>
-    </aside>
-
-    <!-- CONTENT -->
-    <div class="admin-content">
-        <div class="admin-header">
-            <h1 class="admin-page-title">
-                <i class="fas fa-chart-pie"></i> Dashboard & Oyun Yönetimi
-                <small class="text-muted fs-6 ms-2" id="totalGamesCountLabel"></small>
-            </h1>
-            <div class="d-flex gap-2 flex-wrap">
-                <div class="export-buttons">
-                    <button onclick="csvIndir()" class="btn btn-export btn-outline-success">
-                        <i class="fas fa-file-csv me-1"></i> CSV İndir
-                    </button>
-                    <button onclick="pdfIndir()" class="btn btn-export btn-outline-danger">
-                        <i class="fas fa-file-pdf me-1"></i> PDF (Baskı)
-                    </button>
-                </div>
-                <button class="btn btn-admin btn-admin-success" data-bs-toggle="modal" data-bs-target="#oyunEkleModal">
-                    <i class="fas fa-plus me-1"></i> Yeni Oyun Ekle
-                </button>
+            <div class="mb-3">
+                <label class="form-label" for="adminPassword">Şifre</label>
+                <input type="password" id="adminPassword" class="form-control custom-input" required placeholder="••••••">
             </div>
-        </div>
-
-        <!-- İSTATİSTİK KARTLARI -->
-        <div class="row g-3 mb-4">
-            <div class="col-md-3 col-6">
-                <div class="stat-card primary">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <div class="stat-value" id="statOyun">0</div>
-                            <div class="stat-label">Aktif Oyunlar</div>
-                        </div>
-                        <div class="stat-icon primary"><i class="fas fa-gamepad"></i></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="stat-card warning">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <div class="stat-value" id="statKategori">10</div>
-                            <div class="stat-label">Kategoriler</div>
-                        </div>
-                        <div class="stat-icon warning"><i class="fas fa-th-list"></i></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="stat-card info">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <div class="stat-value" id="statOynama">0</div>
-                            <div class="stat-label">Toplam Oynama</div>
-                        </div>
-                        <div class="stat-icon info"><i class="fas fa-play-circle"></i></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="stat-card primary">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <div class="stat-value" id="statKullanici">1</div>
-                            <div class="stat-label">Kayıtlı Kullanıcı</div>
-                        </div>
-                        <div class="stat-icon primary"><i class="fas fa-users"></i></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- FİLTRE BAR -->
-        <div class="category-filter-bar mb-3">
-            <input type="text" id="adminSearch" class="form-control form-control-sm" style="width:240px;" placeholder="Oyun ara..." oninput="renderAdminTable()">
-            <select id="adminCatFilter" class="form-select form-select-sm" style="width:180px;" onchange="renderAdminTable()">
-                <option value="">Tüm Kategoriler</option>
-            </select>
-        </div>
-
-        <!-- OYUN TABLOSU -->
-        <div class="admin-table-card mb-4" style="overflow-x:auto;">
-            <table class="admin-table" id="oyunTablosu">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Oyun Adı</th>
-                        <th>Kategori</th>
-                        <th>Tür</th>
-                        <th>Etiket</th>
-                        <th>Puan</th>
-                        <th>Oynama</th>
-                        <th class="table-actions">İşlem</th>
-                    </tr>
-                </thead>
-                <tbody id="adminTableBody"></tbody>
-            </table>
-        </div>
-
-        <!-- GELEN ÖNERİ & SORUN BİLDİRİMLERİ -->
-        <div class="admin-table-card p-3">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="mb-0 text-white"><i class="fas fa-inbox me-2" style="color:var(--primary);"></i>Gelen İstekler & Sorun Bildirimleri <small class="text-muted ms-1" id="feedbackCountLabel"></small></h5>
-                <button onclick="bildirimleriTemizle()" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash me-1"></i>Temizle</button>
-            </div>
-            <div id="adminFeedbackList" class="small text-muted">Henüz bildirim yok.</div>
+            <button type="submit" id="adminLoginBtn" class="btn btn-primary-custom w-100 py-2">
+                <i class="fas fa-lock-open me-2"></i>Yönetici Girişi Yap
+            </button>
+        </form>
+        <div id="adminGateError" class="alert alert-warning mt-3 small" style="display:none;"></div>
+        <div class="mt-3 text-center">
+            <a href="/index.html" class="text-muted small text-decoration-none"><i class="fas fa-arrow-left me-1"></i>Siteye Dön</a>
         </div>
     </div>
 </div>
 
-<!-- YENİ OYUN EKLE MODALI -->
-<div class="modal fade" id="oyunEkleModal" tabindex="-1">
+<!-- ANA YÖNETİM PANELİ -->
+<div id="adminAppRoot" style="display:none;">
+    <button class="sidebar-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('show')">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="admin-wrapper">
+        <aside class="admin-sidebar">
+            <div class="sidebar-brand">
+                <i class="fas fa-gamepad fa-2x" style="color:var(--primary);"></i>
+                <div>
+                    <h4>GEKKOTARİ</h4>
+                    <small>Yönetim Paneli v3.0</small>
+                </div>
+            </div>
+            <div class="sidebar-user">
+                <div class="sidebar-user-avatar" id="adminAvatarChar">A</div>
+                <div class="sidebar-user-info">
+                    <strong id="adminUserName">Yönetici</strong>
+                    <small id="adminUserEmail">Supabase Auth</small>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="sidebar-menu-title">YÖNETİM</li>
+                <li><button class="active" data-tab="games" onclick="switchAdminTab('games', this)"><i class="fas fa-gamepad"></i> Oyun &amp; Katalog</button></li>
+                <li><button data-tab="comments" onclick="switchAdminTab('comments', this)"><i class="fas fa-comments"></i> Yorum Moderasyonu</button></li>
+                <li><button data-tab="feedback" onclick="switchAdminTab('feedback', this)"><i class="fas fa-inbox"></i> İstek &amp; Bildirimler</button></li>
+                <li><button data-tab="searches" onclick="switchAdminTab('searches', this)"><i class="fas fa-search-minus"></i> Bulunamayan Aramalar</button></li>
+                <li><button data-tab="scores" onclick="switchAdminTab('scores', this)"><i class="fas fa-trophy"></i> Skor Tablosu</button></li>
+                <li class="sidebar-menu-title">ARAÇLAR</li>
+                <li><a href="/index.html"><i class="fas fa-globe"></i> Siteyi Görüntüle</a></li>
+                <li><button onclick="runLinkHealthCheck()"><i class="fas fa-heartbeat text-warning"></i> Bağlantı Sağlığı Tara</button></li>
+                <li><button onclick="logoutUser()"><i class="fas fa-sign-out-alt text-danger"></i> Çıkış Yap</button></li>
+            </ul>
+        </aside>
+
+        <div class="admin-content">
+            <div class="admin-header">
+                <h1 class="admin-page-title">
+                    <i class="fas fa-chart-pie"></i> Dashboard &amp; Canlı Yönetim
+                    <small class="text-muted fs-6 ms-2" id="totalGamesCountLabel"></small>
+                </h1>
+                <div class="d-flex gap-2 flex-wrap">
+                    <button onclick="csvIndir()" class="btn btn-export btn-outline-success"><i class="fas fa-file-csv me-1"></i> CSV İndir</button>
+                    <button onclick="pdfIndir()" class="btn btn-export btn-outline-danger"><i class="fas fa-file-pdf me-1"></i> Yazdır</button>
+                    <button class="btn btn-admin btn-admin-success" onclick="openGameModal(null)"><i class="fas fa-plus me-1"></i> Yeni Oyun Ekle</button>
+                </div>
+            </div>
+
+            <!-- İSTATİSTİK KARTLARI -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3 col-6">
+                    <div class="stat-card primary">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div><div class="stat-value" id="statOyun">0</div><div class="stat-label">Yayındaki Oyun</div></div>
+                            <div class="stat-icon primary"><i class="fas fa-gamepad"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card info">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div><div class="stat-value" id="statOynama">0</div><div class="stat-label">Toplam Oynanma</div></div>
+                            <div class="stat-icon info"><i class="fas fa-play-circle"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card warning">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div><div class="stat-value" id="statComments">0</div><div class="stat-label">Son Yorumlar</div></div>
+                            <div class="stat-icon warning"><i class="fas fa-comments"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card primary">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div><div class="stat-value" id="statFeedback">0</div><div class="stat-label">Açık Bildirim</div></div>
+                            <div class="stat-icon primary"><i class="fas fa-inbox"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 1: OYUN YÖNETİMİ -->
+            <section id="tab-games" class="admin-tab-pane">
+                <div class="category-filter-bar mb-3">
+                    <input type="text" id="adminSearch" class="form-control form-control-sm" style="width:240px;" placeholder="Oyun ara..." oninput="renderAdminTable()">
+                    <select id="adminCatFilter" class="form-select form-select-sm" style="width:180px;" onchange="renderAdminTable()">
+                        <option value="">Tüm Kategoriler</option>
+                    </select>
+                </div>
+                <div id="healthScanBox" class="alert alert-info small mb-3" style="display:none;"></div>
+                <div class="admin-table-card mb-4" style="overflow-x:auto;">
+                    <table class="admin-table" id="oyunTablosu">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Oyun Adı</th>
+                                <th>Kategori</th>
+                                <th>Tür</th>
+                                <th>Durum</th>
+                                <th>Puan</th>
+                                <th>Oynama</th>
+                                <th class="table-actions">İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- TAB 2: YORUM MODERASYONU -->
+            <section id="tab-comments" class="admin-tab-pane" style="display:none;">
+                <div class="admin-table-card p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0 text-white"><i class="fas fa-comments me-2 text-warning"></i>Canlı Yorum Moderasyonu (Supabase)</h5>
+                        <button onclick="loadAdminComments()" class="btn btn-sm btn-outline-light"><i class="fas fa-sync me-1"></i>Yenile</button>
+                    </div>
+                    <div id="adminCommentsList" class="small text-muted">Yükleniyor...</div>
+                </div>
+            </section>
+
+            <!-- TAB 3: BİLDİRİMLER -->
+            <section id="tab-feedback" class="admin-tab-pane" style="display:none;">
+                <div class="admin-table-card p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0 text-white"><i class="fas fa-inbox me-2" style="color:var(--primary);"></i>Ziyaretçi İstek &amp; Sorun Bildirimleri (Supabase)</h5>
+                        <button onclick="loadAdminFeedback()" class="btn btn-sm btn-outline-light"><i class="fas fa-sync me-1"></i>Yenile</button>
+                    </div>
+                    <div id="adminFeedbackList" class="small text-muted">Yükleniyor...</div>
+                </div>
+            </section>
+
+            <!-- TAB 4: SONUÇSUZ ARAMALAR -->
+            <section id="tab-searches" class="admin-tab-pane" style="display:none;">
+                <div class="admin-table-card p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0 text-white"><i class="fas fa-search-minus me-2 text-info"></i>Aranıp Bulunamayan Oyun İstekleri</h5>
+                        <button onclick="loadAdminZeroSearches()" class="btn btn-sm btn-outline-light"><i class="fas fa-sync me-1"></i>Yenile</button>
+                    </div>
+                    <div id="adminZeroSearchesList" class="small text-muted">Yükleniyor...</div>
+                </div>
+            </section>
+
+            <!-- TAB 5: SKOR TABLOSU MODERASYONU -->
+            <section id="tab-scores" class="admin-tab-pane" style="display:none;">
+                <div class="admin-table-card p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0 text-white"><i class="fas fa-trophy me-2 text-warning"></i>Yüksek Skor Moderasyonu</h5>
+                        <button onclick="loadAdminScores()" class="btn btn-sm btn-outline-light"><i class="fas fa-sync me-1"></i>Yenile</button>
+                    </div>
+                    <div id="adminScoresList" class="small text-muted">Yükleniyor...</div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<!-- OYUN EKLE / DÜZENLE MODALI (Supabase catalog_overrides'a kalıcı yazar) -->
+<div class="modal fade" id="gameFormModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="fas fa-plus-circle me-2" style="color:var(--primary);"></i>Yeni Oyun Ekle</h5>
+                <h5 class="modal-title" id="gameModalTitle"><i class="fas fa-edit me-2" style="color:var(--primary);"></i>Oyun Ekle / Düzenle</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form id="addGameForm">
+            <form id="gameEditForm">
+                <input type="hidden" id="edit_id">
                 <div class="modal-body">
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Oyun Adı *</label>
-                            <input type="text" id="add_adi" class="form-control" required>
+                            <input type="text" id="edit_adi" class="form-control" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Kategori *</label>
-                            <select id="add_kategori" class="form-select" required></select>
+                            <select id="edit_kategori" class="form-select" required></select>
                         </div>
                         <div class="col-12">
-                            <label class="form-label">Açıklama</label>
-                            <textarea id="add_aciklama" class="form-control" rows="2"></textarea>
+                            <label class="form-label">Açıklama *</label>
+                            <textarea id="edit_aciklama" class="form-control" rows="2" required></textarea>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Oyun Linki (.swf veya HTML5 Embed URL) *</label>
-                            <input type="text" id="add_link" class="form-control" placeholder="https://..." required>
+                            <label class="form-label">Oyun Linki (.swf veya HTML5 URL) *</label>
+                            <input type="text" id="edit_link" class="form-control" required placeholder="https://... veya games/...">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Görsel URL (Opsiyonel)</label>
-                            <input type="text" id="add_gorsel" class="form-control" placeholder="https://...">
+                            <label class="form-label">Görsel URL</label>
+                            <input type="text" id="edit_gorsel" class="form-control" placeholder="assets/img/... veya https://...">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Etiket</label>
-                            <input type="text" id="add_etiket" class="form-control" value="Yeni">
+                            <input type="text" id="edit_etiket" class="form-control" value="Popüler">
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Puan (Opsiyonel, 1-5)</label>
-                            <input type="number" id="add_puan" class="form-control" step="0.1" min="0" max="5" value="0">
+                            <label class="form-label">Seri Slug (Opsiyonel)</label>
+                            <input type="text" id="edit_seri" class="form-control" placeholder="örn: fireboy-watergirl">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Kontroller</label>
+                            <input type="text" id="edit_kontroller" class="form-control" placeholder="Ok Tuşları / Fare">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Oynanış İpucu</label>
+                            <input type="text" id="edit_ipucu" class="form-control">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Anahtar Kelimeler (SEO virgüllü)</label>
+                            <input type="text" id="edit_keywords" class="form-control">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                    <button type="submit" class="btn btn-admin btn-admin-success"><i class="fas fa-save me-1"></i>Kaydet</button>
+                    <button type="submit" id="saveGameBtn" class="btn btn-admin btn-admin-success"><i class="fas fa-cloud-upload-alt me-1"></i>Canlıya Kaydet</button>
                 </div>
             </form>
         </div>
@@ -203,27 +268,51 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="assets/js/ads-config.js?v=9"></script>
-<script src="assets/js/supabase-sync.js?v=9"></script>
-<script src="assets/js/games-data.js?v=14"></script>
-<script src="assets/js/common.js?v=11"></script>
+<script src="/assets/js/ads-config.js?v=10"></script>
+<script src="/assets/js/supabase-sync.js?v=10"></script>
+<script src="/assets/js/games-data.js?v=15"></script>
+<script src="/assets/js/common.js?v=12"></script>
 <script>
+let overrideMap = new Map();
+
+function switchAdminTab(name, btnEl) {
+    document.querySelectorAll('.admin-tab-pane').forEach(p => { p.style.display = 'none'; });
+    const target = document.getElementById('tab-' + name);
+    if (target) target.style.display = 'block';
+    document.querySelectorAll('.sidebar-menu button[data-tab]').forEach(b => b.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+}
+
+function getAllBasePlusOverrides() {
+    const base = (window.GEKKOTARI_DEFAULT_DATA && window.GEKKOTARI_DEFAULT_DATA.oyunlar) || [];
+    const map = new Map();
+    base.forEach(g => map.set(String(g.id), { ...g, _override: null }));
+    overrideMap.forEach((ov, idStr) => {
+        if (ov.action === 'hide') {
+            const existing = map.get(idStr);
+            if (existing) map.set(idStr, { ...existing, durum: '0', _override: 'hidden' });
+        } else if (ov.action === 'upsert' && ov.payload) {
+            const existing = map.get(idStr) || {};
+            map.set(idStr, { ...existing, ...ov.payload, id: idStr, _override: 'custom' });
+        }
+    });
+    return Array.from(map.values());
+}
+
 function renderAdminTable() {
-    const games = getGames();
-    const categories = getCategories();
+    const games = getAllBasePlusOverrides();
+    const visibleCount = games.filter(g => String(g.durum) !== '0').length;
     const q = (document.getElementById('adminSearch').value || '').toLowerCase();
     const cat = document.getElementById('adminCatFilter').value;
 
-    document.getElementById('statOyun').innerText = games.length;
-    document.getElementById('statKategori').innerText = categories.length;
+    document.getElementById('statOyun').innerText = visibleCount;
     const totalPlays = games.reduce((acc, g) => acc + getGameLiveStat(g).plays, 0);
     document.getElementById('statOynama').innerText = formatNumber(totalPlays);
-    document.getElementById('statKullanici').innerText = getUsers().length;
-    document.getElementById('totalGamesCountLabel').innerText = `(${games.length} oyun)`;
+    document.getElementById('totalGamesCountLabel').innerText = `(${visibleCount} yayında)`;
 
     const filtered = games.filter(g => {
         if (cat && g.kategori_adi !== cat) return false;
-        if (q && !(g.oyun_adi || '').toLowerCase().includes(q)) return false;
+        if (q && !(g.oyun_adi || '').toLowerCase().includes(q) && String(g.id) !== q) return false;
         return true;
     });
 
@@ -231,93 +320,261 @@ function renderAdminTable() {
     tbody.innerHTML = filtered.map(g => {
         const live = getGameLiveStat(g);
         const isSwf = (g.oyun_linki || '').toLowerCase().endsWith('.swf');
-        const typeBadge = isSwf
-            ? '<span class="badge bg-info text-dark">SWF (Ruffle)</span>'
-            : '<span class="badge bg-warning text-dark">HTML5</span>';
-
+        const isHidden = String(g.durum) === '0';
+        const statusBadge = isHidden
+            ? '<span class="badge bg-danger">Gizli</span>'
+            : g._override === 'custom'
+                ? '<span class="badge bg-warning text-dark">Güncellendi</span>'
+                : '<span class="badge bg-success">Yayında</span>';
         return `
         <tr>
             <td>#${g.id}</td>
-            <td class="text-white fw-bold">
-                <a href="oyun.html?id=${g.id}" class="text-white text-decoration-none">${escapeHtml(g.oyun_adi)}</a>
-            </td>
+            <td class="text-white fw-bold"><a href="${getGameUrl(g)}" target="_blank" class="text-white text-decoration-none">${escapeHtml(g.oyun_adi)}</a></td>
             <td><span class="badge bg-secondary">${escapeHtml(g.kategori_adi)}</span></td>
-            <td>${typeBadge}</td>
-            <td>${escapeHtml(g.etiket || '-')}</td>
+            <td>${isSwf ? '<span class="badge bg-info text-dark">SWF</span>' : '<span class="badge bg-primary">HTML5</span>'}</td>
+            <td>${statusBadge}</td>
             <td><i class="fas fa-star text-warning me-1"></i>${live.rating > 0 ? live.rating.toFixed(1) : '-'}</td>
             <td>${formatNumber(live.plays)}</td>
             <td class="table-actions">
-                <a href="oyun.html?id=${g.id}" class="btn btn-admin btn-admin-info btn-sm me-1" title="Test Et / Oyna">
-                    <i class="fas fa-play"></i>
-                </a>
-                <button onclick="oyunSilAdmin(${g.id})" class="btn btn-admin btn-admin-danger btn-sm" title="Sil">
-                    <i class="fas fa-trash"></i>
-                </button>
+                <button onclick="openGameModal('${g.id}')" class="btn btn-admin btn-admin-info btn-sm me-1" title="Düzenle"><i class="fas fa-edit"></i></button>
+                ${isHidden || g._override
+                    ? `<button onclick="resetGameOverride('${g.id}')" class="btn btn-admin btn-admin-success btn-sm" title="Varsayılana Döndür"><i class="fas fa-undo"></i></button>`
+                    : `<button onclick="hideGameRemote('${g.id}')" class="btn btn-admin btn-admin-danger btn-sm" title="Yayından Gizle"><i class="fas fa-eye-slash"></i></button>`}
             </td>
         </tr>`;
     }).join('');
 }
 
-function oyunSilAdmin(id) {
-    if (!confirm('Bu oyunu silmek istediğinize emin misiniz?')) return;
-    let games = getGames();
-    games = games.filter(g => String(g.id) !== String(id));
-    saveGames(games);
-    showToast('info', 'Oyun silindi.');
-    renderAdminTable();
+function openGameModal(id) {
+    const games = getAllBasePlusOverrides();
+    const g = id ? games.find(x => String(x.id) === String(id)) : null;
+    document.getElementById('gameModalTitle').innerHTML = g
+        ? `<i class="fas fa-edit me-2" style="color:var(--primary);"></i>Oyunu Düzenle (#${g.id})`
+        : `<i class="fas fa-plus-circle me-2" style="color:var(--primary);"></i>Yeni Oyun Ekle (Kalıcı)`;
+    document.getElementById('edit_id').value = g ? g.id : '';
+    document.getElementById('edit_adi').value = g ? (g.oyun_adi || '') : '';
+    document.getElementById('edit_kategori').value = g ? (g.kategori_adi || 'Aksiyon') : 'Aksiyon';
+    document.getElementById('edit_aciklama').value = g ? (g.aciklama || '') : '';
+    document.getElementById('edit_link').value = g ? (g.oyun_linki || '') : '';
+    document.getElementById('edit_gorsel').value = g ? (g.gorsel || '') : '';
+    document.getElementById('edit_etiket').value = g ? (g.etiket || 'Popüler') : 'Yeni';
+    document.getElementById('edit_seri').value = g ? (g.seri || '') : '';
+    document.getElementById('edit_kontroller').value = g ? (g.kontroller || '') : 'Fare / Klavye';
+    document.getElementById('edit_ipucu').value = g ? (g.ipucu || '') : '';
+    document.getElementById('edit_keywords').value = g ? (g.anahtar_kelimeler || '') : '';
+    new bootstrap.Modal(document.getElementById('gameFormModal')).show();
 }
 
-function varsayilanOyunlariYukle() {
-    if (!confirm('Tüm oyun listesi varsayılan doğrulanmış arşive sıfırlansın mı?')) return;
-    localStorage.removeItem('gekkotari_custom_games');
-    localStorage.removeItem('gekkotari_version');
-    initGekkotariStore();
-    showToast('success', 'Varsayılan ' + getGames().length + ' oyun başarıyla yüklendi!');
-    renderAdminTable();
-}
-
-function renderFeedbackInbox() {
-    let list = [];
-    try { list = JSON.parse(localStorage.getItem('gekkotari_feedback') || '[]'); } catch (e) {}
-    const lbl = document.getElementById('feedbackCountLabel');
-    const box = document.getElementById('adminFeedbackList');
-    if (lbl) lbl.innerText = `(${list.length})`;
-    if (!box) return;
-    const remoteNote = '<div class="text-muted small mb-2"><i class="fas fa-database me-1 text-success"></i>Tüm ziyaretçilerden gelen bildirimler gizlilik korumalı olarak Supabase <code>game_feedback</code> tablosunda da saklanır.</div>';
-    if (!list.length) {
-        box.innerHTML = remoteNote + '<div class="text-muted py-2">Bu cihazda kayıtlı bildirim bulunmuyor.</div>';
-        return;
+async function hideGameRemote(id) {
+    if (!confirm('Bu oyun tüm ziyaretçiler için yayından gizlensin mi?')) return;
+    try {
+        await window.GekkotariDB.adminUpsertCatalogOverride(id, 'hide', {});
+        await refreshOverridesAndTable();
+        showToast('info', 'Oyun Supabase üzerinden gizlendi.');
+    } catch (e) {
+        showToast('danger', 'İşlem başarısız: ' + e.message);
     }
-    box.innerHTML = remoteNote + list.map(fb => `
-        <div class="p-2 mb-2 rounded" style="background:rgba(255,255,255,0.03);border:1px solid var(--border-color);">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <span class="badge bg-success">${escapeHtml(fb.tur)}</span>
-                <span class="text-muted">${escapeHtml(fb.tarih)} • ${escapeHtml(fb.iletisim)}</span>
-            </div>
-            <div class="fw-bold text-white">${escapeHtml(fb.konu)}</div>
-            <div class="text-muted">${escapeHtml(fb.mesaj)}</div>
-        </div>
-    `).join('');
 }
 
-function bildirimleriTemizle() {
-    if (!confirm('Kayıtlı bildirimler temizlensin mi?')) return;
-    localStorage.removeItem('gekkotari_feedback');
-    renderFeedbackInbox();
-    showToast('info', 'Bildirim listesi temizlendi.');
+async function resetGameOverride(id) {
+    try {
+        await window.GekkotariDB.adminDeleteCatalogOverride(id);
+        await refreshOverridesAndTable();
+        showToast('success', 'Oyun varsayılan ayara döndürüldü.');
+    } catch (e) {
+        showToast('danger', 'İşlem başarısız: ' + e.message);
+    }
+}
+
+async function refreshOverridesAndTable() {
+    const ovList = await window.GekkotariDB.fetchCatalogOverrides(true);
+    overrideMap = new Map((ovList || []).map(x => [String(x.game_id), x]));
+    window.GEKKOTARI_REMOTE_OVERRIDES = ovList;
+    renderAdminTable();
+}
+
+async function loadAdminComments() {
+    const box = document.getElementById('adminCommentsList');
+    const gamesById = new Map(getAllBasePlusOverrides().map(g => [String(g.id), g.oyun_adi]));
+    try {
+        const rows = await window.GekkotariDB.adminFetchRecentComments(100);
+        document.getElementById('statComments').innerText = rows.length;
+        if (!rows.length) {
+            box.innerHTML = '<div class="py-3 text-center">Henüz yorum bulunmuyor.</div>';
+            return;
+        }
+        box.innerHTML = rows.map(c => `
+            <div class="p-2 mb-2 rounded d-flex justify-content-between align-items-start gap-2" style="background:rgba(255,255,255,0.03);border:1px solid var(--border-color);">
+                <div>
+                    <div class="text-white fw-semibold">${escapeHtml(c.author)} <span class="badge bg-dark border border-secondary ms-1">${escapeHtml(gamesById.get(String(c.game_id)) || '#' + c.game_id)}</span></div>
+                    <div class="text-secondary mt-1">${escapeHtml(c.body)}</div>
+                    <small class="text-muted">${new Date(c.created_at).toLocaleString('tr-TR')}</small>
+                </div>
+                <button onclick="deleteCommentAdmin(${c.id})" class="btn btn-sm btn-outline-danger flex-shrink-0"><i class="fas fa-trash"></i></button>
+            </div>
+        `).join('');
+    } catch (e) {
+        box.innerHTML = `<div class="text-danger">Yorumlar yüklenemedi: ${escapeHtml(e.message)}</div>`;
+    }
+}
+
+async function deleteCommentAdmin(id) {
+    if (!confirm('Bu yorum kalıcı olarak silinsin mi?')) return;
+    try {
+        await window.GekkotariDB.adminDeleteComment(id);
+        showToast('info', 'Yorum silindi.');
+        loadAdminComments();
+    } catch (e) { showToast('danger', e.message); }
+}
+
+async function loadAdminFeedback() {
+    const box = document.getElementById('adminFeedbackList');
+    try {
+        const rows = await window.GekkotariDB.adminFetchFeedback();
+        const openCnt = rows.filter(r => r.status !== 'resolved').length;
+        document.getElementById('statFeedback').innerText = openCnt;
+        if (!rows.length) {
+            box.innerHTML = '<div class="py-3 text-center">Gelen bildirim yok.</div>';
+            return;
+        }
+        box.innerHTML = rows.map(fb => `
+            <div class="p-2 mb-2 rounded" style="background:rgba(255,255,255,0.03);border:1px solid var(--border-color);">
+                <div class="d-flex justify-content-between align-items-center mb-1 flex-wrap gap-2">
+                    <div>
+                        <span class="badge ${fb.status === 'resolved' ? 'bg-secondary' : 'bg-success'}">${escapeHtml(fb.status === 'resolved' ? 'Çözüldü' : 'Açık')}</span>
+                        <span class="badge bg-info text-dark ms-1">${escapeHtml(fb.kind)}</span>
+                        <strong class="text-white ms-2">${escapeHtml(fb.subject)}</strong>
+                    </div>
+                    <div class="d-flex gap-1">
+                        <button onclick="toggleFeedbackStatus(${fb.id}, '${fb.status === 'resolved' ? 'open' : 'resolved'}')" class="btn btn-sm btn-outline-success">${fb.status === 'resolved' ? 'Tekrar Aç' : 'Çözüldü'}</button>
+                        <button onclick="deleteFeedbackAdmin(${fb.id})" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <div class="text-secondary">${escapeHtml(fb.message)}</div>
+                <small class="text-muted">${escapeHtml(fb.contact)} • ${new Date(fb.created_at).toLocaleString('tr-TR')}</small>
+            </div>
+        `).join('');
+    } catch (e) {
+        box.innerHTML = `<div class="text-danger">Bildirimler okunamadı: ${escapeHtml(e.message)}</div>`;
+    }
+}
+
+async function toggleFeedbackStatus(id, nextStatus) {
+    try {
+        await window.GekkotariDB.adminUpdateFeedback(id, { status: nextStatus });
+        loadAdminFeedback();
+    } catch (e) { showToast('danger', e.message); }
+}
+
+async function deleteFeedbackAdmin(id) {
+    if (!confirm('Bildirim silinsin mi?')) return;
+    try {
+        await window.GekkotariDB.adminDeleteFeedback(id);
+        loadAdminFeedback();
+    } catch (e) { showToast('danger', e.message); }
+}
+
+async function loadAdminZeroSearches() {
+    const box = document.getElementById('adminZeroSearchesList');
+    try {
+        const rows = await window.GekkotariDB.adminFetchZeroSearches();
+        if (!rows.length) {
+            box.innerHTML = '<div class="py-3 text-center">Henüz sonuçsuz arama kaydedilmedi.</div>';
+            return;
+        }
+        box.innerHTML = rows.map(r => `
+            <div class="p-2 mb-2 rounded d-flex justify-content-between align-items-center" style="background:rgba(255,255,255,0.03);border:1px solid var(--border-color);">
+                <div>
+                    <strong class="text-white">"${escapeHtml(r.sample_query)}"</strong>
+                    <span class="badge bg-info text-dark ms-2">${r.hits} kez arandı</span>
+                    <small class="text-muted ms-2">${new Date(r.last_searched_at).toLocaleString('tr-TR')}</small>
+                </div>
+                <button onclick="deleteZeroSearch(${JSON.stringify(r.query_norm)})" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+            </div>
+        `).join('');
+    } catch (e) { box.innerHTML = `<div class="text-danger">${escapeHtml(e.message)}</div>`; }
+}
+
+async function deleteZeroSearch(qNorm) {
+    try {
+        await window.GekkotariDB.adminDeleteZeroSearch(qNorm);
+        loadAdminZeroSearches();
+    } catch (e) { showToast('danger', e.message); }
+}
+
+async function loadAdminScores() {
+    const box = document.getElementById('adminScoresList');
+    const gamesById = new Map(getAllBasePlusOverrides().map(g => [String(g.id), g.oyun_adi]));
+    try {
+        const rows = await window.GekkotariDB.adminFetchAllScores(100);
+        if (!rows.length) {
+            box.innerHTML = '<div class="py-3 text-center">Henüz yüksek skor yok.</div>';
+            return;
+        }
+        box.innerHTML = rows.map(s => `
+            <div class="p-2 mb-2 rounded d-flex justify-content-between align-items-center" style="background:rgba(255,255,255,0.03);border:1px solid var(--border-color);">
+                <div>
+                    <strong class="text-white">${escapeHtml(s.player_name)}</strong>
+                    <span class="badge bg-dark border border-secondary ms-1">${escapeHtml(gamesById.get(String(s.game_id)) || '#' + s.game_id)}</span>
+                    <span class="badge bg-success ms-1">${formatNumber(s.score)}</span>
+                    <small class="text-muted ms-2">${new Date(s.created_at).toLocaleString('tr-TR')}</small>
+                </div>
+                <button onclick="deleteScoreAdmin(${s.id})" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+            </div>
+        `).join('');
+    } catch (e) { box.innerHTML = `<div class="text-danger">${escapeHtml(e.message)}</div>`; }
+}
+
+async function deleteScoreAdmin(id) {
+    try {
+        await window.GekkotariDB.adminDeleteScore(id);
+        loadAdminScores();
+    } catch (e) { showToast('danger', e.message); }
+}
+
+async function runLinkHealthCheck() {
+    switchAdminTab('games', document.querySelector('.sidebar-menu button[data-tab="games"]'));
+    const box = document.getElementById('healthScanBox');
+    box.style.display = 'block';
+    box.className = 'alert alert-info small mb-3';
+    const games = getAllBasePlusOverrides().filter(g => String(g.durum) !== '0');
+    const broken = [];
+    for (let i = 0; i < games.length; i += 10) {
+        const batch = games.slice(i, i + 10);
+        box.textContent = `Tarama sürüyor: ${Math.min(i + 10, games.length)} / ${games.length} oyun kontrol ediliyor...`;
+        await Promise.all(batch.map(async g => {
+            const url = (g.oyun_linki || '').toLowerCase().endsWith('.swf')
+                ? '/api/swf-proxy?url=' + encodeURIComponent(g.oyun_linki)
+                : resolveAssetUrl(g.oyun_linki);
+            try {
+                const res = await fetch(url, { method: 'HEAD', signal: AbortSignal.timeout(7000) });
+                if (!res.ok && res.status !== 405) broken.push(`#${g.id} ${g.oyun_adi} (HTTP ${res.status})`);
+            } catch {
+                if ((g.oyun_linki || '').startsWith('games/') || (g.oyun_linki || '').includes('archive.org')) {
+                    broken.push(`#${g.id} ${g.oyun_adi} (Zaman aşımı/Ağ)`);
+                }
+            }
+        }));
+    }
+    if (!broken.length) {
+        box.className = 'alert alert-success small mb-3';
+        box.textContent = `Harika! Kontrol edilen ${games.length} oyunun tamamı erişilebilir görünüyor.`;
+    } else {
+        box.className = 'alert alert-warning small mb-3';
+        box.innerHTML = `<strong>Dikkat (${broken.length} sorunlu/yavaş uç):</strong> ${broken.map(escapeHtml).join(', ')}`;
+    }
 }
 
 function csvIndir() {
-    const games = getGames();
+    const games = getAllBasePlusOverrides();
     let csv = 'ID,Oyun Adi,Kategori,Tur,Puan,Oynama Sayisi\n';
     games.forEach(g => {
         const live = getGameLiveStat(g);
         csv += `${g.id},"${(g.oyun_adi || '').replace(/"/g, '""')}",${g.kategori_adi},${g.oyun_tipi},${live.rating},${live.plays}\n`;
     });
-    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
     const a = document.createElement('a');
-    a.href = url;
+    a.href = URL.createObjectURL(blob);
     a.download = 'gekkotari_oyunlar.csv';
     a.click();
 }
@@ -326,51 +583,110 @@ function pdfIndir() {
     window.print();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+async function bootAdminApp(user) {
+    document.getElementById('adminGateScreen').style.display = 'none';
+    document.getElementById('adminAppRoot').style.display = 'block';
+    document.getElementById('adminUserName').innerText = user.ad_soyad || user.kullanici_adi;
+    document.getElementById('adminUserEmail').innerText = user.email;
+    document.getElementById('adminAvatarChar').innerText = (user.kullanici_adi || 'A').charAt(0).toUpperCase();
+
     const categories = getCategories();
     const filterSel = document.getElementById('adminCatFilter');
-    const addSel = document.getElementById('add_kategori');
+    const editSel = document.getElementById('edit_kategori');
+    filterSel.innerHTML = '<option value="">Tüm Kategoriler</option>';
+    editSel.innerHTML = '';
     categories.forEach(k => {
         filterSel.innerHTML += `<option value="${escapeHtml(k.kategori_adi)}">${escapeHtml(k.kategori_adi)}</option>`;
-        addSel.innerHTML += `<option value="${escapeHtml(k.kategori_adi)}">${escapeHtml(k.kategori_adi)}</option>`;
+        editSel.innerHTML += `<option value="${escapeHtml(k.kategori_adi)}">${escapeHtml(k.kategori_adi)}</option>`;
     });
 
-    document.getElementById('addGameForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const games = getGames();
-        const katAdi = document.getElementById('add_kategori').value;
-        const katObj = categories.find(k => k.kategori_adi === katAdi) || categories[0];
-        const maxId = games.reduce((m, g) => Math.max(m, parseInt(g.id, 10) || 0), 100);
+    await refreshOverridesAndTable();
+    syncPortalLiveStats(() => renderAdminTable());
+    loadAdminComments();
+    loadAdminFeedback();
+    loadAdminZeroSearches();
+    loadAdminScores();
+}
 
-        const newGame = {
-            id: String(maxId + 1),
-            oyun_adi: document.getElementById('add_adi').value.trim(),
-            aciklama: document.getElementById('add_aciklama').value.trim(),
+document.addEventListener('DOMContentLoaded', async () => {
+    document.getElementById('gameEditForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const categories = getCategories();
+        const rawId = document.getElementById('edit_id').value.trim();
+        const katAdi = document.getElementById('edit_kategori').value;
+        const katObj = categories.find(k => k.kategori_adi === katAdi) || categories[0];
+        const games = getAllBasePlusOverrides();
+        const maxId = games.reduce((m, g) => Math.max(m, parseInt(g.id, 10) || 0), 215);
+        const targetId = rawId || String(maxId + 1);
+        const existing = rawId ? games.find(g => String(g.id) === String(rawId)) : {};
+
+        const adi = document.getElementById('edit_adi').value.trim();
+        const payload = Object.assign({}, existing || {}, {
+            id: targetId,
+            oyun_adi: adi,
+            slug: (existing && existing.slug) || slugifyGameTitle(adi) + '-' + targetId,
             kategori_id: katObj.id,
             kategori_adi: katObj.kategori_adi,
-            ikon: katObj.ikon,
-            renk: katObj.renk,
-            gorsel: document.getElementById('add_gorsel').value.trim() || 'default_game.png',
-            oyun_linki: document.getElementById('add_link').value.trim(),
+            ikon: (existing && existing.ikon) || katObj.ikon,
+            renk: (existing && existing.renk) || katObj.renk,
+            aciklama: document.getElementById('edit_aciklama').value.trim(),
+            oyun_linki: document.getElementById('edit_link').value.trim(),
+            gorsel: document.getElementById('edit_gorsel').value.trim() || 'assets/icon-192.svg',
+            etiket: document.getElementById('edit_etiket').value.trim() || 'Popüler',
+            seri: document.getElementById('edit_seri').value.trim(),
+            kontroller: document.getElementById('edit_kontroller').value.trim(),
+            ipucu: document.getElementById('edit_ipucu').value.trim(),
+            anahtar_kelimeler: document.getElementById('edit_keywords').value.trim(),
             oyun_tipi: 'web',
-            etiket: document.getElementById('add_etiket').value.trim() || 'Yeni',
-            puan: document.getElementById('add_puan').value || '0',
-            puan_sayisi: Number(document.getElementById('add_puan').value || 0) > 0 ? '1' : '0',
-            oynama_sayisi: '0',
             durum: '1'
-        };
+        });
 
-        games.unshift(newGame);
-        saveGames(games);
-        bootstrap.Modal.getInstance(document.getElementById('oyunEkleModal')).hide();
-        document.getElementById('addGameForm').reset();
-        showToast('success', 'Yeni oyun eklendi!');
-        renderAdminTable();
+        try {
+            await window.GekkotariDB.adminUpsertCatalogOverride(targetId, 'upsert', payload);
+            bootstrap.Modal.getInstance(document.getElementById('gameFormModal')).hide();
+            await refreshOverridesAndTable();
+            showToast('success', 'Değişiklik tüm ziyaretçiler için canlıya kaydedildi!');
+        } catch (err) {
+            showToast('danger', 'Kaydedilemedi: ' + err.message);
+        }
     });
 
-    renderAdminTable();
-    renderFeedbackInbox();
-    syncPortalLiveStats(() => renderAdminTable());
+    document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('adminLoginBtn');
+        const errBox = document.getElementById('adminGateError');
+        btn.disabled = true;
+        errBox.style.display = 'none';
+        try {
+            const user = await window.GekkotariDB.authSignIn({
+                email: document.getElementById('adminEmail').value.trim(),
+                password: document.getElementById('adminPassword').value
+            });
+            if (!user.isAdmin) {
+                errBox.textContent = 'Bu hesapta "admin" rolü bulunmuyor. Supabase Auth app_metadata.role="admin" yetkisi gerekli.';
+                errBox.style.display = 'block';
+                return;
+            }
+            await bootAdminApp(user);
+        } catch (err) {
+            errBox.textContent = 'Giriş başarısız: ' + (err.message || 'Bilgileri kontrol et.');
+            errBox.style.display = 'block';
+        } finally {
+            btn.disabled = false;
+        }
+    });
+
+    const refreshed = await window.GekkotariDB.authRefreshCurrentUser();
+    if (refreshed && refreshed.isAdmin) {
+        await bootAdminApp(refreshed);
+    } else {
+        document.getElementById('adminGateScreen').style.display = 'block';
+        if (refreshed && !refreshed.isAdmin) {
+            const errBox = document.getElementById('adminGateError');
+            errBox.textContent = `Şu an "${refreshed.email}" hesabı aktif ancak bu hesapta yönetici rolü yok.`;
+            errBox.style.display = 'block';
+        }
+    }
 });
 </script>
 </body>

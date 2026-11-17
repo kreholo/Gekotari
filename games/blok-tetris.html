@@ -35,6 +35,7 @@
     <div class="side">
       <div class="box">Sonraki<canvas id="nxt" width="80" height="80"></canvas></div>
       <div class="box">Skor<strong id="sc">0</strong></div>
+      <div class="box">Rekor<strong id="hi">0</strong></div>
       <div class="box">Satır<strong id="ln">0</strong></div>
       <div class="box">Seviye<strong id="lv">1</strong></div>
     </div>
@@ -95,7 +96,21 @@ function merge() {
   cur = mkPiece(nextId);
   nextId = 1 + Math.floor(Math.random() * 7);
   drawNext();
-  if (collide(cur)) { over = true; document.getElementById('msg').textContent = `Oyun Bitti! Skor: ${score}`; }
+  if (collide(cur)) {
+    over = true;
+    let hi = 0;
+    try { hi = parseInt(localStorage.getItem('gekkotari_tetris_best') || '0', 10) || 0; } catch (e) {}
+    if (score > hi) {
+      hi = score;
+      try { localStorage.setItem('gekkotari_tetris_best', String(hi)); } catch (e) {}
+    }
+    const hiEl = document.getElementById('hi');
+    if (hiEl) hiEl.textContent = hi;
+    document.getElementById('msg').textContent = `Oyun Bitti! Skor: ${score}`;
+    if (score > 0 && window.parent && window.parent !== window) {
+      window.parent.postMessage({ type: 'gekkotari_score', gameId: 214, score }, window.location.origin);
+    }
+  }
 }
 
 window.move = (dx) => { if (!over && !collide(cur, dx, 0)) { cur.x += dx; draw(); } };
@@ -155,6 +170,7 @@ function start() {
   grid = Array.from({ length: H }, () => Array(W).fill(0));
   score = 0; lines = 0; lvl = 1; over = false; lastDrop = 0;
   document.getElementById('sc').textContent = '0';
+  try { document.getElementById('hi').textContent = parseInt(localStorage.getItem('gekkotari_tetris_best') || '0', 10) || 0; } catch (e) {}
   document.getElementById('ln').textContent = '0';
   document.getElementById('lv').textContent = '1';
   document.getElementById('msg').textContent = 'Satırları tamamla, blokları zirveye taşırma!';
