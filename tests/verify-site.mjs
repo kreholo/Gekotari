@@ -47,11 +47,11 @@ async function runTests() {
     assert.ok(!String(g.oyun_linki).includes('gamedistribution.com'), `GD embed left on #${id}`);
     assert.ok(g.gorsel && g.gorsel !== 'default_game.png', `Missing cover on #${id}`);
     assert.ok(!String(g.gorsel).includes('gamedistribution.com'), `External GD thumbnail left on #${id}`);
+    assert.ok(!String(g.gorsel).startsWith('http'), `External slow/unreliable thumbnail URL left on #${id}: ${g.gorsel}`);
 
-    if (!String(g.gorsel).startsWith('http')) {
-      const localImg = path.join(ROOT, String(g.gorsel).split('?')[0]);
-      assert.ok(fs.existsSync(localImg), `Missing local cover file on #${id}: ${g.gorsel}`);
-    }
+    const localImg = path.join(ROOT, String(g.gorsel).split('?')[0]);
+    assert.ok(fs.existsSync(localImg), `Missing local cover file on #${id}: ${g.gorsel}`);
+    assert.ok(fs.statSync(localImg).size >= 500, `Cover file suspiciously small on #${id}: ${g.gorsel}`);
     if (!String(g.oyun_linki).startsWith('http')) {
       const localGame = path.join(ROOT, g.oyun_linki);
       assert.ok(fs.existsSync(localGame), `Missing local game HTML on #${id}: ${g.oyun_linki}`);
@@ -123,6 +123,12 @@ async function runTests() {
   assert.ok(gameHtml.includes('https://gekkotari.com/oyun/water-sort-puzzle-3'), 'SSR canonical URL missing');
   assert.ok(gameHtml.includes('"@type":"BreadcrumbList"'), 'SSR BreadcrumbList schema missing');
   assert.ok(gameHtml.includes('"@type":"VideoGame"'), 'SSR VideoGame schema missing');
+  assert.ok(gameHtml.includes('https://gekkotari.com/assets/icon-512.png'), 'SSR SVG cover must fall back to icon-512.png for social og:image');
+
+  const rasterRes = await handleGamePage(new Request('https://gekkotari.com/oyun/bad-ice-cream-2-kotu-dondurma-2'));
+  assert.equal(rasterRes.status, 200);
+  const rasterHtml = await rasterRes.text();
+  assert.ok(rasterHtml.includes('https://gekkotari.com/assets/img/covers/bad-ice-cream-2-kotu-dondurma-2.png'), 'SSR raster cover og:image missing');
 
   const notFoundRes = await handleGamePage(new Request('https://gekkotari.com/oyun/olmayan-bir-oyun-xyz'));
   assert.equal(notFoundRes.status, 404, 'Unknown game slug must return HTTP 404');

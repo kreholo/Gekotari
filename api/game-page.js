@@ -25,9 +25,12 @@ export function renderGamePageHtml(game) {
   const canonicalUrl = `${BASE_URL}/oyun/${game.slug}`;
   const title = `${game.name} Oyna - Gekkotari`;
   const desc = game.desc || `${game.name} oyununu Gekkotari üzerinde ücretsiz ve reklamsız oyna!`;
-  // Social bots (WhatsApp, Discord) require PNG/JPEG for og:image; use archive JPEG where present, PNG fallback for SVG covers
-  const ogImage = (game.image && game.image.startsWith('http'))
-    ? game.image
+  // Social bots (WhatsApp, Discord) require PNG/JPEG/WebP for og:image; use local or remote raster cover when available, PNG fallback for SVG covers
+  const rawImg = String(game.image || '');
+  const cleanImg = rawImg.split('?')[0].toLowerCase();
+  const isRasterImg = /\.(png|jpe?g|webp)$/i.test(cleanImg);
+  const ogImage = isRasterImg
+    ? (rawImg.startsWith('http') ? rawImg : `${BASE_URL}/${rawImg.replace(/^\/+/, '')}`)
     : `${BASE_URL}/assets/icon-512.png`;
 
   const videoGameSchema = {
