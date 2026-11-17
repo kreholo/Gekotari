@@ -80,6 +80,10 @@ async function runTests() {
     const txt = fs.readFileSync(path.join(ROOT, htmlFile), 'utf8');
     assert.ok(!txt.includes('gekotari.vercel.app'), `Stale vercel.app domain reference found in ${htmlFile}`);
   }
+  const adsTxt = fs.readFileSync(path.join(ROOT, 'ads.txt'), 'utf8');
+  assert.ok(adsTxt.includes('pub-7220337370405776'), 'ads.txt publisher ID missing');
+  const indexTxt = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  assert.ok(indexTxt.includes('ca-pub-7220337370405776'), 'index.html AdSense tag missing');
   const commonTxt = fs.readFileSync(path.join(ROOT, 'assets/js/common.js'), 'utf8');
   assert.ok(!commonTxt.includes('Admin123'), 'Hardcoded Admin123 password must not exist in common.js');
 

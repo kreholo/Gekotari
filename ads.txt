@@ -1,3 +1,1 @@
-# Gekkotari Yayinci Yetkilendirme Dosyasi (https://gekkotari.com/ads.txt)
-# Google AdSense onaylandiginda kendi pub-ID bilginizle asagidaki satiri aktif edin:
-# google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+google.com, pub-7220337370405776, DIRECT, f08c47fec0942fa0
