@@ -48,7 +48,7 @@ async function runTests() {
     assert.ok(!String(g.gorsel).includes('gamedistribution.com'), `External GD thumbnail left on #${id}`);
 
     if (!String(g.gorsel).startsWith('http')) {
-      const localImg = path.join(ROOT, g.gorsel);
+      const localImg = path.join(ROOT, String(g.gorsel).split('?')[0]);
       assert.ok(fs.existsSync(localImg), `Missing local cover file on #${id}: ${g.gorsel}`);
     }
     if (!String(g.oyun_linki).startsWith('http')) {

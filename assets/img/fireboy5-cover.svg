@@ -7,10 +7,10 @@
     </linearGradient>
   </defs>
   <rect width="400" height="240" fill="url(#bg)"/>
-  <circle cx="135" cy="100" r="46" fill="#ef4444" opacity="0.22"/>
-  <circle cx="265" cy="100" r="46" fill="#38bdf8" opacity="0.22"/>
-  <path d="M135 54 C149 74,158 84,158 104 C158 121,148 133,135 133 C122 133,112 121,112 104 C112 87,124 73,135 54 Z" fill="#f97316" stroke="#fde047" stroke-width="3"/>
-  <path d="M265 56 C277 77,287 88,287 106 C287 122,277 133,265 133 C253 133,243 122,243 106 C243 88,253 77,265 56 Z" fill="#38bdf8" stroke="#bae6fd" stroke-width="3"/>
-  <text x="200" y="175" text-anchor="middle" fill="#fde047" font-family="system-ui,sans-serif" font-weight="900" font-size="22">ATEŞ VE SU 5</text>
-  <text x="200" y="202" text-anchor="middle" fill="#e2e8f0" font-family="system-ui,sans-serif" font-weight="700" font-size="16">ELEMENTLER TAPINAĞI</text>
+  <circle cx="135" cy="90" r="44" fill="#ef4444" opacity="0.22"/>
+  <circle cx="265" cy="90" r="44" fill="#38bdf8" opacity="0.22"/>
+  <path d="M135 46 C149 66,158 76,158 96 C158 113,148 125,135 125 C122 125,112 113,112 96 C112 79,124 65,135 46 Z" fill="#f97316" stroke="#fde047" stroke-width="3"/>
+  <path d="M265 48 C277 69,287 80,287 98 C287 114,277 125,265 125 C253 125,243 114,243 98 C243 80,253 69,265 48 Z" fill="#38bdf8" stroke="#bae6fd" stroke-width="3"/>
+  <text x="200" y="160" text-anchor="middle" fill="#fde047" font-family="system-ui,sans-serif" font-weight="900" font-size="22">ATEŞ VE SU 5</text>
+  <text x="200" y="184" text-anchor="middle" fill="#e2e8f0" font-family="system-ui,sans-serif" font-weight="700" font-size="14">ELEMENTLER TAPINAĞI</text>
 </svg>
