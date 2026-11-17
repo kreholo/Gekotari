@@ -338,7 +338,7 @@
         const redirectTo = window.location.origin.startsWith('http')
             ? window.location.origin + '/giris.html'
             : 'https://gekkotari.com/giris.html';
-        const data = await sbRequest('/auth/v1/signup', {
+        const data = await sbRequest(`/auth/v1/signup?redirect_to=${encodeURIComponent(redirectTo)}`, {
             method: 'POST',
             body: JSON.stringify({
                 email: String(email || '').trim(),
@@ -346,8 +346,7 @@
                 data: {
                     username: String(username || '').trim().slice(0, 40),
                     full_name: String(fullName || username || '').trim().slice(0, 80)
-                },
-                options: { emailRedirectTo: redirectTo }
+                }
             })
         });
         if (data && data.access_token && data.user) {
@@ -393,22 +392,69 @@
         const redirectTo = window.location.origin.startsWith('http')
             ? window.location.origin + '/giris.html'
             : 'https://gekkotari.com/giris.html';
-        return sbRequest('/auth/v1/recover', {
+        return sbRequest(`/auth/v1/recover?redirect_to=${encodeURIComponent(redirectTo)}`, {
             method: 'POST',
             body: JSON.stringify({
-                email: String(email || '').trim(),
-                options: { redirectTo }
+                email: String(email || '').trim()
             })
         });
     }
 
     async function authResendConfirm(email) {
-        return sbRequest('/auth/v1/resend', {
+        const redirectTo = window.location.origin.startsWith('http')
+            ? window.location.origin + '/giris.html'
+            : 'https://gekkotari.com/giris.html';
+        return sbRequest(`/auth/v1/resend?redirect_to=${encodeURIComponent(redirectTo)}`, {
             method: 'POST',
             body: JSON.stringify({
                 type: 'signup',
                 email: String(email || '').trim()
             })
+        });
+    }
+
+    async function authConsumeHashSession() {
+        const rawHash = window.location.hash ? window.location.hash.replace(/^#/, '') : '';
+        if (!rawHash) return null;
+        const hp = new URLSearchParams(rawHash);
+        const errCode = hp.get('error');
+        const errDesc = hp.get('error_description');
+        if (errCode) {
+            try { window.history.replaceState(null, '', window.location.pathname + window.location.search); } catch {}
+            return { ok: false, error: errCode, description: errDesc || 'Doğrulama bağlantısının süresi dolmuş veya geçersiz.' };
+        }
+        const accessToken = hp.get('access_token');
+        const refreshToken = hp.get('refresh_token');
+        const expiresIn = Number(hp.get('expires_in') || 3600);
+        const flowType = hp.get('type') || 'signup';
+        if (!accessToken) return null;
+
+        try {
+            const user = await sbRequest('/auth/v1/user', { authToken: accessToken });
+            const sess = {
+                access_token: accessToken,
+                refresh_token: refreshToken || '',
+                expires_at: Math.floor(Date.now() / 1000) + expiresIn,
+                user
+            };
+            writeStoredSession(sess);
+            await upsertOwnProfile(user, accessToken);
+            const mapped = syncActiveUserCache(user);
+            await syncLocalLibraryToCloud();
+            try { window.history.replaceState(null, '', window.location.pathname + window.location.search); } catch {}
+            return { ok: true, type: flowType, user: mapped };
+        } catch (err) {
+            return { ok: false, error: 'token_invalid', description: err.message || 'Oturum doğrulanamadı.' };
+        }
+    }
+
+    async function authUpdatePassword(newPassword) {
+        const token = await ensureValidAccessToken();
+        if (!token) throw new Error('Önce şifre sıfırlama bağlantısı ile oturum açmalısın.');
+        return sbRequest('/auth/v1/user', {
+            method: 'PUT',
+            authToken: token,
+            body: JSON.stringify({ password: String(newPassword || '') })
         });
     }
 
@@ -645,6 +691,8 @@
         authSignIn,
         authRecover,
         authResendConfirm,
+        authConsumeHashSession,
+        authUpdatePassword,
         authRefreshCurrentUser,
         authSignOut,
         fetchUserLibrary,

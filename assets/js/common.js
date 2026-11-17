@@ -847,7 +847,22 @@ function renderHeader(activePage = 'index.html') {
     ensureCookieConsentBanner();
     registerServiceWorkerAndAnalytics();
 
-    if (window.GekkotariDB && window.GekkotariDB.authRefreshCurrentUser && localStorage.getItem('gekkotari_sb_session_v1')) {
+    if (window.GekkotariDB && window.GekkotariDB.authConsumeHashSession && /access_token=|error=/.test(window.location.hash || '') && !window.__GEKKOTARI_HASH_CONSUMED__) {
+        window.__GEKKOTARI_HASH_CONSUMED__ = true;
+        window.GekkotariDB.authConsumeHashSession().then((res) => {
+            if (!res) return;
+            if (res.ok) {
+                if (res.type === 'recovery') {
+                    window.location.href = pageHref('giris.html?mode=recovery');
+                    return;
+                }
+                renderHeader(activePage);
+                showToast('success', 'E-posta adresin onaylandı ve giriş yapıldı!');
+            } else {
+                showToast('danger', 'Doğrulama bağlantısı geçersiz veya süresi dolmuş. Lütfen tekrar dene.');
+            }
+        }).catch(() => {});
+    } else if (window.GekkotariDB && window.GekkotariDB.authRefreshCurrentUser && localStorage.getItem('gekkotari_sb_session_v1')) {
         window.GekkotariDB.authRefreshCurrentUser().then((freshUser) => {
             if (freshUser && window.GekkotariDB.syncLocalLibraryToCloud) {
                 window.GekkotariDB.syncLocalLibraryToCloud();

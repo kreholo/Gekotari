@@ -1,13 +1,13 @@
-const CACHE_NAME = 'gekkotari-shell-v17';
+const CACHE_NAME = 'gekkotari-shell-v18';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/kategori.html',
   '/404.html',
-  '/assets/css/style.css?v=13',
-  '/assets/js/ads-config.js?v=11',
-  '/assets/js/supabase-sync.js?v=11',
-  '/assets/js/common.js?v=13',
+  '/assets/css/style.css?v=14',
+  '/assets/js/ads-config.js?v=12',
+  '/assets/js/supabase-sync.js?v=12',
+  '/assets/js/common.js?v=14',
   '/assets/icon-192.png',
   '/assets/icon-512.png',
   '/assets/apple-touch-icon.png',

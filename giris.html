@@ -13,7 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css?v=13">
+    <link rel="stylesheet" href="assets/css/style.css?v=14">
 </head>
 <body>
 
@@ -25,8 +25,8 @@
             <div class="auth-icon">
                 <i class="fas fa-user"></i>
             </div>
-            <h3>Tekrar Hoş Geldin</h3>
-            <p class="text-muted">E-posta ve şifrenle giriş yap; kütüphanen tüm cihazlarında senkron kalsın</p>
+            <h3 id="authTitleHeading">Tekrar Hoş Geldin</h3>
+            <p class="text-muted" id="authSubtitleText">E-posta ve şifrenle giriş yap; kütüphanen tüm cihazlarında senkron kalsın</p>
         </div>
 
         <form id="girisFormu">
@@ -64,6 +64,21 @@
             </button>
         </form>
 
+        <!-- ŞİFRE SIFIRLAMA FORMU (Mail sıfırlama linkiyle dönüldüğünde açılır) -->
+        <form id="recoveryForm" style="display:none;">
+            <div class="mb-3">
+                <label class="form-label" for="newPw">Yeni Şifre</label>
+                <input type="password" id="newPw" class="form-control custom-input" placeholder="En az 6 karakter" required minlength="6" autocomplete="new-password">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="newPw2">Yeni Şifre Tekrar</label>
+                <input type="password" id="newPw2" class="form-control custom-input" placeholder="Yeni şifreyi tekrarla" required minlength="6" autocomplete="new-password">
+            </div>
+            <button type="submit" id="saveRecoveryBtn" class="btn btn-primary-custom w-100 py-2">
+                <i class="fas fa-key me-2"></i>Yeni Şifreyi Kaydet
+            </button>
+        </form>
+
         <div id="authStatusAlert" class="alert alert-info mt-3 small" style="display:none;"></div>
 
         <div class="mt-4 text-center">
@@ -81,24 +96,51 @@
 <div id="siteFooterMount"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="assets/js/ads-config.js?v=11"></script>
-<script src="assets/js/supabase-sync.js?v=11"></script>
-<script src="assets/js/games-data.js?v=16"></script>
-<script src="assets/js/common.js?v=13"></script>
+<script src="assets/js/ads-config.js?v=12"></script>
+<script src="assets/js/supabase-sync.js?v=12"></script>
+<script src="assets/js/games-data.js?v=17"></script>
+<script src="assets/js/common.js?v=14"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     renderHeader('giris.html');
     renderFooter();
 
     const statusBox = document.getElementById('authStatusAlert');
-    const urlHash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
-    if (urlHash.get('type') === 'signup') {
-        statusBox.className = 'alert alert-success mt-3 small';
-        statusBox.textContent = 'E-posta adresin onaylandı! Şimdi giriş yapabilirsin.';
-        statusBox.style.display = 'block';
+    const mode = new URLSearchParams(window.location.search).get('mode');
+    const loginForm = document.getElementById('girisFormu');
+    const recoveryForm = document.getElementById('recoveryForm');
+
+    if (mode === 'recovery') {
+        loginForm.style.display = 'none';
+        recoveryForm.style.display = 'block';
+        document.getElementById('authTitleHeading').textContent = 'Yeni Şifre Belirle';
+        document.getElementById('authSubtitleText').textContent = 'Hesabın için yeni şifreni aşağıya yazabilirsin.';
     }
 
-    document.getElementById('girisFormu').addEventListener('submit', async (e) => {
+    recoveryForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const p1 = document.getElementById('newPw').value;
+        const p2 = document.getElementById('newPw2').value;
+        if (p1 !== p2) {
+            showToast('danger', 'Şifreler eşleşmiyor.');
+            return;
+        }
+        const btn = document.getElementById('saveRecoveryBtn');
+        btn.disabled = true;
+        try {
+            await window.GekkotariDB.authUpdatePassword(p1);
+            showToast('success', 'Şifren güncellendi! Yönlendiriliyorsun...');
+            setTimeout(() => { window.location.href = pageHref('index.html'); }, 700);
+        } catch (err) {
+            statusBox.className = 'alert alert-danger mt-3 small';
+            statusBox.textContent = 'Şifre güncellenemedi: ' + (err.message || 'Lütfen tekrar şifre sıfırlama bağlantısı iste.');
+            statusBox.style.display = 'block';
+        } finally {
+            btn.disabled = false;
+        }
+    });
+
+    loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('email').value.trim();
         const sifre = document.getElementById('sifre').value;
@@ -109,10 +151,10 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const user = await window.GekkotariDB.authSignIn({ email, password: sifre });
             showToast('success', 'Hoş geldin, ' + (user.ad_soyad || user.kullanici_adi) + '!');
-            const nextUrl = new URLSearchParams(window.location.search).get('next') || 'index.html';
+            const nextUrl = new URLSearchParams(window.location.search).get('next') || (user.isAdmin ? 'admin.html' : 'index.html');
             setTimeout(() => {
-                window.location.href = user.isAdmin && nextUrl === 'admin.html' ? pageHref('admin.html') : pageHref(nextUrl);
-            }, 550);
+                window.location.href = pageHref(nextUrl);
+            }, 500);
         } catch (err) {
             const raw = String(err && err.message || '');
             let msg = 'E-posta veya şifre hatalı.';

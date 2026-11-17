@@ -28,5 +28,5 @@
   <g transform="translate(290,44)">
     <rect x="0" y="0" width="44" height="128" rx="18" fill="rgba(255,255,255,0.04)" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="6 4"/>
   </g>
-  <text x="242" y="208" text-anchor="middle" fill="#f8fafc" font-family="system-ui,sans-serif" font-weight="800" font-size="20">WATER SORT PUZZLE 3</text>
+  <text x="255" y="210" text-anchor="middle" fill="#f8fafc" font-family="system-ui,sans-serif" font-weight="800" font-size="16">WATER SORT PUZZLE 3</text>
 </svg>
