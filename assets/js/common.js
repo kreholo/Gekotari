@@ -2,7 +2,7 @@
  * GEKKOTARİ - ORTAK SİSTEM, TEMİZ URL, CANLI ARAMA, KÜTÜPHANE & PWA YÖNETİMİ (v15)
  */
 
-const DATA_VERSION = 'gekkotari_v18_2026_11';
+const DATA_VERSION = 'gekkotari_v19_2026_11';
 const SITE_ORIGIN = 'https://gekkotari.com';
 
 function initGekkotariStore() {
