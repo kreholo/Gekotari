@@ -97,8 +97,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/ads-config.js?v=13"></script>
 <script src="assets/js/supabase-sync.js?v=12"></script>
-<script src="assets/js/games-data.js?v=20"></script>
-<script src="assets/js/common.js?v=18"></script>
+<script src="assets/js/games-data.js?v=21"></script>
+<script src="assets/js/common.js?v=19"></script>
 <script>
 function temizleSonOynanan() {
     localStorage.removeItem('gekkotari_recent');
@@ -224,20 +224,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // 5-7. Oyun Vitrinleri Render (ve Supabase canlı verisi + katalog güncellemeleri gelince otomatik yenileme)
     function renderHomeGrids() {
         const currentGames = getGames().filter(g => String(g.durum) !== '0');
-        const classics = currentGames
-            .filter(g => parseInt(g.id, 10) >= 51)
-            .sort((a, b) => getGameLiveStat(b).plays - getGameLiveStat(a).plays || parseInt(a.id, 10) - parseInt(b.id, 10))
+        const orderMap = new Map(currentGames.map((g, idx) => [g.id, idx]));
+
+        // İlk 30 vitrin oyunu: Her büyük efsane seriden özenle seçilmiş başyapıtlar
+        const classics = [...currentGames]
+            .sort((a, b) => (orderMap.get(a.id) ?? 0) - (orderMap.get(b.id) ?? 0))
             .slice(0, 30);
         document.getElementById('classicGamesGrid').innerHTML = classics.map(g => renderGameCard(g, 'col')).join('');
 
+        // Popüler HTML5 & Mobil Uyumlu Oyunlar (15 oyun)
         const popularHtml5 = currentGames
-            .filter(g => parseInt(g.id, 10) <= 50)
-            .sort((a, b) => getGameLiveStat(b).plays - getGameLiveStat(a).plays || parseInt(a.id, 10) - parseInt(b.id, 10))
-            .slice(0, 10);
+            .filter(g => !(g.oyun_linki || '').toLowerCase().endsWith('.swf'))
+            .sort((a, b) => (orderMap.get(a.id) ?? 0) - (orderMap.get(b.id) ?? 0))
+            .slice(0, 15);
         document.getElementById('popularGamesGrid').innerHTML = popularHtml5.map(g => renderGameCard(g, 'col')).join('');
 
-        const newest = [...currentGames]
-            .sort((a, b) => parseInt(b.id, 10) - parseInt(a.id, 10))
+        // Öne Çıkan Yeniler (Yeni eklenen kült klasikler vitrin sırasıyla)
+        const classicIds = new Set(classics.slice(0, 15).map(g => g.id));
+        const newest = currentGames
+            .filter(g => parseInt(g.id, 10) >= 288 && !classicIds.has(g.id))
+            .sort((a, b) => (orderMap.get(a.id) ?? 0) - (orderMap.get(b.id) ?? 0))
             .slice(0, 15);
         document.getElementById('newGamesGrid').innerHTML = newest.map(g => renderGameCard(g, 'col')).join('');
     }
