@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gekkotari-shell-v28';
+const CACHE_NAME = 'gekkotari-shell-v29';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -7,7 +7,7 @@ const STATIC_ASSETS = [
   '/assets/css/style.css?v=14',
   '/assets/js/ads-config.js?v=13',
   '/assets/js/supabase-sync.js?v=12',
-  '/assets/js/common.js?v=24',
+  '/assets/js/common.js?v=25',
   '/assets/icon-192.png',
   '/assets/icon-512.png',
   '/assets/apple-touch-icon.png',
