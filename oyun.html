@@ -225,8 +225,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/assets/js/ads-config.js?v=13"></script>
 <script src="/assets/js/supabase-sync.js?v=12"></script>
-<script src="/assets/js/games-data.js?v=25"></script>
-<script src="/assets/js/common.js?v=23"></script>
+<script src="/assets/js/games-data.js?v=26"></script>
+<script src="/assets/js/common.js?v=24"></script>
 <script>
 const RUFFLE_VERSION = '0.7.1';
 const RUFFLE_CDN_LIST = [
@@ -508,10 +508,15 @@ async function mountGameEngine(oyun) {
             [/^https?:\/\/[^/]*kongregate\.com\/flash\/.*/i, origin + '/assets/stub.swf'],
             [/^https?:\/\/[^/]*mindjolt\.com\/.*\.swf/i, origin + '/assets/stub.swf'],
             [/^https?:\/\/[^/]*spilapi.*/i, origin + '/assets/stub.swf'],
+            [/^https?:\/\/[^/]*turner\.com\/.*\.swf/i, origin + '/assets/stub.swf'],
+            [/^https?:\/\/[^/]*turner\.com\/.*\.flv/i, origin + '/assets/stub.flv'],
             [/^https?:\/\/[^/]*fliplineads\.com\/.*/i, origin + '/assets/stub.txt'],
             [/^https?:\/\/[^/]*playtomic\.com\/.*/i, origin + '/assets/stub.txt'],
             [/^https?:\/\/[^/]*swfstats\.com\/.*/i, origin + '/assets/stub.txt'],
-            [/^https?:\/\/[^/]*miniclip\.com\/.*/i, origin + '/assets/stub.txt']
+            [/^https?:\/\/[^/]*miniclip\.com\/.*/i, origin + '/assets/stub.txt'],
+            [/^https?:\/\/[^/]*turboadserver\.com\/.*/i, origin + '/assets/stub.txt'],
+            [/^https?:\/\/[^/]*intergi\.com\/.*/i, origin + '/assets/stub.txt'],
+            [/^https?:\/\/[^/]*flox\.cc\/.*/i, origin + '/assets/stub.txt']
         ];
 
         window.RufflePlayer = window.RufflePlayer || {};

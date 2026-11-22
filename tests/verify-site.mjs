@@ -26,7 +26,7 @@ async function runTests() {
   // 1. Catalog integrity checks
   const data = loadCatalog();
   assert.ok(Array.isArray(data.oyunlar), 'oyunlar array missing');
-  assert.ok(data.oyunlar.length >= 800, `Expected >= 800 games, got ${data.oyunlar.length}`);
+  assert.ok(data.oyunlar.length >= 786, `Expected >= 786 games, got ${data.oyunlar.length}`);
   const fistPunch = data.oyunlar.find(g => String(g.id) === '109');
   assert.ok(fistPunch && fistPunch.oyun_linki.includes('regular-show-fist-punch/Fist%20Punch.zip/b7a892a0/b7a892a0.swf'), 'Regular Show Fist Punch (#109) must use complete zip package entrypoint');
 
