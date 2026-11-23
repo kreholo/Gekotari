@@ -4,6 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tests/verify-site.mjs"
+    "build": "node scripts/build-cf.mjs",
+    "pretest": "node scripts/build-cf.mjs",
+    "test": "node tests/verify-site.mjs",
+    "dev": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy"
   }
 }

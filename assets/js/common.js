@@ -683,15 +683,6 @@ function ensureCookieConsentBanner() {
 function registerServiceWorkerAndAnalytics() {
     if (typeof window === 'undefined') return;
     const host = window.location.hostname;
-    const isHostedProd = host === 'gekkotari.com' || host === 'www.gekkotari.com' || host === 'gekotari.vercel.app';
-
-    const cfg = window.GEKKOTARI_ADS || {};
-    if (isHostedProd && cfg.vercelAnalytics === true && !document.querySelector('script[src="/_vercel/insights/script.js"]')) {
-        const s = document.createElement('script');
-        s.defer = true;
-        s.src = '/_vercel/insights/script.js';
-        document.head.appendChild(s);
-    }
 
     if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || host === 'localhost' || host === '127.0.0.1')) {
         navigator.serviceWorker.register('/sw.js').catch(() => {});

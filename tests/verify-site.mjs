@@ -2,11 +2,14 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
-import { GET as handleGamePage } from '../api/game-page.js';
-import { GET as handleSwfProxy, isAllowedUpstreamUrl } from '../api/swf-proxy.js';
-import { POST as handleNotifyFeedback } from '../api/notify-feedback.js';
+import worker, {
+  handleNotifyFeedback,
+  handleSwfProxy,
+  isAllowedUpstreamUrl,
+} from '../src/worker.js';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
+const DIST = path.join(ROOT, 'dist');
 
 function loadCatalog() {
   const ctx = { window: {} };
@@ -18,8 +21,32 @@ function loadCatalog() {
 function assertValidJsSyntax(relPath) {
   const full = path.join(ROOT, relPath);
   const code = fs.readFileSync(full, 'utf8');
-  // Parse syntax safely without executing browser globals
   new vm.Script(code, { filename: relPath });
+}
+
+function createDistAssetsEnv() {
+  return {
+    ASSETS: {
+      async fetch(req) {
+        const url = new URL(req.url);
+        let rel = url.pathname.replace(/^\/+/, '');
+        if (!rel) rel = 'index.html';
+        let filePath = path.join(DIST, rel);
+        if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
+          filePath = path.join(DIST, `${rel}.html`);
+        }
+        if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
+          return new Response('Not Found', { status: 404 });
+        }
+        const ext = path.extname(filePath).toLowerCase();
+        const type = ext === '.html' ? 'text/html; charset=utf-8' : 'application/octet-stream';
+        return new Response(fs.readFileSync(filePath), {
+          status: 200,
+          headers: { 'Content-Type': type },
+        });
+      },
+    },
+  };
 }
 
 async function runTests() {
@@ -27,12 +54,15 @@ async function runTests() {
   const data = loadCatalog();
   assert.ok(Array.isArray(data.oyunlar), 'oyunlar array missing');
   assert.ok(data.oyunlar.length >= 785, `Expected >= 785 games, got ${data.oyunlar.length}`);
-  const fistPunch = data.oyunlar.find(g => String(g.id) === '109');
-  assert.ok(fistPunch && fistPunch.oyun_linki.includes('regular-show-fist-punch/Fist%20Punch.zip/b7a892a0/b7a892a0.swf'), 'Regular Show Fist Punch (#109) must use complete zip package entrypoint');
+  const fistPunch = data.oyunlar.find((g) => String(g.id) === '109');
+  assert.ok(
+    fistPunch && fistPunch.oyun_linki.includes('regular-show-fist-punch/Fist%20Punch.zip/b7a892a0/b7a892a0.swf'),
+    'Regular Show Fist Punch (#109) must use complete zip package entrypoint'
+  );
 
   const ids = new Set();
   const slugs = new Set();
-  const validCats = new Set(data.kategoriler.map(c => c.kategori_adi));
+  const validCats = new Set(data.kategoriler.map((c) => c.kategori_adi));
 
   for (const g of data.oyunlar) {
     const id = String(g.id);
@@ -61,7 +91,7 @@ async function runTests() {
   }
   console.log(`[PASS] Catalog integrity verified (${data.oyunlar.length} games, unique IDs/slugs, 0 GD URLs, 0 missing covers)`);
 
-  // 2. Required files, icons, SEO domain consistency
+  // 2. Required files, icons, SEO domain consistency, Cloudflare config
   const requiredFiles = [
     '404.html',
     'ads.txt',
@@ -70,6 +100,8 @@ async function runTests() {
     'robots.txt',
     'sitemap.xml',
     'sw.js',
+    'wrangler.jsonc',
+    'src/worker.js',
     'assets/icon-192.png',
     'assets/icon-512.png',
     'assets/apple-touch-icon.png',
@@ -82,6 +114,7 @@ async function runTests() {
   for (const htmlFile of ['index.html', 'kategori.html', 'oyun.html', 'sayfa.html', 'robots.txt', 'sitemap.xml']) {
     const txt = fs.readFileSync(path.join(ROOT, htmlFile), 'utf8');
     assert.ok(!txt.includes('gekotari.vercel.app'), `Stale vercel.app domain reference found in ${htmlFile}`);
+    assert.ok(!txt.includes('/_vercel/'), `Stale /_vercel/ reference found in ${htmlFile}`);
   }
   const adsTxt = fs.readFileSync(path.join(ROOT, 'ads.txt'), 'utf8');
   assert.ok(adsTxt.includes('pub-7220337370405776'), 'ads.txt publisher ID missing');
@@ -89,13 +122,14 @@ async function runTests() {
   assert.ok(indexTxt.includes('ca-pub-7220337370405776'), 'index.html AdSense tag missing');
   const commonTxt = fs.readFileSync(path.join(ROOT, 'assets/js/common.js'), 'utf8');
   assert.ok(!commonTxt.includes('Admin123'), 'Hardcoded Admin123 password must not exist in common.js');
+  assert.ok(!commonTxt.includes('/_vercel/insights/script.js'), 'Vercel analytics script injection must be removed');
 
   for (const jsRel of ['assets/js/ads-config.js', 'assets/js/supabase-sync.js', 'assets/js/common.js', 'assets/js/games-data.js']) {
     assertValidJsSyntax(jsRel);
   }
   console.log('[PASS] Required PWA/SEO files, JS syntax, and security checks passed');
 
-  // 3. Unit tests for api/swf-proxy.js allowlist & SSRF defenses
+  // 3. Unit tests for Cloudflare Worker SWF proxy allowlist & SSRF defenses
   assert.equal(isAllowedUpstreamUrl('https://archive.org/download/stick-war/Stick%20War.swf'), true);
   assert.equal(isAllowedUpstreamUrl('https://ia801900.us.archive.org/12/items/test/a.swf'), true);
   assert.equal(isAllowedUpstreamUrl('http://archive.org/download/a.swf'), false, 'Must block plaintext HTTP');
@@ -110,47 +144,82 @@ async function runTests() {
   );
   assert.equal(evilOriginRes.status, 403, 'Must reject third-party browser Origin CORS');
 
+  const preflightRes = await handleSwfProxy(
+    new Request('https://gekkotari.com/api/swf-proxy', {
+      method: 'OPTIONS',
+      headers: { origin: 'https://gekkotari.workers.dev' },
+    })
+  );
+  assert.equal(preflightRes.status, 204, 'OPTIONS preflight must succeed for *.workers.dev');
+  assert.equal(preflightRes.headers.get('access-control-allow-origin'), 'https://gekkotari.workers.dev');
+
   const ssrfRes = await handleSwfProxy(
     new Request('https://gekkotari.com/api/swf-proxy?url=https://example.com/test.swf')
   );
   assert.equal(ssrfRes.status, 400, 'Must reject disallowed upstream domain');
-  console.log('[PASS] SWF Proxy SSRF / allowlist / CORS unit tests passed');
 
-  // 4. Unit tests for SSR Game Page (/api/game-page.js)
-  const gameRes = await handleGamePage(new Request('https://gekkotari.com/oyun/water-sort-puzzle-3'));
-  assert.equal(gameRes.status, 200);
-  const gameHtml = await gameRes.text();
-  assert.ok(gameHtml.includes('<title>Water Sort Puzzle 3 Oyna - Gekkotari</title>'), 'SSR title missing');
-  assert.ok(gameHtml.includes('<meta property="og:title" content="Water Sort Puzzle 3 Oyna - Gekkotari">'), 'SSR og:title missing');
-  assert.ok(gameHtml.includes('https://gekkotari.com/oyun/water-sort-puzzle-3'), 'SSR canonical URL missing');
-  assert.ok(gameHtml.includes('"@type":"BreadcrumbList"'), 'SSR BreadcrumbList schema missing');
-  assert.ok(gameHtml.includes('"@type":"VideoGame"'), 'SSR VideoGame schema missing');
-  assert.ok(gameHtml.includes('https://gekkotari.com/assets/icon-512.png'), 'SSR SVG cover must fall back to icon-512.png for social og:image');
+  const pSsrfRes = await worker.fetch(
+    new Request('https://gekkotari.com/p/https/evil.example.com/payload.swf'),
+    createDistAssetsEnv()
+  );
+  assert.equal(pSsrfRes.status, 400, '/p/* route must enforce upstream allowlist');
+  console.log('[PASS] Worker SWF Proxy SSRF / allowlist / CORS unit tests passed');
 
-  const rasterRes = await handleGamePage(new Request('https://gekkotari.com/oyun/bad-ice-cream-2-kotu-dondurma-2'));
-  assert.equal(rasterRes.status, 200);
-  const rasterHtml = await rasterRes.text();
-  assert.ok(rasterHtml.includes('https://gekkotari.com/assets/img/covers/bad-ice-cream-2-kotu-dondurma-2.png'), 'SSR raster cover og:image missing');
+  // 4. Static pre-rendered dist/oyun/*.html checks & Worker routing fallback tests
+  assert.ok(fs.existsSync(path.join(DIST, '_headers')), 'dist/_headers missing');
+  assert.ok(fs.existsSync(path.join(DIST, 'sitemap.xml')), 'dist/sitemap.xml missing');
 
-  const notFoundRes = await handleGamePage(new Request('https://gekkotari.com/oyun/olmayan-bir-oyun-xyz'));
+  const waterHtmlPath = path.join(DIST, 'oyun', 'water-sort-puzzle-3.html');
+  assert.ok(fs.existsSync(waterHtmlPath), 'Pre-rendered water-sort-puzzle-3.html missing');
+  const gameHtml = fs.readFileSync(waterHtmlPath, 'utf8');
+  assert.ok(gameHtml.includes('<title>Water Sort Puzzle 3 Oyna - Gekkotari</title>'), 'Pre-rendered title missing');
+  assert.ok(gameHtml.includes('<meta property="og:title" content="Water Sort Puzzle 3 Oyna - Gekkotari">'), 'Pre-rendered og:title missing');
+  assert.ok(gameHtml.includes('https://gekkotari.com/oyun/water-sort-puzzle-3'), 'Pre-rendered canonical URL missing');
+  assert.ok(gameHtml.includes('"@type":"BreadcrumbList"'), 'Pre-rendered BreadcrumbList schema missing');
+  assert.ok(gameHtml.includes('"@type":"VideoGame"'), 'Pre-rendered VideoGame schema missing');
+  assert.ok(gameHtml.includes('https://gekkotari.com/assets/icon-512.png'), 'Pre-rendered SVG cover must fall back to icon-512.png');
+
+  const rasterHtmlPath = path.join(DIST, 'oyun', 'bad-ice-cream-2-kotu-dondurma-2.html');
+  assert.ok(fs.existsSync(rasterHtmlPath), 'Pre-rendered bad-ice-cream-2-kotu-dondurma-2.html missing');
+  const rasterHtml = fs.readFileSync(rasterHtmlPath, 'utf8');
+  assert.ok(
+    rasterHtml.includes('https://gekkotari.com/assets/img/covers/bad-ice-cream-2-kotu-dondurma-2.png'),
+    'Pre-rendered raster cover og:image missing'
+  );
+
+  const testEnv = createDistAssetsEnv();
+  const redirectRes = await worker.fetch(new Request('https://gekkotari.com/oyun/51'), testEnv);
+  assert.equal(redirectRes.status, 301, 'Numeric game ID /oyun/51 must 301 redirect to slug');
+  assert.equal(redirectRes.headers.get('location'), 'https://gekkotari.com/oyun/ates-ve-su-1-orman-tapinagi');
+
+  const adminRes = await worker.fetch(new Request('https://gekkotari.com/admin'), testEnv);
+  assert.equal(adminRes.status, 200, 'Legacy /admin route must serve admin.html');
+
+  const notFoundRes = await worker.fetch(new Request('https://gekkotari.com/oyun/olmayan-bir-oyun-xyz'), testEnv);
   assert.equal(notFoundRes.status, 404, 'Unknown game slug must return HTTP 404');
-  console.log('[PASS] SSR game page & 404 unit tests passed');
+  console.log(`[PASS] Pre-rendered ${data.oyunlar.length} static game pages, 301 ID redirects, & 404 Worker fallback passed`);
 
-  // 5. Unit tests for api/notify-feedback.js origin guard & unconfigured safe status
-  const badNotify = await handleNotifyFeedback(new Request('https://gekkotari.com/api/notify-feedback', {
-    method: 'POST',
-    headers: { origin: 'https://evil-spam.example', 'content-type': 'application/json' },
-    body: JSON.stringify({ konu: 'Test', mesaj: 'Deneme' }),
-  }));
+  // 5. Unit tests for Worker notify-feedback origin guard & unconfigured safe status
+  const badNotify = await handleNotifyFeedback(
+    new Request('https://gekkotari.com/api/notify-feedback', {
+      method: 'POST',
+      headers: { origin: 'https://evil-spam.example', 'content-type': 'application/json' },
+      body: JSON.stringify({ konu: 'Test', mesaj: 'Deneme' }),
+    }),
+    {}
+  );
   assert.equal(badNotify.status, 403, 'Notify endpoint must reject foreign origin');
 
-  const validNotify = await handleNotifyFeedback(new Request('https://gekkotari.com/api/notify-feedback', {
-    method: 'POST',
-    headers: { origin: 'https://gekkotari.com', 'content-type': 'application/json' },
-    body: JSON.stringify({ tur: 'Oyun İste', konu: 'Test Oyunu', mesaj: 'Merhaba' }),
-  }));
-  assert.equal(validNotify.status, 202, 'Notify endpoint must return 202 safely when SMS/push env vars are unset');
-  console.log('[PASS] Feedback notify API origin guard & safe fallback unit tests passed');
+  const validNotify = await handleNotifyFeedback(
+    new Request('https://gekkotari.com/api/notify-feedback', {
+      method: 'POST',
+      headers: { origin: 'https://gekkotari.com', 'content-type': 'application/json' },
+      body: JSON.stringify({ tur: 'Oyun İste', konu: 'Test Oyunu', mesaj: 'Merhaba' }),
+    }),
+    {}
+  );
+  assert.equal(validNotify.status, 202, 'Notify endpoint must return 202 safely when env secrets are unset');
+  console.log('[PASS] Worker feedback notify API origin guard & safe fallback unit tests passed');
 }
 
 runTests().catch((err) => {

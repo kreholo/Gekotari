@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gekkotari-shell-v29';
+const CACHE_NAME = 'gekkotari-shell-v30';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -40,8 +40,8 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
 
-  // Never intercept SWF proxy streams, SSR game pages dynamically beyond network-first, or /p/
-  if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/p/')) return;
+  // Never intercept SWF proxy streams or /p/ sub-assets
+  if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/p/') || url.pathname === '/swf_proxy.php') return;
 
   // Cache-first for immutable visual assets (SVGs, PNGs, icons)
   if (url.pathname.startsWith('/assets/img/') || url.pathname.endsWith('.png') || url.pathname.endsWith('.ico') || url.pathname.endsWith('.svg')) {
